@@ -1,0 +1,24 @@
+/* 日期输入框
+------------------------------ */
+.input_cxcalendar{width:78px;height:18px;padding:1px 5px;border:1px solid #555;background:url(../img/cxcalendar.png) no-repeat right center;font:12px/18px Arial;cursor:pointer;}
+
+/* 日期选择器
+------------------------------ */
+.cxcalendar{display:none;position:absolute;width:182px;font:12px Arial;border:1px solid #88b6d8;border-top:none;box-shadow:2px 2px 5px #083e66;z-index:1001;}
+.cxcalendar .title{position:relative;height:20px;padding:4px 6px;background:#88b6d8;color:#fff;font:normal 12px/20px "\5B8B\4F53";text-align:center;}
+.cxcalendar .title select{vertical-align:baseline;font:12px/18px Tahoma;}
+.cxcalendar .title span{padding:0 6px;}
+.cxcalendar table{position:relative;border-collapse:collapse;table-layout:fixed;empty-cells:show;font-family:Arial;text-align:center;}
+.cxcalendar table .sat{color:#06f}
+.cxcalendar table .sun{color:#e00;}
+.cxcalendar table .now{background:#d9e9fa;}
+.cxcalendar table .selected{background:#090;color:#fff;}
+.cxcalendar thead th{width:26px;height:24px;background:#fff;line-height:24px;text-align:center;}
+.cxcalendar tfoot td{height:24px;border-top:1px solid #ccc;background:#eee;color:#999;font-family:"\5B8B\4F53";line-height:24px;}
+.cxcalendar tfoot a{cursor:pointer;}
+.cxcalendar tfoot .pre,
+.cxcalendar tfoot .next{font-family:Tahoma;font-size:11px;}
+.cxcalendar tfoot .clear{}
+.cxcalendar tfoot a:hover{color:#333;text-decoration:none;}
+.cxcalendar tbody td{position:static;width:26px;height:22px;padding:0;background:#eaf4fe;line-height:22px;}
+.cxcalendar tbody td.num:hover{background:#88b6d8;color:#fff;text-decoration:none;cursor:pointer;}

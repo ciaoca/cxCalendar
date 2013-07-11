@@ -4,21 +4,39 @@
 
 /* 日期选择器
 ------------------------------ */
-.cxcalendar{display:none;position:absolute;width:182px;font:12px Arial;border:1px solid #88b6d8;border-top:none;box-shadow:2px 2px 5px #083e66;z-index:1001;}
-.cxcalendar .title{position:relative;height:20px;padding:4px 6px;background:#88b6d8;color:#fff;font:normal 12px/20px "\5B8B\4F53";text-align:center;}
-.cxcalendar .title select{vertical-align:baseline;font:12px/18px Tahoma;}
-.cxcalendar .title span{padding:0 6px;}
-.cxcalendar table{position:relative;border-collapse:collapse;table-layout:fixed;empty-cells:show;font-family:Arial;text-align:center;}
-.cxcalendar table .sat{color:#06f}
-.cxcalendar table .sun{color:#e00;}
-.cxcalendar table .now{background:#d9e9fa;}
+.cxcalendar{display:none;position:absolute;width:200px;font:12px Arial;border:1px solid #ccc;background:#fff;box-shadow:2px 2px 5px rgba(0,0,0,0.3);z-index:1001;}
+.cxcalendar .date_hd{position:relative;height:20px;padding:8px 6px 2px 6px;background:#fff;}
+
+.cxcalendar .date_pre,
+.cxcalendar .date_next{position:absolute;top:9px;width:9px;height:10px;padding:3px 4px;border:1px solid #fff;border-radius:2px;color:#333;font:0/0 Arial;text-decoration:none;outline:0;
+*top:7px;
+*height:14px;
+*font:bold 14px/14px Arial;}
+.cxcalendar .date_pre{left:8px;}
+.cxcalendar .date_next{right:8px;}
+.cxcalendar .date_pre:before,
+.cxcalendar .date_next:before{content:'';display:block;font:0/0 Arial;width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;}
+.cxcalendar .date_pre:before{border-right:9px solid #333;}
+.cxcalendar .date_next:before{border-left:9px solid #333;}
+.cxcalendar .date_pre:hover,
+.cxcalendar .date_next:hover{border:1px solid #999;background:#eee;}
+
+.cxcalendar .date_txt{width:120px;margin:0 auto;border:1px solid #fff;border-radius:2px;color:#333;font:bold 14px/18px Arial;text-align:center;cursor:pointer;}
+.cxcalendar .date_txt:hover{border:1px solid #999;background:#eee;}
+.cxcalendar .date_txt .y{padding:0 6px 0 0;}
+.cxcalendar .date_txt .m{padding:0 6px;}
+
+.cxcalendar .date_set{display:none;width:120px;margin:0 auto;text-align:center;}
+.cxcalendar .year_set,
+.cxcalendar .month_set{margin:0;padding:0;border:1px solid #999;border-radius:2px;background:#fff;font:12px/20px Arial;}
+
+.cxcalendar table{position:relative;border-collapse:collapse;table-layout:fixed;empty-cells:show;text-align:center;z-index:1;}
+.cxcalendar thead th,
+.cxcalendar tbody td{width:24px;height:20px;padding:0;border:4px solid #fff;font:12px/20px Arial;text-align:center;}
+.cxcalendar thead th{color:#999;}
+.cxcalendar tbody td{position:static;}
+.cxcalendar tbody .sat{color:#06f}
+.cxcalendar tbody .sun{color:#e00;}
+.cxcalendar tbody .now{background:#ddd;}
+.cxcalendar tbody .num:hover{background:#aaa;color:#333;text-decoration:none;cursor:pointer;}
 .cxcalendar table .selected{background:#090;color:#fff;}
-.cxcalendar thead th{width:26px;height:24px;background:#fff;line-height:24px;text-align:center;}
-.cxcalendar tfoot td{height:24px;border-top:1px solid #ccc;background:#eee;color:#999;font-family:"\5B8B\4F53";line-height:24px;}
-.cxcalendar tfoot a{cursor:pointer;}
-.cxcalendar tfoot .pre,
-.cxcalendar tfoot .next{font-family:Tahoma;font-size:11px;}
-.cxcalendar tfoot .clear{}
-.cxcalendar tfoot a:hover{color:#333;text-decoration:none;}
-.cxcalendar tbody td{position:static;width:26px;height:22px;padding:0;background:#eaf4fe;line-height:22px;}
-.cxcalendar tbody td.num:hover{background:#88b6d8;color:#fff;text-decoration:none;cursor:pointer;}

@@ -144,8 +144,8 @@ $("#element_id").cxCalendar()
 
 // 自定义参数调用
 $("#element_id").cxCalendar({
-    begin_year:1950,
-    end_year:2030,
+    beginyear:1950,
+    endyear:2030,
     date:"1988/1/31",
     type:"yyyy-mm-dd",
     hyphen:"-",
@@ -157,7 +157,7 @@ $.cxCalendar.defaults.begin_year=1970;
 $.cxCalendar.language={
     year:"",
     month:"",
-    month_list:["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"],
-    week_list:["Sun","Mon","Tur","Wed","Thu","Fri","Sat"]
+    monthList:["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"],
+    weekList:["Sun","Mon","Tur","Wed","Thu","Fri","Sat"]
 };
 ```

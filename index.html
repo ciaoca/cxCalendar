@@ -39,6 +39,24 @@ a:hover{color:#00f;}
 		<label for="date_c">选择日期：</label><input id="date_c" type="text" class="input_cxcalendar" value="1988-1-31" readonly>
 	</fieldset>
 
+	<fieldset>
+		<legend>API 示例</legend>
+		<label for="date_d">选择日期：</label><input id="date_d" type="text" class="input_cxcalendar" readonly>
+		<p id="acts">
+			<button type="button" data-act="show">显示面板</button>
+			<button type="button" data-act="get">获取当前日期</button>
+			<button type="button" data-act="setstr">设置当前日期(2008/01/25)</button>
+			<button type="button" data-act="setnum">设置当前日期(2012,10,10)</button>
+			<button type="button" data-act="goto">调整日期(2013,1)</button>
+			<button type="button" data-act="clear">清除日期</button>
+		</p>
+	</fieldset>
+	
+	<fieldset>
+		<legend>双联动日期示例</legend>
+		<label for="date_e">日期：</label><input id="date_e" type="text" class="input_cxcalendar" readonly> - <input id="date_f" type="text" class="input_cxcalendar" readonly>
+	</fieldset>
+
 	<h2>文档</h2>
 	<ul>
 		<li><a target="_blank" href="https://github.com/ciaoca/cxCalendar">Github</a></li>
@@ -46,17 +64,71 @@ a:hover{color:#00f;}
 	</ul>
 	
 	<h2>作者</h2>
-	<p>Copyright(c) 2012 Ciaoca, http://ciaoca.com/</p>
+	<p><a target="_blank" href="http://ciaoca.com/">http://ciaoca.com/</a></p>
+	<p>Released under the MIT license</p>
 </div>
 
 <script src="js/jquery-1.4.4.min.js"></script>
 <script src="js/jquery.cxcalendar.min.js"></script>
 <script>
+// 默认
 $("#date_a").cxCalendar();
 
+// 在参数中设置默认日期
 $("#date_b").cxCalendar({date:"1988/1/31"});
 
+// 在 value 中有默认值
 $("#date_c").cxCalendar();
+
+// API 示例
+(function(){
+	var el=$("#date_d");
+	var acts=$("#acts");
+	var mycl;
+
+	mycl=el.cxCalendar();
+	acts.delegate("button","click",function(){
+		var _this=$(this);
+		var _val=_this.data("act");
+		
+		switch (_val){
+			case "show":
+				mycl.show();
+				break;
+			case "hide":
+				mycl.hide();
+				break;
+			case "get":
+				alert("当前选择日期："+mycl.getdate());
+				break;
+			case "setstr":
+				mycl.setdate("2008/01/25");
+				break;
+			case "setnum":
+				mycl.setdate(2012,10,10);
+				break;
+			case "goto":
+				mycl.gotodate(2013,1);
+				break;
+			case "clear":
+				mycl.clear();
+				break;
+		};
+		
+	});
+})();
+
+// 双联动日期示例
+(function(){
+	var data_go=$("#date_e").cxCalendar();
+	var data_back=$("#date_f").cxCalendar();
+
+	data_go.jqobj.bind("change",function(){
+		var _date=data_go.getdate();
+		data_back.clear().gotodate(_date).show();
+	});
+
+})();
 </script>
 </body>
 </html>

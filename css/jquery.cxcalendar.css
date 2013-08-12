@@ -1,10 +1,10 @@
 /* 日期输入框
 ------------------------------ */
-.input_cxcalendar{width:78px;height:18px;padding:1px 5px;border:1px solid #555;background:url(../img/cxcalendar.png) no-repeat right center;font:12px/18px Arial;cursor:pointer;}
+input.input_cxcalendar{width:78px;height:18px;padding:1px 5px;border:1px solid #555;background:url(../img/cxcalendar.png) no-repeat right center;font:12px/18px Arial;cursor:pointer;}
 
 /* 日期选择器
 ------------------------------ */
-.cxcalendar{display:none;position:absolute;width:200px;font:12px Arial;border:1px solid #ccc;background:#fff;box-shadow:2px 2px 5px rgba(0,0,0,0.3);z-index:1001;}
+.cxcalendar{display:none;position:absolute;width:200px;font:12px Arial;border:1px solid #ccc;background:#fff;box-shadow:2px 2px 5px rgba(0,0,0,0.3);z-index:10000;}
 .cxcalendar .date_hd{position:relative;height:20px;padding:8px 6px 2px 6px;background:#fff;}
 
 .cxcalendar .date_pre,
@@ -40,3 +40,5 @@
 .cxcalendar tbody .now{background:#ddd;}
 .cxcalendar tbody .num:hover{background:#aaa;color:#333;text-decoration:none;cursor:pointer;}
 .cxcalendar table .selected{background:#090;color:#fff;}
+
+.cxcalendar_lock{display:none;position:absolute;top:0;left:0;background:#fff;z-index:9999;filter:alpha(opacity=0);opacity:0;}

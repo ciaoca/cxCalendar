@@ -12,7 +12,6 @@ cxCalendar 是基于 jQuery 的日期选择器插件
 示例：http://code.ciaoca.com/jquery/cxcalendar/demo/
 
 ##【options 参数说明】
-
 <table>
     <tr>
         <th width="80">名称</th>
@@ -20,12 +19,12 @@ cxCalendar 是基于 jQuery 的日期选择器插件
         <th>说明</th>
     </tr>
     <tr>
-        <td>begin_year</td>
+        <td>beginyear</td>
         <td>1950</td>
         <td>起始年份</td>
     </tr>
     <tr>
-        <td>end_year</td>
+        <td>endyear</td>
         <td>2030</td>
         <td>结束年份</td>
     </tr>
@@ -61,6 +60,40 @@ cxCalendar 是基于 jQuery 的日期选择器插件
         </td>
     </tr>
 </table>
+
+##【data 属性参数】
+<table class="manual_table table_form">
+	<thead>
+		<tr>
+			<th width="120">名称</th>
+			<th>说明</th>
+		</tr>
+	</thead>
+	<tr>
+		<td>data-beginyear</td>
+		<td>起始年份</td>
+	</tr>
+	<tr>
+		<td>data-endyear</td>
+		<td>结束年份</td>
+	</tr>
+	<tr>
+		<td>data-type</td>
+		<td>日期格式。可设置为："yyyy-mm-dd" | "yyyy-m-d"</td>
+	</tr>
+	<tr>
+		<td>data-hyphen</td>
+		<td>日期连接符。可设置为："-" | "/" | "."</td>
+	</tr>
+	<tr>
+		<td>data-wday</td>
+		<td>周第一天。可设置为：0-6 之间的数字。</td>
+	</tr>
+</table>
+```html
+<input id="element_id" type="text" value="1988-1-31" data-beginyear="2000" data-endyear="2015">
+```
+※ data 属性设置的参数优先级要高于 options 设置的值
 
 ##【language 语言配置说明】
 <table>

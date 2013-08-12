@@ -1,24 +1,46 @@
 /*!
- * cxCalendar 1.1
- * date: 2012-01-14
+ * cxCalendar 1.2
+ * http://code.ciaoca.com/
  * https://github.com/ciaoca/cxCalendar
- * (c) 2012 Ciaoca, http://ciaoca.com/
+ * E-mail: ciaoca@gmail.com
+ * Released under the MIT license
+ * Date: 2013-07-31
  */
 (function($){
 	$.fn.cxCalendar=function(settings,language){
 		if(this.length<1){return;};
-		settings=$.extend({},$.cxCalendar.defaults,settings);
-		language=$.extend({},$.cxCalendar.language,language);
 
-		var date_obj=this;
+		var theCalendar={};
+		var obj=theCalendar.jqobj=this;
+		var fun=theCalendar.fun={};
+		var reportCalendear;
+
+		settings=$.extend({},$.cxCalendar.defaults,settings,{
+			beginyear:obj.data("beginyear"),
+			endyear:obj.data("endyear"),
+			type:obj.data("type"),
+			hyphen:obj.data("hyphen"),
+			wday:obj.data("wday")
+		});
+		language=$.extend({},$.cxCalendar.language,language);
+		
+		var dataParse=function(date){
+			var newdate=date;
+			newdate=newdate.replace(/\./g,"/");
+			newdate=newdate.replace(/-/g,"/");
+			newdate=newdate.replace(/\//g,"/");
+			newdate=Date.parse(newdate);
+			return newdate;
+		};
+
+		// 判断闰年
+		var leapYear=function(y){
+			return ((y%4==0 && y%100!=0) || y%400==0) ? 1 : 0;
+		};
 
 		// 获取默认日期
-		if(date_obj.val().length>0){
-			settings.date=date_obj.val();
-			settings.date=settings.date.replace(/\./g,"/");
-			settings.date=settings.date.replace(/-/g,"/");
-			settings.date=settings.date.replace(/\//g,"/");
-			settings.date=Date.parse(settings.date);
+		if(obj.val().length>0){
+			settings.date=dataParse(obj.val());
 		};
 		settings.date=new Date(settings.date);
 		if(isNaN(settings.date.getFullYear())){
@@ -32,16 +54,11 @@
 		var def_month=settings.date.getMonth()+1;
 		var def_day=settings.date.getDate();
 
-		// 判断闰年
-		var leapYear=function(y){
-			return ((y%4==0 && y%100!=0) || y%400==0) ? 1 : 0;
-		};
-
 		// 定义每月的天数
 		var date_name_month=new Array(31,28+leapYear(def_year),31,30,31,30,31,31,30,31,30,31);
 
 		// 定义每周的日期
-		var date_name_week=language.week_list;
+		var date_name_week=language.weekList;
 
 		// 定义周末
 		var saturday=6-settings.wday;
@@ -59,7 +76,7 @@
 		date_set=$("<div></div>",{"class":"date_set"}).appendTo(date_hd);
 
 		temp_html="";
-		for(var i=settings.begin_year;i<=settings.end_year;i++){
+		for(var i=settings.beginyear;i<=settings.endyear;i++){
 			temp_html+="<option value='"+i+"'>"+i+"</option>";
 		};
 		year_list=$("<select></select>",{"class":"year_set"}).html(temp_html).appendTo(date_set).val(def_year);
@@ -67,7 +84,7 @@
 		
 		temp_html="";
 		for(var i=0;i<12;i++){
-			temp_html+="<option value='"+(i+1)+"'>"+language.month_list[i]+"</option>";
+			temp_html+="<option value='"+(i+1)+"'>"+language.monthList[i]+"</option>";
 		};
 		month_list=$("<select></select>",{"class":"month_set"}).html(temp_html).appendTo(date_set).val(def_month);
 
@@ -92,29 +109,42 @@
 
 		// 面板及背景遮挡层插入到页面中
 		date_pane.appendTo("body");
-		block_bg=$("<div></div>").css({"display":"none","position":"absolute","top":"0","left":"0","background":"#fff","opacity":"0","z-index":"999"}).appendTo("body");
+		block_bg=$("<div></div>",{"class":"cxcalendar_lock"}).appendTo("body");
 
 		// 显示日期选择器
-		var dateShow=function(){
+		fun.show=function(){
 			var doc_w=document.body.clientWidth;
 			var doc_h=document.body.clientHeight;
 			var pane_w=date_pane.outerWidth();
 			var pane_h=date_pane.outerHeight();
-			var pane_top=date_obj.offset().top;
-			var pane_left=date_obj.offset().left;
-			var obj_w=date_obj.outerWidth();
-			var obj_h=date_obj.outerHeight();
+			var pane_top=obj.offset().top;
+			var pane_left=obj.offset().left;
+			var obj_w=obj.outerWidth();
+			var obj_h=obj.outerHeight();
 			
 			pane_top=((pane_top+pane_h+obj_h)>doc_h) ? pane_top-pane_h : pane_top+obj_h;
 			pane_left=((pane_left+pane_w)>doc_w) ? pane_left-(pane_w-obj_w) : pane_left;
 			
-			date_txt.html("<span class='y'>"+year_list.val()+"</span>"+language.year+"<span class='m'>"+language.month_list[month_list.val()-1]+"</span>"+language.month);
+			// 兼容IE刷新
+			date_txt.html("<span class='y'>"+year_list.val()+"</span>"+language.year+"<span class='m'>"+language.monthList[month_list.val()-1]+"</span>"+language.month);
 			date_pane.css({"top":pane_top,"left":pane_left}).show();
 			block_bg.css({width:doc_w,height:doc_h}).show();
+			
+			return this;
+		};
+
+		// 关闭日期函数
+		fun.hide=function(){
+			date_pane.hide();
+			block_bg.hide();
+			date_set.hide();
+			date_txt.show();
+			
+			return this;
 		};
 
 		// 更改日历函数
-		var dateChange=function(y,m){
+		fun.change=function(y,m){
 			if(m<1){
 				y--;
 				m=12;
@@ -125,10 +155,10 @@
 			var text_m=m;
 			m--;
 
-			if(y<settings.begin_year){
-				y=settings.end_year;
-			}else if(y>settings.end_year){
-				y=settings.begin_year;
+			if(y<settings.beginyear){
+				y=settings.endyear;
+			}else if(y>settings.endyear){
+				y=settings.beginyear;
 			};
 
 			date_name_month[1]=28+leapYear(y);
@@ -143,11 +173,8 @@
 			val_date.setHours(0);
 			val_date.setMinutes(0);
 			val_date.setSeconds(0);
-			val_date=date_obj.val();
-			val_date=val_date.replace(/\./g,"/");
-			val_date=val_date.replace(/-/g,"/");
-			val_date=val_date.replace(/\//g,"/");
-			val_date=new Date(Date.parse(val_date));
+			val_date=dataParse(obj.val())
+			val_date=new Date(val_date);
 			if(isNaN(val_date.getFullYear())){
 				val_date=null;
 			};
@@ -196,13 +223,15 @@
 			};
 			date_table.find("tbody").html(temp_html);
 
-			date_txt.html("<span class='y'>"+y+"</span>"+language.year+"<span class='m'>"+language.month_list[m]+"</span>"+language.month);
+			date_txt.html("<span class='y'>"+y+"</span>"+language.year+"<span class='m'>"+language.monthList[m]+"</span>"+language.month);
 			year_list.val(y);
 			month_list.val(m+1);
+			
+			return this;
 		};
 
 		// 选择日期函数
-		var dateSelect=function(d){
+		fun.selected=function(d){
 			var temp_month,temp_day;
 				temp_month=month_list.val();
 				temp_day=d;
@@ -212,34 +241,113 @@
 				temp_month=temp_month.substr((temp_month.length-2),temp_month.length);
 				temp_day=temp_day.substr((temp_day.length-2),temp_day.length);
 			};
-			date_obj.val(year_list.val()+settings.hyphen+temp_month+settings.hyphen+temp_day);
-			dateExit();
+			obj.val(year_list.val()+settings.hyphen+temp_month+settings.hyphen+temp_day);
+			obj.trigger("change");
+			fun.hide();
+			
+			return this;
+		};
+		
+		// 清除日期
+		fun.clear=function(){
+			obj.val("");
+			fun.change(def_year,def_month);
+			fun.hide();
+			
+			return this;
+		};
+		
+		// 获取当前选中日期
+		fun.getdate=function(){
+			return obj.val();
+		};
+		
+		// 设置日期
+		fun.setdate=function(opt,m,d){
+			
+			if(typeof(opt)=="string"){
+				fun.setdate({
+					date:opt
+				});
+				return;
+			}else if(typeof(opt)=="number"&&typeof(m)=="number"&&typeof(d)=="number"){
+				fun.setdate({
+					year:opt,
+					month:m,
+					day:d
+				});
+				return;
+			};
+			
+			if(typeof(opt)!="object"){
+				return false;
+			};
+
+			opt=$.extend({},{
+				date:null,
+				year:null,
+				month:null,
+				day:null,
+				set:true
+			},opt);
+
+			var _date,_year,_month,_day;
+			
+			if(typeof(opt.date)=="string"){
+				opt.date=dataParse(opt.date);
+				_date=new Date(opt.date);
+				_date.setHours(0);
+				_date.setMinutes(0);
+				_date.setSeconds(0);
+		
+				opt.year=_date.getFullYear();
+				opt.month=_date.getMonth()+1;
+				opt.day=_date.getDate();
+			};
+
+			fun.change(opt.year,opt.month);
+			if(opt.set){
+				fun.selected(opt.day)
+			};
+			
+			return this;
+		};
+		
+		fun.gotodate=function(y,m){
+			if(typeof(y)=="string"){
+				fun.setdate({
+					date:y,
+					set:false
+				});
+			}else if(typeof(y)=="number"&&typeof(m)=="number"){
+				fun.setdate({
+					year:y,
+					month:m,
+					day:1,
+					set:false
+				});
+			};
+			
+			return this;
 		};
 
-		// 关闭日期函数
-		var dateExit=function(){
-			date_pane.hide();
-			block_bg.hide();
-			date_set.hide();
-			date_txt.show();
-		};
-
-		// 面板 <a> 事件
+		// 面板 <a> 事件	
 		date_pane.delegate("a","click",function(){
 			if(!this.rel){return};
 
 			var _rel=this.rel;
 			switch(_rel){
 				case "pre":
-					dateChange(year_list.val(),parseInt(month_list.val(),10)-1);
+					fun.change(year_list.val(),parseInt(month_list.val(),10)-1);
+					return false;
 					break
 				case "next":
-					dateChange(year_list.val(),parseInt(month_list.val(),10)+1);
+					fun.change(year_list.val(),parseInt(month_list.val(),10)+1);
+					return false;
 					break
 				case "clear":
-					date_obj.val("");
-					dateChange(def_year,def_month);
-					dateExit();
+					fun.clear();
+					return false;
 					break
 			};
 		});
@@ -250,15 +358,15 @@
 			if(_this.hasClass("num")){
 				date_table.find("td").removeClass("selected");
 				_this.addClass("selected");
-				dateSelect(_this.data("day"));
+				fun.selected(_this.data("day"));
 			};
 		});
 
 		// 显示面板事件
-		date_obj.bind("click",dateShow);
+		obj.bind("click",fun.show);
 
 		// 关闭面板事件
-		block_bg.bind("click",dateExit);
+		block_bg.bind("click",fun.hide);
 
 		// 显示年月选择
 		date_txt.bind("click",function(){
@@ -268,20 +376,31 @@
 
 		// 更改年月事件
 		year_list.bind("change",function(){
-			dateChange(year_list.val(),month_list.val());
+			fun.change(year_list.val(),month_list.val());
 		});
 		month_list.bind("change",function(){
-			dateChange(year_list.val(),month_list.val());
+			fun.change(year_list.val(),month_list.val());
 		});
 
 		// 第一次初始化
-		dateChange(def_year,def_month);
+		fun.change(def_year,def_month);
+
+		reportCalendear={
+			jqobj:theCalendar.jqobj,
+			show:fun.show,
+			hide:fun.hide,
+			getdate:fun.getdate,
+			setdate:fun.setdate,
+			gotodate:fun.gotodate,
+			clear:fun.clear
+		}
+		return reportCalendear;
 	};
 	
 	// 默认值
 	$.cxCalendar={defaults:{
-		begin_year:1950,	// 开始年份
-		end_year:2030,		// 结束年份
+		beginyear:1950,		// 开始年份
+		endyear:2030,		// 结束年份
 		date:new Date(),	// 默认日期
 		type:"yyyy-mm-dd",	// 日期格式
 		hyphen:"-",			// 日期链接符
@@ -290,21 +409,22 @@
 		/* 中文 */
 		year:"年",
 		month:"月",
-		month_list:["1","2","3","4","5","6","7","8","9","10","11","12"],
-		week_list:["日","一","二","三","四","五","六"]
+		monthList:["1","2","3","4","5","6","7","8","9","10","11","12"],
+		weekList:["日","一","二","三","四","五","六"]
 		
 		/* English 
 		year:"",
 		month:"",
-		month_list:["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"],
-		week_list:["Sun","Mon","Tur","Wed","Thu","Fri","Sat"]
+		monthList:["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"],
+		weekList:["Sun","Mon","Tur","Wed","Thu","Fri","Sat"]
 		*/
 		
 		/* 日本語 
 		year:"年",
 		month:"月",
-		month_list:["1","2","3","4","5","6","7","8","9","10","11","12"],
-		week_list:["日","月","火","水","木","金","土"]
+		monthList:["1","2","3","4","5","6","7","8","9","10","11","12"],
+		weekList:["日","月","火","水","木","金","土"]
 		*/
 	}};
+	
 })(jQuery);

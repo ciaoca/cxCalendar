@@ -1,4 +1,4 @@
-#jQuery.cxCalendar
+#jQuery cxCalendar
 
 cxCalendar 是基于 jQuery 的日期选择器插件
 

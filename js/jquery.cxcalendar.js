@@ -363,6 +363,7 @@
 		});
 
 		// 显示面板事件
+		obj.unbind("click"); //防止重复绑定
 		obj.bind("click",fun.show);
 
 		// 关闭面板事件

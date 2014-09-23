@@ -1,6 +1,7 @@
 #jQuery cxCalendar
 
 cxCalendar 是基于 jQuery 的日期选择器插件。
+
 它灵活自由，你可以自定义外观，日期的范围，返回的格式等。
 
 **版本：**
@@ -106,7 +107,7 @@ $.cxCalendar.defaults.language = {
 	</tr>
 	<tr>
 		<td>baseClass</td>
-		<td>''</td>
+		<td>undefined</td>
 		<td>给面板容器增加 class，不会覆盖默认的 class。</td>
 	</tr>
 	<tr>

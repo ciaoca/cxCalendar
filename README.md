@@ -13,6 +13,8 @@ cxCalendar 是基于 jQuery 的日期选择器插件。
 
 示例：http://code.ciaoca.com/jquery/cxcalendar/demo/
 
+![Preview](http://code.ciaoca.com/jquery/cxcalendar/preview.png)
+
 ##使用方法
 ###载入 CSS 文件
 ```html

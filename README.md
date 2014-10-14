@@ -40,7 +40,7 @@ $("#element_id").cxCalendar();
 ###设置全局默认值
 ```javascript
 // 需在引入 <script src="js/jquery.cxcalendar.js"></script> 之后，调用之前设置
-$.cxCalendar.defaults.startYear = 1980;
+$.cxCalendar.defaults.startDate = 1980;
 $.cxCalendar.defaults.language = {
 	monthList: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], 
 	weekList: ['Sun', 'Mon', 'Tur', 'Wed', 'Thu', 'Fri', 'Sat'] 
@@ -132,11 +132,11 @@ $.cxCalendar.defaults.language = {
 		</tr>
 	</thead>
 	<tr>
-		<td>data-start-year</td>
+		<td>data-start-date</td>
 		<td>起始日期</td>
 	</tr>
 	<tr>
-		<td>data-end-year</td>
+		<td>data-end-date</td>
 		<td>结束日期</td>
 	</tr>
 	<tr>
@@ -153,7 +153,7 @@ $.cxCalendar.defaults.language = {
 	</tr>
 </table>
 ```html
-<input id="element_id" type="text" value="1988-1-31" value="1988-1-31" data-start-year="2000" data-end-year="2015" data-type="YYYY/M/D">
+<input id="element_id" type="text" value="1988-1-31" data-start-date="2000" data-end-date="2015" data-type="YYYY/M/D" data-language="en">
 ```
 ※ data 属性设置的参数优先级要高于调用时参数设置的值
 

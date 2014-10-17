@@ -7,7 +7,7 @@ cxCalendar 是基于 jQuery 的日期选择器插件。
 **版本：**
 
 * jQuery v1.7+
-* jQuery cxCalendar v1.3
+* jQuery cxCalendar v1.4
 
 文档：http://code.ciaoca.com/jquery/cxcalendar/
 
@@ -108,6 +108,11 @@ $.cxCalendar.defaults.language = {
 		</td>
 	</tr>
 	<tr>
+		<td>position</td>
+		<td>undefined</td>
+		<td>面板显示的位置。详见：<a target="_blank" href="http://code.ciaoca.com/jquery/cxcalendar/demo/position.html">Demo Position</a></td>
+	</tr>
+	<tr>
 		<td>baseClass</td>
 		<td>undefined</td>
 		<td>给面板容器增加 class，不会覆盖默认的 class。</td>
@@ -142,6 +147,10 @@ $.cxCalendar.defaults.language = {
 	<tr>
 		<td>data-type</td>
 		<td>日期格式</td>
+	</tr>
+	<tr>
+		<td>data-position</td>
+		<td>面板显示的位置</td>
 	</tr>
 	<tr>
 		<td>data-wday</td>

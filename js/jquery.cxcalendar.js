@@ -1,8 +1,8 @@
 /*!
  * jQuery cxCalendar
  * @name jquery.cxcalendar.js
- * @version 1.3
- * @date 2014-09-23
+ * @version 1.4
+ * @date 2014-10-17
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -79,6 +79,7 @@
 				endDate: _this.dom.el.data('endDate'),
 				type: _this.dom.el.data('type'),
 				wday: _this.dom.el.data('wday'),
+				position: _this.dom.el.data('position'),
 				baseClass: _this.dom.el.data('baseClass'),
 				language: _this.dom.el.data('language')
 			});
@@ -402,6 +403,7 @@
 		// 显示日期选择器
 		calendar.show = function(){
 			var _this = this;
+			var _position = _this.settings.position;
 			var docWidth = document.body.clientWidth;
 			var docHeight = document.body.clientHeight;
 			var paneWidth = _this.dom.pane.outerWidth();
@@ -410,9 +412,53 @@
 			var elLeft = _this.dom.el.offset().left;
 			var elWidth = _this.dom.el.outerWidth();
 			var elHeight = _this.dom.el.outerHeight();
+			
+			var paneTop = (elTop + paneHeight + elHeight) > docHeight ? elTop - paneHeight : elTop + elHeight;
+			var paneLeft = (elLeft + paneWidth) > docWidth ? elLeft - paneWidth - elWidth : elLeft;
+			
+			if (typeof _position === 'string' && _position.length) {
+				switch(_position) {
+					case 'top':
+						paneTop = elTop - paneHeight;
+						break
 
-			var paneTop = ((elTop + paneHeight + elHeight) > docHeight) ? elTop - paneHeight : elTop + elHeight;
-			var paneLeft = ((elLeft + paneWidth) > docWidth) ? elLeft - (paneWidth - elWidth) : elLeft;
+					case 'topLeft':
+					case 'topRight':
+						paneTop = elTop - paneHeight;
+						paneLeft = _position === 'topLeft' ? elLeft - paneWidth + elWidth : elLeft;
+						break
+
+					case 'bottom':
+						paneTop = elTop + elHeight;
+						break
+
+					case 'bottomLeft':
+					case 'bottomRight':
+						paneTop = elTop + elHeight;
+						paneLeft = _position === 'bottomLeft' ? elLeft - paneWidth + elWidth : elLeft;
+						break
+
+					case 'left':
+					case 'right':
+						paneTop = ((elTop + paneHeight + elHeight) > docHeight) ? elTop + elHeight - paneHeight : elTop;
+						paneLeft = _position === 'left' ? elLeft - paneWidth : elLeft + elWidth;
+						break
+
+					case 'leftTop':
+					case 'leftBottom':
+						paneTop = _position === 'leftTop' ? elTop + elHeight - paneHeight : elTop;
+						paneLeft = elLeft - paneWidth;
+						break
+
+					case 'rightTop':
+					case 'rightBottom':
+						paneTop = _position === 'rightTop' ? elTop + elHeight - paneHeight : elTop;
+						paneLeft = elLeft + elWidth;
+						break
+
+					// not default
+				};
+			};
 
 			// 防止浏览器刷新缓存文字内容
 			_this.dom.dateTxt.html('<span class="y">' + _this.dom.yearSet.val() + '</span><span class="m">' + _this.language.monthList[_this.dom.monthSet.val() - 1] + '</span>');
@@ -648,6 +694,7 @@
 		date: undefined,		// 默认日期
 		type: 'YYYY-MM-DD',		// 日期格式
 		wday: 0,				// 星期开始于周几
+		position: undefined,
 		baseClass: undefined,	// 基础样式
 		language: undefined		// 语言
 	};

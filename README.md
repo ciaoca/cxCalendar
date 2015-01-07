@@ -7,7 +7,7 @@ cxCalendar 是基于 jQuery 的日期选择器插件。
 **版本：**
 
 * jQuery v1.7+
-* jQuery cxCalendar v1.4
+* jQuery cxCalendar v1.4.1
 
 文档：http://code.ciaoca.com/jquery/cxcalendar/
 

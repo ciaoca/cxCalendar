@@ -1,8 +1,8 @@
 /*!
  * jQuery cxCalendar
  * @name jquery.cxcalendar.js
- * @version 1.4
- * @date 2014-10-17
+ * @version 1.4.1
+ * @date 2014-01-06
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -518,7 +518,7 @@
 			if (_theYear === _this.minDate.year && _theYear === _this.maxDate.year) {
 				_this.rebulidMonthSelect(_this.minDate.month, _this.maxDate.month);
 			} else if (_theYear === _this.minDate.year) {
-				_this.rebulidMonthSelect(_this.maxDate.month);
+				_this.rebulidMonthSelect(_this.minDate.month, 12);
 			} else if (_theYear === _this.maxDate.year) {
 				_this.rebulidMonthSelect(1, _this.maxDate.month);
 			} else {

@@ -2,7 +2,7 @@
  * jQuery cxCalendar
  * @name jquery.cxcalendar.js
  * @version 1.4.1
- * @date 2014-01-06
+ * @date 2014-01-15
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -136,6 +136,10 @@
 		calendar.formatDate = function(style, time){
 			if (typeof style !== 'string' || time === 'undefined') {return};
 
+			if (typeof time === 'string') {
+				time = time.replace(/[\.-]/g, '/');
+			};
+
 			var date = new Date(time);
 			var attr = {};
 
@@ -179,7 +183,7 @@
 				if (typeof name === 'string' && typeof $.cxCalendar.languages[name] === 'object') {
 					return $.cxCalendar.languages[name];
 				} else {
-					return $.cxCalendar.languages.default;
+					return $.cxCalendar.languages['default'];
 				};
 			};
 		};
@@ -495,7 +499,7 @@
 		// 跳转到日期
 		calendar.gotoDate = function(year, month){
 			var _this = this;
-			var _theDate, _theYear, _theMonth, _hasInvalid = false;
+			var _theDate, _theYear, _theMonth;
 
 			if (typeof year === 'number' && year <= 9999 && typeof month === 'number') {
 				_theDate = new Date(year, month - 1, 1);
@@ -547,13 +551,6 @@
 					_valMonth = _valDate.getMonth() + 1;
 					_valDay = _valDate.getDate();
 				};
-			};
-
-			// 判断是否有无效的日期
-			if (_sameMonthDate.getTime() <= _this.minDate.time) {
-				_hasInvalid = true;
-			} else if (_nextMonthDate.getTime() > _this.maxDate.time) {
-				_hasInvalid = true;
 			};
 
 			// 获取当月第一天
@@ -616,7 +613,7 @@
 				};
 				
 				// 超出范围的无效日期
-				if (_hasInvalid && (_todayTime < _this.minDate.time || _todayTime > _this.maxDate.time)) {
+				if (_todayTime < _this.minDate.time || _todayTime > _this.maxDate.time) {
 					_class.push('del');
 				};
 
@@ -644,7 +641,6 @@
 			};
 
 			_this.dom.daySet.html(_html);
-
 			_this.dom.dateTxt.html('<span class="y">' + _theYear + '</span><span class="m">' + _this.language.monthList[_jsMonth] + '</span>');
 			_this.dom.yearSet.val(_theYear);
 			_this.dom.monthSet.val(_theMonth);

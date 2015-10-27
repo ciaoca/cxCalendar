@@ -5,16 +5,16 @@
 <title>cxCalendar 日期选择器 &raquo; 在线演示 - 前端开发仓库</title>
 <link rel="stylesheet" href="css/jquery.cxcalendar.css">
 <style>
-body{padding:20px;background:#ddd;font:14px/1.7 Arial,"\5b8b\4f53";}
-h1,h2,h3{font:bold 36px/1 "\5fae\8f6f\96c5\9ed1";}
-h2{font-size:20px;}
-h3{font-size:16px;}
-fieldset{margin:1em 0;}
-fieldset legend{font:bold 14px/2 "\5fae\8f6f\96c5\9ed1";}
+body{background:#ddd;font:14px/1.7 tahoma,'\5fae\8f6f\96c5\9ed1',sans-serif;}
+h1,h2,h3{font-size:36px;line-height:1;}
+h2{font-size:24px;}
+h3{font-size:18px;}
+fieldset{margin:2em 0;}
+fieldset legend{font-weight:bold;font-size:16px;line-height:2;}
 a{color:#06f;text-decoration:none;}
 a:hover{color:#00f;}
 
-.wrap{width:600px;margin:0 auto;padding:20px 40px;border:2px solid #999;border-radius:8px;background:#fff;box-shadow:0 0 10px rgba(0,0,0,0.5);}
+.wrap{width:800px;margin:0 auto;padding:20px 40px;border-radius:8px;background:#fff;box-shadow:0 0 10px rgba(0,0,0,0.5);}
 </style>
 </head>
 <body>
@@ -57,13 +57,13 @@ a:hover{color:#00f;}
 // 默认
 $('#date_a').cxCalendar();
 
-// 在参数中设置默认日期
-$('#date_b').cxCalendar({
-	date: '1988/1/31'
-});
-
 // 在 value 中有默认值
-$('#date_c').cxCalendar();
+$('#date_b').cxCalendar();
+
+// 在参数中设置默认日期
+$('#date_c').cxCalendar({
+  date: '1988/1/31'
+});
 </script>
 </body>
 </html>

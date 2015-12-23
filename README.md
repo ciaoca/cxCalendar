@@ -59,73 +59,68 @@ $.cxCalendar.defaults.language = {
   <tr>
     <td>startDate</td>
     <td>1950</td>
-    <td>
-      <p>起始日期</p>
-      <p>若指定年份，设置值为 4 位数的数字</p>
-      <p>若指定某一天，设置值为字符串或时间戳，该值能被<code>new Date(value)</code>处理</p>
+    <td>起始日期<br>
+      若指定年份，设置值为 4 位数的数字<br>
+      若指定某一天，设置值为字符串或时间戳，该值能被<code>new Date(value)</code>处理<br>
     </td>
   </tr>
   <tr>
     <td>endDate</td>
     <td>2030</td>
-    <td>
-      <p>结束日期</p>
-      <p>若指定年份，设置值为 4 位数的数字</p>
-      <p>若指定某一天，设置值为字符串或时间戳，该值能被<code>new Date(value)</code>处理</p>
+    <td>结束日期<br>
+      若指定年份，设置值为 4 位数的数字<br>
+      若指定某一天，设置值为字符串或时间戳，该值能被<code>new Date(value)</code>处理<br>
     </td>
   </tr>
   <tr>
     <td>date</td>
     <td>undefined</td>
-    <td>
-      <p>默认日期</p>
-      <p>默认获取当前日期，自定义可使用字符串或时间戳，该值能被<code>new Date(value)</code>处理</p>
-      <p>※ input 中的 value 值优先级要高级此值</p>
+    <td>默认日期<br>
+      默认获取当前日期，自定义可使用字符串或时间戳，该值能被<code>new Date(value)</code>处理<br>
+      ※ input 中的 value 值优先级要高级此值<br>
     </td>
   </tr>
   <tr>
     <td>type</td>
     <td>'date'</td>
-    <td>
-      <p>日期类型<strong>（v1.5 新增）</strong></p>
-      <p>'date': 只选择日期</p>
-      <p>'datetime': 选择日期和时间</p>
+    <td>日期类型<strong>（v1.5 新增）</strong><br>
+      'date': 只选择日期<br>
+      'datetime': 选择日期和时间<br>
     </td>
   </tr>
   <tr>
     <td>format</td>
     <td>'YYYY-MM-DD'</td>
-    <td>
-      <p>日期值格式<strong>（自 v1.5 开始，之前版本的 type 更名为 format）</strong></p>
-      <p>'YYYY': 年份，完整 4 位数字</p>
-      <p>'YY': 年份，仅末尾 2 位数字</p>
-      <p>'MM': 月份，数字带前导零（01-12）</p>
-      <p>'M': 月份（1-12）</p>
-      <p>'DD': 月份中的第几天，数字带前导零（01-31）</p>
-      <p>'D': 月份中的第几天（1-31）</p>
-      <p>'HH': 小时，24 小时格式，数字带前导零（00-23）</p>
-      <p>'H': 小时，24 小时格式（0-23）</p>
-      <p>'hh': 小时，12 小时格式，数字带前导零（01-12）</p>
-      <p>'h': 小时，12 小时格式（1-12）</p>
-      <p>'mm': 分钟，数字带前导零（00-59）</p>
-      <p>'m': 分钟（0-59）</p>
-      <p>'ss': 分钟，数字带前导零（00-59）</p>
-      <p>'s': 分钟（0-59）</p>
-      <p>'TIME': 时间戳</p>
-      <p>'STRING': 日期的字符串，例：Wed Jul 28 1993</p>
+    <td>日期值格式<strong>（自 v1.5 开始，之前版本的 type 更名为 format）</strong><br>
+      'YYYY': 年份，完整 4 位数字<br>
+      'YY': 年份，仅末尾 2 位数字<br>
+      'MM': 月份，数字带前导零（01-12）<br>
+      'M': 月份（1-12）<br>
+      'DD': 月份中的第几天，数字带前导零（01-31）<br>
+      'D': 月份中的第几天（1-31）<br>
+      'HH': 小时，24 小时格式，数字带前导零（00-23）<br>
+      'H': 小时，24 小时格式（0-23）<br>
+      'hh': 小时，12 小时格式，数字带前导零（01-12）<br>
+      'h': 小时，12 小时格式（1-12）<br>
+      'mm': 分钟，数字带前导零（00-59）<br>
+      'm': 分钟（0-59）<br>
+      'ss': 分钟，数字带前导零（00-59）<br>
+      's': 分钟（0-59）<br>
+      'TIME': 时间戳<br>
+      'STRING': 日期的字符串，例：Wed Jul 28 1993<br>
     </td>
   </tr>
   <tr>
     <td>wday</td>
     <td>0</td>
     <td>星期开始于周几可设置为：0-6 之间的数字
-      <p>0: 星期日</p>
-      <p>1: 星期一</p>
-      <p>2: 星期二</p>
-      <p>3: 星期三</p>
-      <p>4: 星期四</p>
-      <p>5: 星期五</p>
-      <p>6: 星期六</p>
+      0: 星期日<br>
+      1: 星期一<br>
+      2: 星期二<br>
+      3: 星期三<br>
+      4: 星期四<br>
+      5: 星期五<br>
+      6: 星期六<br>
     </td>
   </tr>
   <tr>
@@ -141,10 +136,10 @@ $.cxCalendar.defaults.language = {
   <tr>
     <td>language</td>
     <td>undefined</td>
-    <td><p>自定义语言</p>
-      <p>值类型可是是字符串或对象</p>
-      <p>若为字符串，为语言配置文件中的属性名称（需要载入<code>jquery.cxcalendar.languages.js</code>）</p>
-      <p>若为对象，则按照对象所设置的语言</p>
+    <td>自定义语言<br>
+      值类型可是是字符串或对象<br>
+      若为字符串，为语言配置文件中的属性名称（需要载入<code>jquery.cxcalendar.languages.js</code>）<br>
+      若为对象，则按照对象所设置的语言<br>
     </td>
   </tr>
 </table>

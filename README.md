@@ -7,7 +7,7 @@ cxCalendar 是基于 jQuery 的日期选择器插件。
 **版本：**
 
 * jQuery v1.7+
-* jQuery cxCalendar v1.4.2
+* jQuery cxCalendar v1.5
 
 文档：http://code.ciaoca.com/jquery/cxcalendar/
 
@@ -59,71 +59,92 @@ $.cxCalendar.defaults.language = {
   <tr>
     <td>startDate</td>
     <td>1950</td>
-    <td>起始日期。<br>
-若指定年份，设置值为 4 位数的数字。<br>
-若指定某一天，设置值为字符串或时间戳，该值能被<code>new Date(value)</code>处理。
+    <td>
+      <p>起始日期</p>
+      <p>若指定年份，设置值为 4 位数的数字</p>
+      <p>若指定某一天，设置值为字符串或时间戳，该值能被<code>new Date(value)</code>处理</p>
     </td>
   </tr>
   <tr>
     <td>endDate</td>
     <td>2030</td>
-    <td>结束日期。<br>
-若指定年份，设置值为 4 位数的数字。<br>
-若指定某一天，设置值为字符串或时间戳，该值能被<code>new Date(value)</code>处理。
+    <td>
+      <p>结束日期</p>
+      <p>若指定年份，设置值为 4 位数的数字</p>
+      <p>若指定某一天，设置值为字符串或时间戳，该值能被<code>new Date(value)</code>处理</p>
     </td>
   </tr>
   <tr>
     <td>date</td>
     <td>undefined</td>
-    <td>默认日期。<br>
-默认获取当前日期，自定义可使用字符串或时间戳，该值能被<code>new Date(value)</code>处理。<br>
-※ input 中的 value 值优先级要高级此值。
+    <td>
+      <p>默认日期</p>
+      <p>默认获取当前日期，自定义可使用字符串或时间戳，该值能被<code>new Date(value)</code>处理</p>
+      <p>※ input 中的 value 值优先级要高级此值</p>
     </td>
   </tr>
   <tr>
     <td>type</td>
+    <td>'date'</td>
+    <td>
+      <p>日期类型<strong>（v1.5 新增）</strong></p>
+      <p>'date': 只选择日期</p>
+      <p>'datetime': 选择日期和时间</p>
+    </td>
+  </tr>
+  <tr>
+    <td>format</td>
     <td>'YYYY-MM-DD'</td>
-    <td>日期格式。<br>
-'YYYY': 完整的4位数的年份。<br>
-'YY': 末尾2位数字的年份。<br>
-'MM': 2位数字的月份（01-12）。<br>
-'M': 月份（1-12）。<br>
-'DD': 2位数字的月份中的第几天（01-31）。<br>
-'D': 月份中的第几天（1-31）。<br>
-'TIME': 时间戳。<br>
-'STRING': 日期的字符串，例：Wed Jul 28 1993。
+    <td>
+      <p>日期值格式<strong>（自 v1.5 开始，之前版本的 type 更名为 format）</strong></p>
+      <p>'YYYY': 年份，完整 4 位数字</p>
+      <p>'YY': 年份，仅末尾 2 位数字</p>
+      <p>'MM': 月份，数字带前导零（01-12）</p>
+      <p>'M': 月份（1-12）</p>
+      <p>'DD': 月份中的第几天，数字带前导零（01-31）</p>
+      <p>'D': 月份中的第几天（1-31）</p>
+      <p>'HH': 小时，24 小时格式，数字带前导零（00-23）</p>
+      <p>'H': 小时，24 小时格式（0-23）</p>
+      <p>'hh': 小时，12 小时格式，数字带前导零（01-12）</p>
+      <p>'h': 小时，12 小时格式（1-12）</p>
+      <p>'mm': 分钟，数字带前导零（00-59）</p>
+      <p>'m': 分钟（0-59）</p>
+      <p>'ss': 分钟，数字带前导零（00-59）</p>
+      <p>'s': 分钟（0-59）</p>
+      <p>'TIME': 时间戳</p>
+      <p>'STRING': 日期的字符串，例：Wed Jul 28 1993</p>
     </td>
   </tr>
   <tr>
     <td>wday</td>
     <td>0</td>
-    <td>星期开始于周几。可设置为：0-6 之间的数字。<br>
-0: 星期日<br>
-1: 星期一<br>
-2: 星期二<br>
-3: 星期三<br>
-4: 星期四<br>
-5: 星期五<br>
-6: 星期六
+    <td>星期开始于周几可设置为：0-6 之间的数字
+      <p>0: 星期日</p>
+      <p>1: 星期一</p>
+      <p>2: 星期二</p>
+      <p>3: 星期三</p>
+      <p>4: 星期四</p>
+      <p>5: 星期五</p>
+      <p>6: 星期六</p>
     </td>
   </tr>
   <tr>
     <td>position</td>
     <td>undefined</td>
-    <td>面板显示的位置。详见：<a target="_blank" href="http://code.ciaoca.com/jquery/cxcalendar/demo/position.html">Demo Position</a></td>
+    <td>面板显示的位置详见：<a target="_blank" href="demo/position.html">[Demo Position]</a></td>
   </tr>
   <tr>
     <td>baseClass</td>
     <td>undefined</td>
-    <td>给面板容器增加 class，不会覆盖默认的 class。</td>
+    <td>给面板容器增加 class，不会覆盖默认的 class</td>
   </tr>
   <tr>
     <td>language</td>
     <td>undefined</td>
-    <td>自定义语言<br>
-值类型可是是字符串或对象。<br>
-若为字符串，为语言配置文件中的属性名称。（需要载入<code>jquery.cxcalendar.languages.js</code>）<br>
-若为对象，则按照对象所设置的语言。
+    <td><p>自定义语言</p>
+      <p>值类型可是是字符串或对象</p>
+      <p>若为字符串，为语言配置文件中的属性名称（需要载入<code>jquery.cxcalendar.languages.js</code>）</p>
+      <p>若为对象，则按照对象所设置的语言</p>
     </td>
   </tr>
 </table>
@@ -146,7 +167,11 @@ $.cxCalendar.defaults.language = {
   </tr>
   <tr>
     <td>data-type</td>
-    <td>日期格式</td>
+    <td>日期类型</td>
+  </tr>
+  <tr>
+    <td>data-format</td>
+    <td>日期值格式</td>
   </tr>
   <tr>
     <td>data-position</td>
@@ -162,9 +187,9 @@ $.cxCalendar.defaults.language = {
   </tr>
 </table>
 ```html
-<input id="element_id" type="text" value="1988-1-31" data-start-date="2000" data-end-date="2015" data-type="YYYY/M/D" data-language="en">
+<input id="element_id" type="text" value="1988-1-31" data-start-date="2000" data-end-date="2015" data-format="YYYY/M/D" data-language="en">
 ```
-PS: data 属性设置的参数优先级要高于调用时参数设置的值
+※ data 属性设置的参数优先级要高于调用时参数设置的值
 
 ##多语言配置说明
 只需载入<code>jquery.cxcalendar.languages.js</code>，即可根据用户的语言环境，自动显示对应的语言。
@@ -223,7 +248,7 @@ $('#element_id').cxCalendar({
   </tr>
   <tr>
     <td>getDate(style)</td>
-    <td>获取当前选择的日期（style 与参数 type 相同）</td>
+    <td>获取当前选择的日期（style 格式与参数 format 相同）</td>
   </tr>
   <tr>
     <td>setDate(value)</td>
@@ -247,6 +272,6 @@ $('#element_id').cxCalendar({
   </tr>
   <tr>
     <td>setOptions(opt)</td>
-    <td>设置参数</td>
+    <td>重新设置参数</td>
   </tr>
 </table>

@@ -1,6 +1,6 @@
 /**!
  * jQuery cxCalendar Multi-Language Configure
- * @date 2014-09-23
+ * @date 2015-12-23
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -114,7 +114,41 @@
         {day: 'D2016-11-7', name: '立冬'},
         {day: 'D2016-11-22', name: '小雪'},
         {day: 'D2016-12-7', name: '大雪'},
-        {day: 'D2016-12-21', name: '冬至'}
+        {day: 'D2016-12-21', name: '冬至'},
+        {day: 'D2017-1-5', name: '腊八节'},
+        {day: 'D2017-1-20', name: '大寒'},
+        {day: 'D2017-1-27', name: '除夕'},
+        {day: 'D2017-1-28', name: '春节'},
+        {day: 'D2017-2-3', name: '立春'},
+        {day: 'D2017-2-11', name: '元宵节'},
+        {day: 'D2017-2-18', name: '雨水'},
+        {day: 'D2017-3-5', name: '惊蛰'},
+        {day: 'D2017-3-20', name: '春分'},
+        {day: 'D2017-4-4', name: '清明'},
+        {day: 'D2017-4-20', name: '谷雨'},
+        {day: 'D2017-5-5', name: '立夏'},
+        {day: 'D2017-5-14', name: '母亲节'},
+        {day: 'D2017-5-21', name: '小满'},
+        {day: 'D2017-5-30', name: '端午节'},
+        {day: 'D2017-6-5', name: '芒种'},
+        {day: 'D2017-6-18', name: '父亲节'},
+        {day: 'D2017-6-21', name: '夏至'},
+        {day: 'D2017-7-14', name: '小暑'},
+        {day: 'D2017-7-23', name: '大暑'},
+        {day: 'D2017-8-7', name: '立秋'},
+        {day: 'D2017-8-23', name: '处暑'},
+        {day: 'D2017-8-28', name: '七夕'},
+        {day: 'D2017-9-5', name: '中元节'},
+        {day: 'D2017-9-7', name: '白露'},
+        {day: 'D2017-9-23', name: '秋分'},
+        {day: 'D2017-10-4', name: '中秋节'},
+        {day: 'D2017-10-8', name: '寒露'},
+        {day: 'D2017-10-23', name: '霜降'},
+        {day: 'D2017-10-28', name: '重阳节'},
+        {day: 'D2017-11-7', name: '立冬'},
+        {day: 'D2017-11-22', name: '小雪'},
+        {day: 'D2017-12-7', name: '大雪'},
+        {day: 'D2017-12-21', name: '冬至'}
       ]
     }
   });

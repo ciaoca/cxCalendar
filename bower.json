@@ -1,6 +1,6 @@
 {
 	"name": "cxCalendar",
-	"version": "1.4.2",
+	"version": "1.5.0",
 	"main": "js/jquery.cxcalendar.js",
 	"description": "jQuery plugin for quick select a date.",
 	"license": "MIT",

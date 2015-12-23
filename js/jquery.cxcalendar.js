@@ -1,8 +1,8 @@
 /*!
  * jQuery cxCalendar
  * @name jquery.cxcalendar.js
- * @version 1.4.2
- * @date 2015-10-27
+ * @version 1.5.0
+ * @date 2015-12-23
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -59,23 +59,20 @@
         startDate: self.dom.el.data('startDate'),
         endDate: self.dom.el.data('endDate'),
         type: self.dom.el.data('type'),
+        format: self.dom.el.data('format'),
         wday: self.dom.el.data('wday'),
         position: self.dom.el.data('position'),
         baseClass: self.dom.el.data('baseClass'),
         language: self.dom.el.data('language')
       });
 
+      self.isIE = !!window.ActiveXObject || document.documentMode;
       self.isIE6 = document.all && !window.XMLHttpRequest;
-      self.isIE8 = !+'\v1';
+      self.isFF = !!window.sidebar;
 
       self.reg = {
         isYear: /^\d{4}$/,
-        isMonth: /^\d{1,2}$/,
-        isDate: /^(\d+)[\.\-](\d+)[\.\-](\d+)$/
-      };
-
-      if (self.dom.el.val().length) {
-        self.settings.date = self.dom.el.val();
+        isMonth: /^\d{1,2}$/
       };
 
       self.setOptions();
@@ -115,21 +112,24 @@
     calendar.getLanguage = function(name) {
       if (typeof name === 'object') {
         return name;
+      };
 
-      } else {
-        if (typeof name === 'string') {
-          name = name.toLowerCase()
-        } else if (typeof navigator.language === 'string') {
-          name = navigator.language.toLowerCase();
+      if (typeof name !== 'string') {
+        if (typeof navigator.language === 'string') {
+          name = navigator.language;
         } else if (typeof navigator.browserLanguage === 'string') {
-          name = navigator.browserLanguage.toLowerCase();
+          name = navigator.browserLanguage;
         };
+      };
 
-        if (typeof name === 'string' && typeof $.cxCalendar.languages[name] === 'object') {
-          return $.cxCalendar.languages[name];
-        } else {
-          return $.cxCalendar.languages['default'];
-        };
+      if (typeof name === 'string') {
+        name = name.toLowerCase();
+      };
+
+      if (typeof name === 'string' && typeof $.cxCalendar.languages[name] === 'object') {
+        return $.cxCalendar.languages[name];
+      } else {
+        return $.cxCalendar.languages['default'];
       };
     };
 
@@ -143,6 +143,13 @@
       if (typeof opts === 'object') {
         $.extend(self.settings, opts);
       };
+
+      if (self.dom.el.val().length) {
+        self.settings.date = self.dom.el.val();
+      };
+
+      // 缓存日期
+      self.cacheDay = self.formatDate('YYYY-M-D', self.dom.el.val());
 
       // 最早、最晚日期
       if (self.reg.isYear.test(self.settings.startDate)) {
@@ -165,11 +172,17 @@
       self.minDate = {
         year: _minDate.getFullYear(),
         month: _minDate.getMonth() + 1,
+        hour: _minDate.getHours(),
+        mint: _minDate.getMinutes(),
+        secs: _minDate.getSeconds(),
         time: _minDate.getTime()
       };
       self.maxDate = {
         year: _maxDate.getFullYear(),
         month: _maxDate.getMonth() + 1,
+        hour: _maxDate.getHours(),
+        mint: _maxDate.getMinutes(),
+        secs: _maxDate.getSeconds(),
         time: _maxDate.getTime()
       };
 
@@ -192,6 +205,9 @@
         self.defDate = {
           year: _defDate.getFullYear(),
           month: _defDate.getMonth() + 1,
+          hour: _defDate.getHours(),
+          mint: _defDate.getMinutes(),
+          secs: _defDate.getSeconds(),
           time: _defDate.getTime()
         };
       };
@@ -229,14 +245,36 @@
         value = value + '/1/1';
       } else if (typeof value === 'number' && isFinite(value)) {
         value = parseInt(value, 10);
-      } else if (typeof value === 'string' && self.isIE8 && self.reg.isDate.test(value)) {
+      } else if (typeof value === 'string') {
         value = value.replace(/[\.\-]/g, '/');
       };
 
       return value;
     };
 
-    // 转换日期为对象
+    // 转换时间值
+    calendar.getTimeValue = function(value, type) {
+      value = parseInt(value, 10);
+
+      var _min = 0;
+      var _max = 59;
+
+      if (type === 'hour') {
+        _max = 23;
+      };
+
+      if (isNaN(value)) {
+        value = _min;
+      } else if (value < _min) {
+        value = _max;
+      } else if (value > _max) {
+        value = _min;
+      };
+
+      return value < 10 ? '0' + value : value;
+    };
+
+    // 格式化日期值
     calendar.formatDate = function(style, time) {
       if (typeof style !== 'string' || time === 'undefined') {
         return time;
@@ -251,23 +289,41 @@
         return time;
       };
 
-      attr.yyyy = date.getFullYear();
-      attr.yy = attr.yyyy.toString(10).slice(-2);
-      attr.m = date.getMonth() + 1;
+      attr.YYYY = date.getFullYear();
+      attr.YY = attr.YYYY.toString(10).slice(-2);
+      attr.M = date.getMonth() + 1;
+      attr.MM = (attr.M < 10) ? '0' + attr.M : attr.M;
+      attr.D = date.getDate();
+      attr.DD = (attr.D < 10) ? '0' + attr.D : attr.D;
+
+      attr.H = date.getHours();
+      attr.HH = (attr.H < 10) ? '0' + attr.H : attr.H;
+      attr.h = (attr.H > 12) ? attr.H-12 : attr.H;
+      attr.hh = (attr.h < 10) ? '0' + attr.h : attr.h;
+      attr.m = date.getMinutes();
       attr.mm = (attr.m < 10) ? '0' + attr.m : attr.m;
-      attr.d = date.getDate();
-      attr.dd = (attr.d < 10) ? '0' + attr.d : attr.d;
+      attr.s = date.getSeconds();
+      attr.ss = (attr.s < 10) ? '0' + attr.s : attr.s;
+
       attr.time = date.getTime();
       attr.string = date.toDateString();
 
-      style = style.replace(/STRING/g, attr.string);
       style = style.replace(/TIME/g, attr.time);
-      style = style.replace(/YYYY/g, attr.yyyy);
-      style = style.replace(/YY/g, attr.yy);
-      style = style.replace(/MM/g, attr.mm);
-      style = style.replace(/M/g, attr.m);
-      style = style.replace(/DD/g, attr.dd);
-      style = style.replace(/D/g, attr.d);
+      style = style.replace(/YYYY/g, attr.YYYY);
+      style = style.replace(/YY/g, attr.YY);
+      style = style.replace(/MM/g, attr.MM);
+      style = style.replace(/M/g, attr.M);
+      style = style.replace(/DD/g, attr.DD);
+      style = style.replace(/D/g, attr.D);
+      style = style.replace(/HH/g, attr.HH);
+      style = style.replace(/H/g, attr.H);
+      style = style.replace(/hh/g, attr.hh);
+      style = style.replace(/h/g, attr.h);
+      style = style.replace(/mm/g, attr.mm);
+      style = style.replace(/m/g, attr.m);
+      style = style.replace(/ss/g, attr.ss);
+      style = style.replace(/s/g, attr.s);
+      style = style.replace(/STRING/g, attr.string);
 
       return style;
     };
@@ -279,18 +335,45 @@
 
       if (isFirst === true) {
         self.dom.pane = $('<div></div>', {'class': 'cxcalendar'});
-        self.dom.paneHd = $('<div></div>', {'class': 'cxcalendar_hd'}).appendTo(self.dom.pane);
+        self.dom.paneHd = $('<div></div>', {'class': 'cxcalendar_hd'}).appendTo(self.dom.pane).html('<a class="prev" href="javascript://" rel="prev"></a><a class="next" href="javascript://" rel="next"></a>');
         self.dom.paneBd = $('<div></div>', {'class': 'cxcalendar_bd'}).appendTo(self.dom.pane);
+        self.dom.paneFt = $('<div></div>', {'class': 'cxcalendar_ft'}).appendTo(self.dom.pane);
 
-        self.dom.paneHd.html('<a class="prev" href="javascript://" rel="prev"></a><a class="next" href="javascript://" rel="next"></a>');
         self.dom.dateTxt = $('<div></div>', {'class': 'intxt'}).appendTo(self.dom.paneHd);
         self.dom.dateSet = $('<div></div>', {'class': 'inset'}).appendTo(self.dom.paneHd);
-        
+
         self.dom.yearSet = $('<select></select>', {'class': 'year'}).appendTo(self.dom.dateSet);
         self.dom.monthSet = $('<select></select>', {'class': 'month'}).appendTo(self.dom.dateSet);
-      
+
         self.dom.weekSet = $('<ul></ul>', {'class': 'week'}).appendTo(self.dom.paneBd);
         self.dom.daySet = $('<ul></ul>', {'class': 'days'}).appendTo(self.dom.paneBd);
+
+        self.dom.dayTxt = $('<div></div>', {'class': 'inday'}).appendTo(self.dom.paneFt);
+        self.dom.timeSet = $('<div></div>', {'class': 'intime'}).appendTo(self.dom.paneFt);
+
+        self.dom.hourSet = $('<input/>', {
+          'type': 'text',
+          'class': 'hour',
+          'maxlength': '2'
+        }).html(_html).appendTo(self.dom.timeSet);
+        self.dom.mintSet = $('<input/>', {
+          'type': 'text',
+          'class': 'mint',
+          'maxlength': '2'
+        }).html(_html).appendTo(self.dom.timeSet).before('<i>:</i>');
+        self.dom.secsSet = $('<input/>', {
+          'type': 'text',
+          'class': 'secs',
+          'maxlength': '2'
+        }).html(_html).appendTo(self.dom.timeSet).before('<i>:</i>');
+
+        self.dom.paneFt.append('<a class="confirm" href="javascript://" rel="confirm"></a>');
+      };
+
+      if (self.settings.type !== 'datetime') {
+        self.dom.paneFt.hide();
+      } else {
+        self.dom.paneFt.show();
       };
 
       // 年份选择框
@@ -306,6 +389,10 @@
         _html += '<option value="' + (i + 1) + '">' + self.language.monthList[i] + '</option>';
       };
       self.dom.monthSet.html(_html).val(self.defDate.month);
+
+      self.dom.hourSet.val(self.getTimeValue(self.defDate.hour, 'hour'));
+      self.dom.mintSet.val(self.getTimeValue(self.defDate.mint, 'mint'));
+      self.dom.secsSet.val(self.getTimeValue(self.defDate.secs, 'secs'));
 
       // 星期排序
       _html = '';
@@ -361,14 +448,7 @@
         self.dom.dateSet.show();
       });
 
-      // 更改年月
-      self.dom.yearSet.on('change', function() {
-        self.gotoDate(self.dom.yearSet.val(), self.dom.monthSet.val());
-      });
-      self.dom.monthSet.on('change', function() {
-        self.gotoDate(self.dom.yearSet.val(), self.dom.monthSet.val());
-      });
-      self.dom.pane.on('click', 'a', function() {  
+      self.dom.pane.on('click', 'a', function() {
         switch (this.rel) {
           case 'prev':
             self.gotoDate(self.dom.yearSet.val(), parseInt(self.dom.monthSet.val(), 10) - 1);
@@ -380,7 +460,30 @@
             return false;
             break;
 
+          // case 'backtoday':
+          //   var _now = new Date();
+          //   self.gotoDate(_now.getFullYear(), _now.getMonth() + 1);
+          //   return false;
+          //   break;
+
+          case 'confirm':
+            if (typeof self.cacheDay === 'string' && self.cacheDay.length) {
+              self.setDate(self.cacheDay + ' ' + [self.dom.hourSet.val(), self.dom.mintSet.val(), self.dom.secsSet.val()].join(':'));
+            };
+
+            return false;
+            break;
+
           // not undefined
+        };
+      });
+
+      // 选择年月
+      self.dom.pane.on('change', 'select', function() {
+        var _name = this.getAttribute('class') || this.getAttribute('classname');
+
+        if (_name === 'year' || _name === 'month') {
+          self.gotoDate(self.dom.yearSet.val(), self.dom.monthSet.val());
         };
       });
 
@@ -390,7 +493,74 @@
 
         if (_li.hasClass('del')) {return};
 
-        self.setDate(_li.data('year'), _li.data('month'), _li.data('day'));
+        _li.addClass('selected').siblings('li').removeClass('selected');
+
+        self.cacheDay = [_li.data('year'), _li.data('month'), _li.data('day')].join('-');
+        self.dom.dayTxt.html(self.cacheDay);
+
+        if (self.settings.type === 'date') {
+          self.setDate(_li.data('year'), _li.data('month'), _li.data('day'));
+        };
+
+      });
+
+      // 返回到选择的日期
+      self.dom.dayTxt.on('click', function() {
+        self.gotoDate(self.getDateValue(this.innerHTML));
+      });
+
+      // 设置时间
+      self.dom.pane.on('mouseup', 'input', function() {
+        var _name = this.getAttribute('class') || this.getAttribute('classname');
+
+        if (_name === 'hour' || _name === 'mint' || _name === 'secs') {
+          this.select();
+        };
+      });
+
+      var _mouseEventName = self.isFF ? 'DOMMouseScroll' : 'mousewheel';
+
+      self.dom.pane.on(_mouseEventName, 'input', function(e) {
+        var _name = this.getAttribute('class') || this.getAttribute('classname');
+        var _value = parseInt(this.value, 10);
+        var _dis = self.isFF ? -(e.originalEvent.detail) : e.originalEvent.wheelDelta;
+
+        if (_name === 'hour' || _name === 'mint' || _name === 'secs') {
+          if (_dis > 0) {
+            _value += 1;
+          } else if (_dis < 0) {
+            _value -= 1;
+          };
+
+          _value = self.getTimeValue(_value, _name);
+          this.value = _value;
+        };
+      });
+
+      self.dom.pane.on('keydown', 'input', function(e) {
+        var _name = this.getAttribute('class') || this.getAttribute('classname');
+        var _value = parseInt(this.value, 10);
+
+        if (_name === 'hour' || _name === 'mint' || _name === 'secs') {
+          if (e.keyCode === 38) {
+            _value += e.shiftKey ? 10 : 1;
+          } else if (e.keyCode === 40) {
+            _value -= e.shiftKey ? 10 : 1;
+          };
+
+          _value = self.getTimeValue(_value, _name);
+          this.value = _value;
+        };
+      });
+
+      self.dom.pane.on('keyup blur', 'input', function(e) {
+        var _name = this.getAttribute('class') || this.getAttribute('classname');
+        var _value = parseInt(this.value, 10);
+
+        if (_name === 'hour' || _name === 'mint' || _name === 'secs') {
+          _value = self.getTimeValue(_value, _name);
+          this.value = _value;
+        };
       });
     };
 
@@ -538,15 +708,13 @@
       var _nowYear = _nowDate.getFullYear();
       var _nowMonth = _nowDate.getMonth() + 1;
       var _nowDay = _nowDate.getDate();
-      var _inputValue = self.dom.el.val();
       var _valDate;
       var _valYear;
       var _valMonth;
       var _valDay;
 
-      if (_inputValue.length) {
-        _inputValue = self.getDateValue(_inputValue);
-        _valDate = new Date(_inputValue);
+      if (typeof self.cacheDay === 'string' && self.cacheDay.length) {
+        _valDate = new Date(self.getDateValue(self.cacheDay));
 
         if (!isNaN(_valDate.getTime())) {
           _valYear = _valDate.getFullYear();
@@ -656,7 +824,7 @@
       var _value = this.dom.el.val();
 
       if (typeof style !== 'string' || !style.length) {
-        style = this.settings.type;
+        style = this.settings.format;
       };
 
       _value = this.formatDate(style, _value);
@@ -667,29 +835,29 @@
     // 设置日期
     calendar.setDate = function(year, month, day) {
       var self = this;
-      var _todayDate;
-      var _todayYear;
-      var _todayMonth;
-      var _todayValue;
+      var _theDate;
+      var _theYear;
+      var _theMonth;
+      var _theValue;
 
       if (self.reg.isYear.test(year) && self.reg.isMonth.test(month) && self.reg.isMonth.test(day)) {
-        _todayDate = new Date(year, month - 1, day);
+        _theDate = new Date(year, month - 1, day);
       } else {
-        _todayDate = new Date(year);
+        _theDate = new Date(self.getDateValue(year));
       };
 
-      if (isNaN(_todayDate.getTime())) {return};
+      if (isNaN(_theDate.getTime())) {return};
 
-      _todayYear = _todayDate.getFullYear();
-      _todayMonth = _todayDate.getMonth() + 1;
-      _todayTime = _todayDate.getTime();
+      _theYear = _theDate.getFullYear();
+      _theMonth = _theDate.getMonth() + 1;
+      _theTime = _theDate.getTime();
 
-      _todayValue = self.formatDate(self.settings.type, _todayTime);
+      _theValue = self.formatDate(self.settings.format, _theTime);
 
-      self.dom.el.val(_todayValue).trigger('change');
+      self.dom.el.val(_theValue).trigger('change');
 
       self.hide();
-      self.gotoDate(_todayYear, _todayMonth);
+      self.gotoDate(_theYear, _theMonth);
     };
     
     // 清除日期
@@ -708,7 +876,8 @@
     startDate: 1950,        // 开始日期
     endDate: 2030,          // 结束日期
     date: undefined,        // 默认日期
-    type: 'YYYY-MM-DD',     // 日期格式
+    type: 'date',           // 日期类型
+    format: 'YYYY-MM-DD',   // 日期值格式
     wday: 0,                // 星期开始于周几
     position: undefined,    // 面板位置
     baseClass: undefined,   // 基础样式

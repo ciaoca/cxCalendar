@@ -113,7 +113,7 @@ $.cxCalendar.defaults.language = {
   <tr>
     <td>wday</td>
     <td>0</td>
-    <td>星期开始于周几可设置为：0-6 之间的数字
+    <td>星期开始于周几，可设置为：0-6 之间的数字<br>
       0: 星期日<br>
       1: 星期一<br>
       2: 星期二<br>
@@ -136,8 +136,7 @@ $.cxCalendar.defaults.language = {
   <tr>
     <td>language</td>
     <td>undefined</td>
-    <td>自定义语言<br>
-      值类型可是是字符串或对象<br>
+    <td>自定义语言，值类型可是是字符串或对象<br>
       若为字符串，为语言配置文件中的属性名称（需要载入<code>jquery.cxcalendar.languages.js</code>）<br>
       若为对象，则按照对象所设置的语言<br>
     </td>

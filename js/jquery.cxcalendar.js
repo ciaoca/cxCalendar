@@ -1,8 +1,8 @@
 /*!
  * jQuery cxCalendar
  * @name jquery.cxcalendar.js
- * @version 1.5.0
- * @date 2015-12-23
+ * @version 1.5.1
+ * @date 2016-04-20
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -585,13 +585,15 @@
       var _winHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
       var _paneWidth = self.dom.pane.outerWidth();
       var _paneHeight = self.dom.pane.outerHeight();
+      var _clientTop = self.dom.el[0].getBoundingClientRect().top;
+      var _clientLeft = self.dom.el[0].getBoundingClientRect().left;
       var _elTop = self.dom.el.offset().top;
       var _elLeft = self.dom.el.offset().left;
       var _elWidth = self.dom.el.outerWidth();
       var _elHeight = self.dom.el.outerHeight();
 
-      var _paneTop = ((_elTop + _paneHeight + _elHeight) > _winHeight) ? _elTop - _paneHeight : _elTop + _elHeight;
-      var _paneLeft = ((_elLeft + _paneWidth) > _winWidth) ? _elLeft - _paneWidth - _elWidth : _elLeft;
+      var _paneTop = ((_clientTop + _elHeight + _paneHeight) > _winHeight) ? _elTop - _paneHeight : _elTop + _elHeight;
+      var _paneLeft = ((_clientLeft + _paneWidth) > _winWidth) ? _elLeft - _paneWidth - _elWidth : _elLeft;
 
       if (typeof _position === 'string' && _position.length) {
         switch(_position) {
@@ -617,7 +619,7 @@
 
           case 'left':
           case 'right':
-            _paneTop = ((_elTop + _paneHeight + _elHeight) > _winHeight) ? _elTop + _elHeight - _paneHeight : _elTop;
+            _paneTop = ((_clientTop + _elHeight + _paneHeight) > _winHeight) ? _elTop + _elHeight - _paneHeight : _elTop;
             _paneLeft = (_position === 'left') ? _elLeft - _paneWidth : _elLeft + _elWidth;
             break
 

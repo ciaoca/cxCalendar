@@ -1,8 +1,8 @@
 /*!
  * jQuery cxCalendar
  * @name jquery.cxcalendar.js
- * @version 1.5.1
- * @date 2016-04-20
+ * @version 1.5.2
+ * @date 2016-05-31
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -520,10 +520,12 @@
 
       var _mouseEventName = self.isFF ? 'DOMMouseScroll' : 'mousewheel';
 
-      self.dom.pane.on(_mouseEventName, 'input', function(e) {
+      self.dom.pane.on(_mouseEventName, 'input', function(event) {
+        event.preventDefault();
+
         var _name = this.getAttribute('class') || this.getAttribute('classname');
         var _value = parseInt(this.value, 10);
-        var _dis = self.isFF ? -(e.originalEvent.detail) : e.originalEvent.wheelDelta;
+        var _dis = self.isFF ? -(event.originalEvent.detail) : event.originalEvent.wheelDelta;
 
         if (_name === 'hour' || _name === 'mint' || _name === 'secs') {
           if (_dis > 0) {
@@ -537,23 +539,25 @@
         };
       });
 
-      self.dom.pane.on('keydown', 'input', function(e) {
+      self.dom.pane.on('keydown', 'input', function(event) {
         var _name = this.getAttribute('class') || this.getAttribute('classname');
         var _value = parseInt(this.value, 10);
 
         if (_name === 'hour' || _name === 'mint' || _name === 'secs') {
-          if (e.keyCode === 38) {
-            _value += e.shiftKey ? 10 : 1;
-          } else if (e.keyCode === 40) {
-            _value -= e.shiftKey ? 10 : 1;
-          };
+          if (event.keyCode === 38 || event.keyCode === 40) {
+            if (event.keyCode === 38) {
+              _value += event.shiftKey ? 10 : 1;
+            } else {
+              _value -= event.shiftKey ? 10 : 1;
+            };
 
-          _value = self.getTimeValue(_value, _name);
-          this.value = _value;
+            _value = self.getTimeValue(_value, _name);
+            this.value = _value;
+          };
         };
       });
 
-      self.dom.pane.on('keyup blur', 'input', function(e) {
+      self.dom.pane.on('blur', 'input', function(event) {
         var _name = this.getAttribute('class') || this.getAttribute('classname');
         var _value = parseInt(this.value, 10);
 

@@ -1,8 +1,8 @@
 /*!
  * jQuery cxCalendar
  * @name jquery.cxcalendar.js
- * @version 1.5.2
- * @date 2016-05-31
+ * @version 1.5.3
+ * @date 2016-08-04
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -72,7 +72,7 @@
 
       self.reg = {
         isYear: /^\d{4}$/,
-        isMonth: /^\d{1,2}$/
+        isMonthOrDay: /^\d{1,2}$/
       };
 
       self.setOptions();
@@ -149,7 +149,7 @@
       };
 
       // 缓存日期
-      self.cacheDay = self.formatDate('YYYY-M-D', self.dom.el.val());
+      self.cacheDay = self.formatDate('YYYY-M-D', self.settings.date);
 
       // 最早、最晚日期
       if (self.reg.isYear.test(self.settings.startDate)) {
@@ -448,16 +448,16 @@
         self.dom.dateSet.show();
       });
 
-      self.dom.pane.on('click', 'a', function() {
+      self.dom.pane.on('click', 'a', function(event) {
         switch (this.rel) {
           case 'prev':
+            event.preventDefault();
             self.gotoDate(self.dom.yearSet.val(), parseInt(self.dom.monthSet.val(), 10) - 1);
-            return false;
             break;
 
           case 'next':
+            event.preventDefault();
             self.gotoDate(self.dom.yearSet.val(), parseInt(self.dom.monthSet.val(), 10) + 1);
-            return false;
             break;
 
           // case 'backtoday':
@@ -467,11 +467,10 @@
           //   break;
 
           case 'confirm':
+            event.preventDefault();
             if (typeof self.cacheDay === 'string' && self.cacheDay.length) {
               self.setDate(self.cacheDay + ' ' + [self.dom.hourSet.val(), self.dom.mintSet.val(), self.dom.secsSet.val()].join(':'));
             };
-
-            return false;
             break;
 
           // not undefined
@@ -676,7 +675,7 @@
       var _theYear;
       var _theMonth;
 
-      if (self.reg.isYear.test(year) && self.reg.isMonth.test(month)) {
+      if (self.reg.isYear.test(year) && self.reg.isMonthOrDay.test(month)) {
         _theDate = new Date(year, month - 1, 1);
       } else {
         _theDate = new Date(self.getDateValue(year));
@@ -844,9 +843,10 @@
       var _theDate;
       var _theYear;
       var _theMonth;
+      var _theDay;
       var _theValue;
 
-      if (self.reg.isYear.test(year) && self.reg.isMonth.test(month) && self.reg.isMonth.test(day)) {
+      if (self.reg.isYear.test(year) && self.reg.isMonthOrDay.test(month) && self.reg.isMonthOrDay.test(day)) {
         _theDate = new Date(year, month - 1, day);
       } else {
         _theDate = new Date(self.getDateValue(year));
@@ -856,9 +856,12 @@
 
       _theYear = _theDate.getFullYear();
       _theMonth = _theDate.getMonth() + 1;
+      _theDay = _theDate.getDate();
       _theTime = _theDate.getTime();
 
       _theValue = self.formatDate(self.settings.format, _theTime);
+
+      self.cacheDay = [_theYear, _theMonth, _theDay].join('-');
 
       self.dom.el.val(_theValue).trigger('change');
 

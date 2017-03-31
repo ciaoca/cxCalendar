@@ -65,7 +65,7 @@ format|'YYYY-MM-DD'|日期值格式 **（自 v1.5 开始，之前版本的 type 
 wday|0|星期开始于周几，可设置为：0-6 之间的数字<br>0: 星期日<br>1: 星期一<br>2: 星期二<br>3: 星期三<br>4: 星期四<br>5: 星期五<br>6: 星期六
 position|undefined|面板显示的位置详见：[[Demo Position](http://code.ciaoca.com/jquery/cxCalendar/demo/position.html)]
 baseClass|undefined|给面板容器增加 class，不会覆盖默认的 class
-language|undefined|自定义语言，值类型可是是字符串或对象<br>若为字符串，为语言配置文件中的属性名称（需要载入<code>jquery.cxcalendar.languages.js</code>）<br>若为对象，则按照对象所设置的语言
+language|undefined|自定义语言，值类型可是是字符串或对象<br>若为字符串，为语言配置文件中的属性名称（需要载入```jquery.cxcalendar.languages.js```）<br>若为对象，则按照对象所设置的语言
 
 ## data 属性参数
 

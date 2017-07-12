@@ -1,8 +1,8 @@
 /*!
  * jQuery cxCalendar
  * @name jquery.cxcalendar.js
- * @version 1.5.3
- * @date 2016-08-04
+ * @version 1.5.4
+ * @date 2017-07-12
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -65,6 +65,21 @@
         baseClass: self.dom.el.data('baseClass'),
         language: self.dom.el.data('language')
       });
+
+      var _onday = self.dom.el.data('onday');
+
+      if (typeof _onday === 'string' && _onday.length && /^[\d\,]+$/.test(_onday)) {
+        self.settings.onday = _onday.split(',');
+        for (var i = self.settings.onday.length - 1; i >= 0; i--) {
+          self.settings.onday[i] = parseInt(self.settings.onday[i], 10);
+        }
+      };
+
+      var _unday = self.dom.el.data('unday');
+
+      if (typeof _unday === 'string' && _unday.length && /^[\d\-\,]+$/.test(_unday)) {
+        self.settings.unday = _unday.split(',');
+      };
 
       self.isIE = !!window.ActiveXObject || document.documentMode;
       self.isIE6 = document.all && !window.XMLHttpRequest;
@@ -213,8 +228,9 @@
       };
 
       // 周末的位置
+      self.settings.wday %= 7;
       self.settings.saturday = 6 - self.settings.wday;
-      self.settings.sunday = (7 - self.settings.wday >= 7) ? 0 : (7 - self.settings.wday);
+      self.settings.sunday = 7 - self.settings.wday;
 
       // 语言配置
       self.language = self.getLanguage(self.settings.language);
@@ -348,32 +364,35 @@
         self.dom.weekSet = $('<ul></ul>', {'class': 'week'}).appendTo(self.dom.paneBd);
         self.dom.daySet = $('<ul></ul>', {'class': 'days'}).appendTo(self.dom.paneBd);
 
-        self.dom.dayTxt = $('<div></div>', {'class': 'inday'}).appendTo(self.dom.paneFt);
-        self.dom.timeSet = $('<div></div>', {'class': 'intime'}).appendTo(self.dom.paneFt);
+        self.dom.boxTime = $('<div></div>', {'class': 'settime'});
+        self.dom.dayTxt = $('<div></div>', {'class': 'day'}).appendTo(self.dom.boxTime);
+        self.dom.timeSet = $('<div></div>', {'class': 'time'}).appendTo(self.dom.boxTime);
 
         self.dom.hourSet = $('<input/>', {
           'type': 'text',
           'class': 'hour',
           'maxlength': '2'
-        }).html(_html).appendTo(self.dom.timeSet);
+        }).appendTo(self.dom.timeSet);
         self.dom.mintSet = $('<input/>', {
           'type': 'text',
           'class': 'mint',
           'maxlength': '2'
-        }).html(_html).appendTo(self.dom.timeSet).before('<i>:</i>');
+        }).appendTo(self.dom.timeSet).before('<i>:</i>');
         self.dom.secsSet = $('<input/>', {
           'type': 'text',
           'class': 'secs',
           'maxlength': '2'
-        }).html(_html).appendTo(self.dom.timeSet).before('<i>:</i>');
+        }).appendTo(self.dom.timeSet).before('<i>:</i>');
 
-        self.dom.paneFt.append('<a class="confirm" href="javascript://" rel="confirm"></a>');
+        self.dom.boxTime.append('<a class="confirm" href="javascript://" rel="confirm"></a>');
+
+        self.dom.paneFt.append('<div class="acts"><a class="today" href="javascript://" rel="today"></a><a class="clear" href="javascript://" rel="clear"></a></div>');
       };
 
       if (self.settings.type !== 'datetime') {
-        self.dom.paneFt.hide();
+        self.dom.boxTime.remove();
       } else {
-        self.dom.paneFt.show();
+        self.dom.paneFt.prepend(self.dom.boxTime);
       };
 
       // 年份选择框
@@ -406,9 +425,7 @@
           _html += ' class="sun"';
         };
 
-        _html += '>';
-        _html += (i + self.settings.wday < 7) ? self.language.weekList[i + self.settings.wday] : self.language.weekList[i + self.settings.wday - 7];
-        _html += '</li>';
+        _html += '>' + self.language.weekList[(i + self.settings.wday) % 7] + '</li>';
       };
       self.dom.weekSet.html(_html);
 
@@ -449,25 +466,30 @@
       });
 
       self.dom.pane.on('click', 'a', function(event) {
+        event.preventDefault();
+
         switch (this.rel) {
           case 'prev':
-            event.preventDefault();
             self.gotoDate(self.dom.yearSet.val(), parseInt(self.dom.monthSet.val(), 10) - 1);
             break;
 
           case 'next':
-            event.preventDefault();
             self.gotoDate(self.dom.yearSet.val(), parseInt(self.dom.monthSet.val(), 10) + 1);
             break;
 
-          // case 'backtoday':
-          //   var _now = new Date();
-          //   self.gotoDate(_now.getFullYear(), _now.getMonth() + 1);
-          //   return false;
-          //   break;
+          case 'today':
+            var _now = new Date();
+            self.setDate(_now.getTime());
+            break;
+
+          case 'clear':
+            self.cacheDay = '';
+            self.dom.el.val('');
+            self.gotoDate(self.dom.yearSet.val(), parseInt(self.dom.monthSet.val(), 10));
+            self.hide();
+            break;
 
           case 'confirm':
-            event.preventDefault();
             if (typeof self.cacheDay === 'string' && self.cacheDay.length) {
               self.setDate(self.cacheDay + ' ' + [self.dom.hourSet.val(), self.dom.mintSet.val(), self.dom.secsSet.val()].join(':'));
             };
@@ -786,15 +808,21 @@
         };
 
         // 高亮周末
-        if (i % 7 ===self.settings.saturday) {
+        if (i % 7 === self.settings.saturday) {
           _class.push('sat');
         } else if (i % 7 === self.settings.sunday) {
           _class.push('sun');
         };
-        
+
         // 超出范围的无效日期
-        if (_todayTime < self.minDate.time || _todayTime > self.maxDate.time) {
+        if ($.inArray((i + self.settings.wday) % 7, self.settings.onday) < 0 || _todayTime < self.minDate.time || _todayTime > self.maxDate.time) {
           _class.push('del');
+
+        // 定义的不可选择日期
+        } else if (self.settings.unday) {
+          if ($.inArray(String(_todayNum), self.settings.unday) >= 0 || $.inArray(_todayMonth + '-' + _todayNum, self.settings.unday) >= 0 || $.inArray(_todayYear + '-' + _todayMonth + '-' + _todayNum, self.settings.unday) >= 0) {
+            _class.push('del');
+          };
         };
 
         _title = _todayYear + '-' + _todayMonth + '-' + _todayNum;
@@ -888,6 +916,8 @@
     type: 'date',           // 日期类型
     format: 'YYYY-MM-DD',   // 日期值格式
     wday: 0,                // 星期开始于周几
+    onday: [0,1,2,3,4,5,6], // 可选择的日期（星期值）
+    unday: undefined,       // 不可选择日期
     position: undefined,    // 面板位置
     baseClass: undefined,   // 基础样式
     language: undefined     // 语言配置

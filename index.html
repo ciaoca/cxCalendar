@@ -48,9 +48,16 @@ a:hover{color:#00f;}
   </fieldset>
 
   <fieldset>
-    <legend>自定义节假日</legend>
+    <legend>限制可选日期</legend>
     <label for="date_e">选择日期：</label>
     <input id="date_e" name="mydate" type="text" readonly>
+    <!-- <input id="date_e" name="mydate" type="text" readonly data-onday="1,2,3,4,5" data-unday="1,1-5,2017-1-10"> -->
+  </fieldset>
+
+  <fieldset>
+    <legend>自定义节假日</legend>
+    <label for="date_f">选择日期：</label>
+    <input id="date_f" name="mydate" type="text" readonly>
   </fieldset>
 
   <p><a target="_blank" href="http://code.ciaoca.com/jquery/cxCalendar/demo/">查看更多示例</a></p>
@@ -67,7 +74,7 @@ a:hover{color:#00f;}
 </div>
 
 <script src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js"></script>
-<script src="js/jquery.cxcalendar.min.js"></script>
+<script src="js/jquery.cxcalendar.js"></script>
 <script src="js/jquery.cxcalendar.languages.js"></script>
 <script>
 // 默认
@@ -87,8 +94,26 @@ $('#date_d').cxCalendar({
   format: 'YYYY-MM-DD HH:mm:ss'
 });
 
-// 自定义节假日
+// 限制可选日期
 $('#date_e').cxCalendar({
+  wday: 0,
+  onday: [1,2,3,4,5],
+  // type: 'datetime',
+  // format: 'YYYY-MM-DD HH:mm:ss',
+  unday: [
+    '3',
+    '7-5',
+    '7-15',
+    '7-25',
+    '2017-7-10',
+    '2017-7-20',
+    '2017-7-30'
+  ],
+  endDate: '2017-08-31'
+});
+
+// 自定义节假日
+$('#date_f').cxCalendar({
   baseClass: 'cxcalendar_holyday'
 });
 </script>

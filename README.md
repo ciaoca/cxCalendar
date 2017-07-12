@@ -7,13 +7,13 @@ cxCalendar 是基于 jQuery 的日期选择器插件。
 **版本：**
 
 * jQuery v1.7+
-* jQuery cxCalendar v1.5
+* jQuery cxCalendar v1.5.4
 
-文档：http://code.ciaoca.com/jquery/cxcalendar/
+文档：http://code.ciaoca.com/jquery/cxCalendar/
 
-示例：http://code.ciaoca.com/jquery/cxcalendar/demo/
+示例：http://code.ciaoca.com/jquery/cxCalendar/demo/
 
-![Preview](http://code.ciaoca.com/jquery/cxcalendar/preview.png)
+![Preview](http://code.ciaoca.com/jquery/cxCalendar/preview.png)
 
 ## 使用方法
 
@@ -63,6 +63,8 @@ date|undefined|默认日期<br>默认获取当前日期，自定义可使用字�
 type|'date'|日期类型 **（v1.5 新增）** <br>'date': 只选择日期<br>'datetime': 选择日期和时间
 format|'YYYY-MM-DD'|日期值格式 **（自 v1.5 开始，之前版本的 type 更名为 format）** <br>'YYYY': 年份，完整 4 位数字<br>'YY': 年份，仅末尾 2 位数字<br>'MM': 月份，数字带前导零（01-12）<br>'M': 月份（1-12）<br>'DD': 月份中的第几天，数字带前导零（01-31）<br>'D': 月份中的第几天（1-31）<br>'HH': 小时，24 小时格式，数字带前导零（00-23）<br>'H': 小时，24 小时格式（0-23）<br>'hh': 小时，12 小时格式，数字带前导零（01-12）<br>'h': 小时，12 小时格式（1-12）<br>'mm': 分钟，数字带前导零（00-59）<br>'m': 分钟（0-59）<br>'ss': 分钟，数字带前导零（00-59）<br>'s': 分钟（0-59）<br>'TIME': 时间戳<br>'STRING': 日期的字符串，例：Wed Jul 28 1993
 wday|0|星期开始于周几，可设置为：0-6 之间的数字<br>0: 星期日<br>1: 星期一<br>2: 星期二<br>3: 星期三<br>4: 星期四<br>5: 星期五<br>6: 星期六
+onday|[0,1,2,3,4,5,6]|可选择的日期<br>0: 星期日<br>1: 星期一<br>2: 星期二<br>3: 星期三<br>4: 星期四<br>5: 星期五<br>6: 星期六
+unday|undefined|不可选择的日期，一个数组，例：['1', '1-5', '2017-1-10']<br>'1': 每月 1 号<br>'1-5': 每年 1 月 5 日<br>'2017-1-10': 指定具体日期
 position|undefined|面板显示的位置详见：[[Demo Position](http://code.ciaoca.com/jquery/cxCalendar/demo/position.html)]
 baseClass|undefined|给面板容器增加 class，不会覆盖默认的 class
 language|undefined|自定义语言，值类型可是是字符串或对象<br>若为字符串，为语言配置文件中的属性名称（需要载入```jquery.cxcalendar.languages.js```）<br>若为对象，则按照对象所设置的语言
@@ -77,7 +79,9 @@ data-type|日期类型
 data-format|日期值格式
 data-position|面板显示的位置
 data-wday|星期开始于周几
-data-language|自定义语言
+data-onday|可选择日期，例：data-onday="1,2,3,4,5"
+data-unday|不选择日期，例：data-unday="1,1-5,2017-1-10"
+data-language|自定义语言名称（对象类型仅支持在参数中设置）
 
 ```html
 <input id="element_id" type="text" value="1988-1-31" data-start-date="2000" data-end-date="2015" data-format="YYYY/M/D" data-language="en">
@@ -93,6 +97,14 @@ data-language|自定义语言
 monthList|['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12']|月份的名称
 weekList|['日', '一', '二', '三', '四', '五', '六']|星期的名称（从星期日开始排序）
 holiday|[]|节假日配置
+
+```javascript
+// 节假日示例
+holiday: [
+  {day: 'M1-1', name: '元旦'},  // 以 M 开头，指定月日，每年固定重复的节日
+  {day: 'D2018-2-16', name: '春节'}  // 以 D 开头，指定具体日期的节日
+]
+```
 
 ## API 接口
 

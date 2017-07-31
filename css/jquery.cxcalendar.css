@@ -30,7 +30,7 @@
 .cxcalendar_hd .inset .month{float:right;}
 
 /* 日期 */
-.cxcalendar_bd{position:relative;line-height:30px;text-align:center;z-index:1;
+.cxcalendar_bd{position:relative;padding:0 0 4px 0;line-height:30px;text-align:center;z-index:1;
 *line-height:28px;
 }
 .cxcalendar_bd ul{overflow:hidden;margin:0;padding:0;list-style:none;}
@@ -56,7 +56,7 @@
 .cxcalendar_bd .days .selected:hover{background:#8cc152;color:#fff;}
 
 /* 时间 */
-.cxcalendar .settime{overflow:hidden;position:relative;margin-top:4px;padding:6px;border-top:1px solid #ddd;}
+.cxcalendar .settime{overflow:hidden;position:relative;padding:6px;border-top:1px solid #ddd;}
 .cxcalendar .settime input{width:2em;height:26px;margin:0;padding:0;border:none;border-top:1px solid #fff;border-bottom:1px solid #ddd;background:none;color:#656d78;font-size:14px;line-height:24px;text-align:center;outline:none;vertical-align:top;}
 .cxcalendar .settime .day{float:left;width:6em;height:26px;border-top:1px solid #fff;border-bottom:1px solid #ddd;color:#656d78;line-height:26px;text-align:center;}
 .cxcalendar .settime .day:empty:before{content:'请选择日期';color:#aab2bd;}

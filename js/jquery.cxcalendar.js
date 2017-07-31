@@ -2,7 +2,7 @@
  * jQuery cxCalendar
  * @name jquery.cxcalendar.js
  * @version 1.5.4
- * @date 2017-07-12
+ * @date 2017-07-31
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -578,7 +578,7 @@
         };
       });
 
-      self.dom.pane.on('blur', 'input', function(event) {
+      self.dom.pane.on('blur', 'input', function() {
         var _name = this.getAttribute('class') || this.getAttribute('classname');
         var _value = parseInt(this.value, 10);
 
@@ -707,7 +707,6 @@
 
       _theYear = _theDate.getFullYear();
       _theMonth = _theDate.getMonth() + 1;
-      _theTime = _theDate.getTime();
 
       if (_theYear < self.minDate.year || (_theYear <= self.minDate.year && _theMonth < self.minDate.month)) {
         _theYear = self.minDate.year;
@@ -730,7 +729,6 @@
       var _jsMonth = _theMonth - 1;
       var _monthDays = self.getMonthDays(_theYear);
       var _sameMonthDate = new Date(_theYear, _jsMonth, 1);
-      var _nextMonthDate = new Date(_theYear, _theMonth, 1);
       var _nowDate = new Date();
       var _nowYear = _nowDate.getFullYear();
       var _nowMonth = _nowDate.getMonth() + 1;
@@ -873,6 +871,7 @@
       var _theMonth;
       var _theDay;
       var _theValue;
+      var _theTime;
 
       if (self.reg.isYear.test(year) && self.reg.isMonthOrDay.test(month) && self.reg.isMonthOrDay.test(day)) {
         _theDate = new Date(year, month - 1, day);

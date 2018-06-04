@@ -60,6 +60,30 @@ a:hover{color:#00f;}
     <input id="date_f" name="mydate" type="text" readonly>
   </fieldset>
 
+  <fieldset>
+    <legend>API 示例</legend>
+    <label for="date_api">选择日期：</label>
+    <input id="date_api" type="text" class="input" size="16" data-end-date="2015/02/18" value="" readonly>
+    <div id="acts" class="mt">
+      <div class="button_group">
+        <a class="button green" href="javascript://" rel="show">显示日期选择器</a>
+        <a class="button green" href="javascript://" rel="type" rev="datetime">切换时间模式</a>
+        <a class="button green" href="javascript://" rel="get">获取已选择日期</a>
+        <a class="button green" href="javascript://" rel="goto">调整日期到 (2013, 1)</a>
+      </div>
+      <div class="button_group">
+        <a class="button green" href="javascript://" rel="setstr">设置日期值 ('2008/01/25')</a>
+        <a class="button green" href="javascript://" rel="setnum">设置日期值 (2014, 11, 29)</a>
+        <a class="button green" href="javascript://" rel="clear">清除日期值</a>
+      </div>
+      <div class="button_group">
+        <a class="button green" href="javascript://" rel="lang" rev="zh-cn">设置语言：中文</a>
+        <a class="button green" href="javascript://" rel="lang" rev="en">设置语言：英文</a>
+        <a class="button green" href="javascript://" rel="lang" rev="ja">设置语言：日文</a>
+      </div>
+    </div>
+  </fieldset>
+
   <p><a target="_blank" href="http://code.ciaoca.com/jquery/cxCalendar/demo/">查看更多示例</a></p>
 
   <h2>文档</h2>
@@ -78,7 +102,9 @@ a:hover{color:#00f;}
 <script src="js/jquery.cxcalendar.languages.js"></script>
 <script>
 // 默认
-$('#date_a').cxCalendar();
+$('#date_a').cxCalendar({
+  wday: 0
+});
 
 // 在 value 中有默认值
 $('#date_b').cxCalendar();
@@ -116,6 +142,112 @@ $('#date_e').cxCalendar({
 $('#date_f').cxCalendar({
   baseClass: 'cxcalendar_holyday'
 });
+
+// API 示例
+(function(){
+  var el = $('#date_api');
+  var acts = $('#acts');
+  var cxCalendarApi;
+
+  el.cxCalendar({
+    format: 'YYYY-MM-DD'
+  }, function(api){
+    cxCalendarApi = api;
+  });
+
+  acts.on('click', 'a', function(){
+    var _rel = this.rel;
+    var _rev = this.rev;
+    var _opt;
+    
+    switch (_rel) {
+      case 'show':
+        cxCalendarApi.show();
+        break;
+
+      case 'hide':
+        cxCalendarApi.hide();
+        break;
+
+      case 'get':
+        alert('当前选择日期：' + cxCalendarApi.getDate());
+        break;
+
+      case 'setstr':
+        cxCalendarApi.setDate('2008/01/25');
+        break;
+
+      case 'setnum':
+        cxCalendarApi.setDate(2014, 11, 29);
+        break;
+
+      case 'goto':
+        cxCalendarApi.gotoDate(2013, 1);
+        cxCalendarApi.show();
+        break;
+
+      case 'clear':
+        cxCalendarApi.clearDate();
+        break;
+
+      case 'type':
+        _opt = {
+          type: _rev,
+          format: _rev === 'date' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'
+        };
+
+        cxCalendarApi.setOptions(_opt);
+        cxCalendarApi.show();
+
+        this.rev = _rev === 'date' ? 'datetime' : 'date';
+        break;
+
+      case 'lang':
+        _opt = {
+          language: _rev,
+          baseClass: ''
+        };
+        if (_rev === 'en' || _rev === 'ja') {
+          _opt.baseClass = 'cxcalendar_en';
+        };
+
+        cxCalendarApi.setOptions(_opt);
+        cxCalendarApi.show();
+        break;
+    };
+  });
+})();
+
+// 双联动日期示例
+(function(){
+  var dateFirst = $('#date_first');
+  var dateLast = $('#date_last');
+  var dateFirstApi;
+  var dateLastApi;
+
+  dateFirst.cxCalendar(function(api){
+    dateFirstApi = api;
+  });
+  
+  dateLast.cxCalendar(function(api){
+    dateLastApi = api;
+  });
+
+  dateFirst.on('change', function(){
+    var firstTime = parseInt(dateFirstApi.getDate('TIME'), 10);
+    var lastTime = parseInt(dateLastApi.getDate('TIME'), 10);
+
+    if (lastTime < firstTime) {
+      dateLastApi.clearDate();
+    };
+
+    dateLastApi.setOptions({
+      startDate: firstTime
+    });
+    dateLastApi.gotoDate(firstTime);
+    dateLastApi.show();
+  });
+})();
 </script>
 </body>
 </html>

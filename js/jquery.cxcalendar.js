@@ -1,8 +1,8 @@
 /*!
  * jQuery cxCalendar
  * @name jquery.cxcalendar.js
- * @version 1.5.4
- * @date 2017-07-31
+ * @version 1.5.5
+ * @date 2018-06-04
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -230,7 +230,7 @@
       // 周末的位置
       self.settings.wday %= 7;
       self.settings.saturday = 6 - self.settings.wday;
-      self.settings.sunday = 7 - self.settings.wday;
+      self.settings.sunday = (7 - self.settings.wday) % 7;
 
       // 语言配置
       self.language = self.getLanguage(self.settings.language);
@@ -618,7 +618,7 @@
       var _elHeight = self.dom.el.outerHeight();
 
       var _paneTop = ((_clientTop + _elHeight + _paneHeight) > _winHeight) ? _elTop - _paneHeight : _elTop + _elHeight;
-      var _paneLeft = ((_clientLeft + _paneWidth) > _winWidth) ? _elLeft - _paneWidth - _elWidth : _elLeft;
+      var _paneLeft = ((_clientLeft + _paneWidth) > _winWidth) ? _elLeft - _paneWidth + _elWidth : _elLeft;
 
       if (typeof _position === 'string' && _position.length) {
         switch(_position) {
@@ -898,8 +898,11 @@
     
     // 清除日期
     calendar.clearDate = function() {
-      this.dom.el.val('');
-      this.hide();
+      var self = this;
+      self.cacheDay = '';
+      self.dom.el.val('');
+      self.gotoDate(self.dom.yearSet.val(), parseInt(self.dom.monthSet.val(), 10));
+      self.hide();
     };
 
     calendar.init.apply(calendar, arguments);

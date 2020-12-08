@@ -1089,7 +1089,7 @@
           day: theDate.getDate(),
         };
         self.cacheDate.txt = [self.cacheDate.year, self.cacheDate.month, self.cacheDate.day].join('/');
-        self.cacheInput.val(self.formatDate(settings.format, theDate.getTime()));
+        // self.cacheInput.val(self.formatDate(settings.format, theDate.getTime()));
       };
     } else {
       settings.date = '';

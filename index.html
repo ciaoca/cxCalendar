@@ -2,8 +2,12 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>cxCalendar 日期选择器 &raquo; 在线演示 - 前端开发仓库</title>
-<link rel="stylesheet" href="css/jquery.cxcalendar.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>cxCalendar 日期选择器</title>
+<link rel="stylesheet" href="css/cxcalendar.css">
+<script src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js"></script>
+<script src="js/cxcalendar.js"></script>
+<script src="js/cxcalendar.languages.js"></script>
 <style>
 body{background:#ddd;font:14px/1.7 tahoma,'\5fae\8f6f\96c5\9ed1',sans-serif;}
 h1,h2,h3{font-size:36px;line-height:1;}
@@ -16,72 +20,94 @@ a{color:#06f;text-decoration:none;}
 a:hover{color:#00f;}
 
 .wrap{width:800px;margin:0 auto;padding:20px 40px;border-radius:8px;background:#fff;box-shadow:0 0 10px rgba(0,0,0,0.5);}
+
+.acts{font-size:12px;}
+.acts .group{margin-top:10px;}
+.acts a{display:inline-block;padding:5px 10px;border-radius:3px;background-color:#eee;color:#888;}
+.acts a:hover{color:#333;}
+
+@media (max-width:900px){
+body{margin:0;padding:0;}
+.wrap{width:auto;border-radius:0;padding:10px 20px;box-shadow:none;}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>jQuery cxCalendar 日期选择器</h1>
+  <h1>cxCalendar 日期选择器</h1>
 
   <h2>示例</h2>
-  <fieldset>
-    <legend>默认</legend>
-    <label for="date_a">选择日期：</label>
-    <input id="date_a" name="mydate" type="text" readonly>
-  </fieldset>
-  
-  <fieldset>
-    <legend>在 &lt;input&gt; 的 value 中设置默认值</legend>
-    <label for="date_b">选择日期：</label>
-    <input id="date_b" type="text" value="1988-1-31" readonly>
-  </fieldset>
-  
-  <fieldset>
-    <legend>在参数中设置默认日期</legend>
-    <label for="date_c">选择日期：</label>
-    <input id="date_c" type="text" value="" readonly>
-  </fieldset>
 
   <fieldset>
-    <legend>选择日期和时间</legend>
-    <label for="date_d">选择日期：</label>
-    <input id="date_d" name="mydate" type="text" readonly>
+    <legend>默认</legend>
+    <label for="my_day">选择日期：</label>
+    <input id="my_day" type="text" readonly>
+    <br><br>
+    <label for="my_month">选择月份：</label>
+    <input id="my_month" type="text" readonly>
+    <br><br>
+    <label for="my_year">选择年份：</label>
+    <input id="my_year" type="text" readonly>
+    <br><br>
+    <label for="my_time">选择时间：</label>
+    <input id="my_time" type="text" readonly>
+    <br><br>
+    <label for="my_datetime">选择日期和时间：</label>
+    <input id="my_datetime" type="text" readonly>
+  </fieldset>
+  
+  <fieldset>
+    <legend>&lt;input&gt; 的 value 中设置默认值</legend>
+    <label for="my_value">选择日期：</label>
+    <input id="my_value" type="text" value="2020-11-1" readonly data-start-date="2018">
   </fieldset>
 
   <fieldset>
     <legend>限制可选日期</legend>
-    <label for="date_e">选择日期：</label>
-    <input id="date_e" name="mydate" type="text" readonly>
-    <!-- <input id="date_e" name="mydate" type="text" readonly data-onday="1,2,3,4,5" data-unday="1,1-5,2017-1-10"> -->
+    <label for="my_disable">选择日期：</label>
+    <input id="my_disable" type="text" readonly>
+    <p>例：只能选择工作日，以及指定日期不可选。</p>
   </fieldset>
 
   <fieldset>
-    <legend>自定义节假日</legend>
-    <label for="date_f">选择日期：</label>
-    <input id="date_f" name="mydate" type="text" readonly>
+    <legend>设定节假日</legend>
+    <label for="my_holyday">选择日期：</label>
+    <input id="my_holyday" type="text" readonly>
+    <p>※ 通过文件 cxcalendar.languages.js 配置。</p>
   </fieldset>
 
   <fieldset>
     <legend>API 示例</legend>
     <label for="date_api">选择日期：</label>
-    <input id="date_api" type="text" class="input" size="16" data-end-date="2015/02/18" value="" readonly>
-    <div id="acts" class="mt">
-      <div class="button_group">
-        <a class="button green" href="javascript://" rel="show">显示日期选择器</a>
-        <a class="button green" href="javascript://" rel="type" rev="datetime">切换时间模式</a>
-        <a class="button green" href="javascript://" rel="get">获取已选择日期</a>
-        <a class="button green" href="javascript://" rel="goto">调整日期到 (2013, 1)</a>
+    <input id="date_api" type="text" class="input" readonly>
+    <div id="acts" class="acts">
+      <div class="group">
+        <a href="javascript://" rel="type" rev="year">type: year</a>
+        <a href="javascript://" rel="type" rev="month">type: month</a>
+        <a href="javascript://" rel="type" rev="date">type: date</a>
+        <a href="javascript://" rel="type" rev="datetime">type: datetime</a>
+        <a href="javascript://" rel="type" rev="time">type: time</a>
       </div>
-      <div class="button_group">
-        <a class="button green" href="javascript://" rel="setstr">设置日期值 ('2008/01/25')</a>
-        <a class="button green" href="javascript://" rel="setnum">设置日期值 (2014, 11, 29)</a>
-        <a class="button green" href="javascript://" rel="clear">清除日期值</a>
+      <div class="group">
+        <a href="javascript://" rel="show">显示</a>
+        <a href="javascript://" rel="set">设置日期值</a>
+        <a href="javascript://" rel="get">获取日期值</a>
+        <a href="javascript://" rel="clear">清除日期值</a>
       </div>
-      <div class="button_group">
-        <a class="button green" href="javascript://" rel="lang" rev="zh-cn">设置语言：中文</a>
-        <a class="button green" href="javascript://" rel="lang" rev="en">设置语言：英文</a>
-        <a class="button green" href="javascript://" rel="lang" rev="ja">设置语言：日文</a>
+      <div class="group">
+        <a href="javascript://" rel="lang" rev="zh-cn">设置语言：中文</a>
+        <a href="javascript://" rel="lang" rev="en">设置语言：英文</a>
+        <a href="javascript://" rel="lang" rev="ja">设置语言：日文</a>
       </div>
     </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>日期联动</legend>
+    <label for="date_first">开始日期：</label>
+    <input id="date_first" type="text" readonly>
+    <label for="date_last">结束日期：</label>
+    <input id="date_last" type="text" readonly>
   </fieldset>
 
   <p><a target="_blank" href="http://code.ciaoca.com/jquery/cxCalendar/demo/">查看更多示例</a></p>
@@ -97,67 +123,98 @@ a:hover{color:#00f;}
   <p>Released under the MIT license</p>
 </div>
 
-<script src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js"></script>
-<script src="js/jquery.cxcalendar.js"></script>
-<script src="js/jquery.cxcalendar.languages.js"></script>
 <script>
-// 默认
-$('#date_a').cxCalendar({
-  wday: 0
+// 默认：选择日期
+$('#my_day').cxCalendar();
+
+// 选择月份
+$('#my_month').cxCalendar({
+  type: 'month',
+  format: 'Y-m'
 });
 
-// 在 value 中有默认值
-$('#date_b').cxCalendar();
+// 选择年份
+$('#my_year').cxCalendar({
+  type: 'year',
+  format: 'Y'
+});
 
-// 在参数中设置默认日期
-$('#date_c').cxCalendar({
-  date: '1988/1/31'
+// 选择时间
+$('#my_time').cxCalendar({
+  type: 'time',
+  format: 'H:i:s'
 });
 
 // 选择日期和时间
-$('#date_d').cxCalendar({
+$('#my_datetime').cxCalendar({
   type: 'datetime',
-  format: 'YYYY-MM-DD HH:mm:ss'
+  format: 'Y-m-d H:i:s'
 });
 
+// input 的 value 中有默认值
+$('#my_value').cxCalendar();
+
 // 限制可选日期
-$('#date_e').cxCalendar({
+$('#my_disable').cxCalendar({
   wday: 0,
-  onday: [1,2,3,4,5],
-  // type: 'datetime',
-  // format: 'YYYY-MM-DD HH:mm:ss',
-  unday: [
-    '3',
-    '7-5',
-    '7-15',
-    '7-25',
-    '2017-7-10',
-    '2017-7-20',
-    '2017-7-30'
-  ],
-  endDate: '2017-08-31'
+  disableWeek: [0,6],
+  disableDay: [
+    '1',            // 每月1号
+    '1-2',          // 每年1月2号
+    '2021-1-3',     // 具体日期
+  ]
 });
 
 // 自定义节假日
-$('#date_f').cxCalendar({
-  baseClass: 'cxcalendar_holyday'
+$('#my_holyday').cxCalendar({
+  baseClass: 'holyday'
 });
 
 // API 示例
 (function(){
-  var el = $('#date_api');
-  var acts = $('#acts');
+  var nowDate = new Date();
   var cxCalendarApi;
 
-  el.cxCalendar({
-    format: 'YYYY-MM-DD'
+  var getRandomNumber = function(min, max) {
+    return Math.round(Math.random() * (max - min) + min);
+  };
+
+  $('#date_api').cxCalendar({
+    startDate: nowDate.getFullYear() - 1,
+    endDate: nowDate.getFullYear() + 1,
+    position: 'none',
+
+    // date: '2020-11-12',
+    // format: 'Y-m-d H:i:s',
+
+    // type: 'month',
+    // format: 'Y-m',
+
+    // startDate: '2010-6',
+
+    // type: 'time',
+    // format: 'H:i:s',
+
+    // baseClass: 'notsecs en',
+    // disableDay: [
+    //   '1',
+    //   '5/2',
+    //   '5/3',
+    //   '10/2',
+    //   '10/3',
+    //   '2021/2/11',
+    //   '2021/2/12',
+    //   '2021/2/13',
+    //   '2021/2/14'
+    // ],
   }, function(api){
     cxCalendarApi = api;
   });
 
-  acts.on('click', 'a', function(){
-    var _rel = this.rel;
-    var _rev = this.rev;
+  $('#acts').on('click', 'a', function(){
+    var _this = this;
+    var _rel = _this.rel;
+    var _rev = _this.rev;
     var _opt;
     
     switch (_rel) {
@@ -165,25 +222,14 @@ $('#date_f').cxCalendar({
         cxCalendarApi.show();
         break;
 
-      case 'hide':
-        cxCalendarApi.hide();
-        break;
-
       case 'get':
         alert('当前选择日期：' + cxCalendarApi.getDate());
         break;
 
-      case 'setstr':
-        cxCalendarApi.setDate('2008/01/25');
-        break;
-
-      case 'setnum':
-        cxCalendarApi.setDate(2014, 11, 29);
-        break;
-
-      case 'goto':
-        cxCalendarApi.gotoDate(2013, 1);
-        cxCalendarApi.show();
+      case 'set':
+        _opt = [nowDate.getFullYear(), getRandomNumber(1,12), getRandomNumber(1,31)].join('/');
+        console.log('setDate:', _opt);
+        cxCalendarApi.setDate(_opt);
         break;
 
       case 'clear':
@@ -192,14 +238,33 @@ $('#date_f').cxCalendar({
 
       case 'type':
         _opt = {
-          type: _rev,
-          format: _rev === 'date' ? 'YYYY-MM-DD' : 'YYYY-MM-DD HH:mm:ss'
+          type: _rev
         };
+
+        switch (_rev) {
+          case 'year':
+            _opt.format = 'Y';
+            break;
+
+          case 'month':
+            _opt.format = 'Y-m';
+            break;
+
+          case 'datetime':
+            _opt.format = 'Y-m-d H:i:s';
+            break;
+
+          case 'time':
+            _opt.format = 'H:i:s';
+            break;
+
+          default:
+            _opt.format = 'Y-m-d';
+            break;
+        }
 
         cxCalendarApi.setOptions(_opt);
         cxCalendarApi.show();
-
-        this.rev = _rev === 'date' ? 'datetime' : 'date';
         break;
 
       case 'lang':
@@ -207,8 +272,9 @@ $('#date_f').cxCalendar({
           language: _rev,
           baseClass: ''
         };
-        if (_rev === 'en' || _rev === 'ja') {
-          _opt.baseClass = 'cxcalendar_en';
+
+        if (_rev !== 'zh-cn') {
+          _opt.baseClass = 'en';
         };
 
         cxCalendarApi.setOptions(_opt);
@@ -218,7 +284,7 @@ $('#date_f').cxCalendar({
   });
 })();
 
-// 双联动日期示例
+// 日期联动
 (function(){
   var dateFirst = $('#date_first');
   var dateLast = $('#date_last');
@@ -234,8 +300,8 @@ $('#date_f').cxCalendar({
   });
 
   dateFirst.on('change', function(){
-    var firstTime = parseInt(dateFirstApi.getDate('TIME'), 10);
-    var lastTime = parseInt(dateLastApi.getDate('TIME'), 10);
+    var firstTime = parseInt(dateFirstApi.getDate('timestamp'), 10);
+    var lastTime = parseInt(dateLastApi.getDate('timestamp'), 10);
 
     if (lastTime < firstTime) {
       dateLastApi.clearDate();
@@ -244,7 +310,7 @@ $('#date_f').cxCalendar({
     dateLastApi.setOptions({
       startDate: firstTime
     });
-    dateLastApi.gotoDate(firstTime);
+
     dateLastApi.show();
   });
 })();

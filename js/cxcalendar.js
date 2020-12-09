@@ -2,7 +2,7 @@
  * cxCalendar
  * @name cxcalendar.js
  * @version 2.0.0
- * @date 2020-12-08
+ * @date 2020-12-09
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -19,8 +19,7 @@
     dom: {},
     reg: {
       isYear: /^\d{4}$/,
-      isMonthOrDay: /^\d{1,2}$/,
-      isTime: /^\d{1,2}\:\d{1,2}:\d{1,2}$/
+      isTime: /^\d{1,2}(\:\d{1,2}){1,2}$/
     },
     settings: {},
     cacheDate: {},
@@ -74,39 +73,83 @@
     return [31, 28 + leapYearDay, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   };
 
-  // 解析日期
+  /**
+   * 解析日期
+   * 默认解析 ISO 8601 格式
+   * 其他支持格式:
+   * y
+   * y-m
+   * y-m-d
+   * y-m-d h:i
+   * y-m-d h:i:s
+   * m-d
+   * m-d h:i
+   * m-d h:i:s
+   * h:i
+   * h:i:s
+   * 连接符 '-' 可替换为 '.' 或 '/'
+  **/
   cxCalendar.parseDate = function(value, mustDef) {
     var self = this;
-    var nowDate = new Date();
-    var date = null;
+    var theDate = new Date();
+    var tags;
 
     if (self.reg.isYear.test(value)) {
-      date = value + '/1/1';
+      theDate.setFullYear(parseInt(value, 10));
 
     } else if (/^\d+$/.test(value) || (typeof value === 'number' && isFinite(value))) {
-      date = parseInt(value, 10);
+      theDate.setTime(parseInt(value, 10));
 
     } else if (typeof value === 'string') {
       if (self.reg.isTime.test(value)) {
-        date = [nowDate.getFullYear(), nowDate.getMonth() + 1, nowDate.getDate()].join('/') + ' ' + value;
+        tags = value.split(':');
+
+        if (tags.length === 2) {
+          tags.push(0);
+        };
+
+        theDate.setHours(tags[0], tags[1], tags[2]);
+
       } else {
-        date = value.replace(/[\.\-]/g, '/');
+        value = value.replace(/[\.\/]/g, '-');
+
+        if (/^\d{1,2}-\d{1,2}/.test(value)) {
+          value = theDate.getFullYear() + '-' + value;
+        } else if (/^\d{4}-\d{1,2}$/.test(value)) {
+          value += '-1';
+        };
+
+        tags = value.split(/[\-\sT\:]/);
+        tags[1] = parseInt(tags[1], 10) - 1;
+
+        if (tags.length === 5) {
+          tags.push(0);
+        };
+
+        theDate.setFullYear.apply(theDate, tags);
+
+        if (tags.length > 3) {
+          theDate.setHours.apply(theDate,tags.slice(3));
+        };
       };
-    };
 
-    if (date) {
-      date = new Date(date);
-
-      if (isNaN(date.getTime())) {
-        date = null;
-      };
-    };
-
-    if (mustDef === true && !self.isDateObject(date)) {
-      return nowDate;
     } else {
-      return date;
+      if (mustDef === true) {
+        return theDate;
+      } else {
+        return null;
+      };
     };
+
+    if (!self.isDateObject(theDate) || isNaN(theDate.getTime())) {
+      if (mustDef === true) {
+        theDate = new Date();
+      } else {
+        theDate = null;
+      };
+    };
+
+    return theDate;
   };
 
   // 格式化日期值
@@ -212,7 +255,7 @@
             _value = self.cacheDate.txt;
 
           } else {
-            _value = [self.defDate.year, self.defDate.month, self.defDate.day].join('/');
+            _value = [self.defDate.year, self.defDate.month, self.defDate.day].join('-');
           };
 
           _value += ' ' + [self.dom.hourSelect.val(), self.dom.mintSelect.val(), self.dom.secsSelect.val()].join(':');
@@ -249,7 +292,7 @@
       li.addClass('selected').siblings('li').removeClass('selected');
 
       if (self.settings.type === 'datetime') {
-        var dateSp = date.split('/');
+        var dateSp = date.split('-');
 
         self.cacheDate = {
           year: parseInt(dateSp[0], 10),
@@ -261,7 +304,7 @@
       };
 
       if (self.settings.type === 'month') {
-        date += '/1';
+        date += '-1';
       };
 
       self.hidePane();
@@ -299,6 +342,7 @@
   // 配置参数
   cxCalendar.setOptions = function(opts) {
     var self = this;
+    var now = new Date();
     var minDate;
     var maxDate;
     var defDate;
@@ -307,7 +351,7 @@
       self.settings = $.extend({}, $.cxCalendar.defaults, opts);
     };
 
-    // 结束日期
+    // 结束日期（默认为当前日期）
     if (self.reg.isYear.test(self.settings.endDate)) {
       maxDate = new Date(self.settings.endDate, 11, 31);
     } else {
@@ -323,14 +367,20 @@
       time: maxDate.getTime()
     };
 
-    // 起始日期（不能超过结束日期，默认为结束日期的前一年）
+    // 起始日期（默认为当前日期的前一年）
     if (self.reg.isYear.test(self.settings.startDate)) {
       minDate = new Date(self.settings.startDate, 0, 1);
     } else {
       minDate = self.parseDate(self.settings.startDate);
     };
 
-    if (!self.isDateObject(minDate) || minDate.getTime() > self.maxDate.time) {
+    if (!self.isDateObject(minDate)) {
+      minDate = new Date();
+      minDate.setFullYear(minDate.getFullYear() - 1);
+    };
+
+    // 若超过结束日期，则设为结束日期的前一年
+    if (minDate.getTime() > self.maxDate.time) {
       minDate = new Date(self.maxDate.year - 1, self.maxDate.month - 1, self.maxDate.day);
     };
 
@@ -355,8 +405,8 @@
     self.defDate = {
       year: defDate.getFullYear(),
       month: defDate.getMonth() + 1,
-      hour: defDate.getHours(),
       day: defDate.getDate(),
+      hour: defDate.getHours(),
       mint: defDate.getMinutes(),
       secs: defDate.getSeconds(),
       time: defDate.getTime()
@@ -453,7 +503,7 @@
 
       self.rebulidMonthSelect();
       self.dom.monthSelect.val(self.defDate.month);
-      self.gotoDate([self.defDate.year, self.defDate.month].join('/'));
+      self.gotoDate([self.defDate.year, self.defDate.month].join('-'));
 
     } else if (self.settings.type === 'time') {
       self.dom.head.remove();
@@ -540,7 +590,7 @@
     var monthDays = self.getMonthDays(year);
     var sameMonthDate = new Date(year, jsMonth, 1);
     var nowDate = new Date();
-    var nowText = [nowDate.getFullYear(), nowDate.getMonth() + 1, nowDate.getDate()].join('/');
+    var nowText = [nowDate.getFullYear(), nowDate.getMonth() + 1, nowDate.getDate()].join('-');
 
     // 获取当月第一天
     var monthFirstDay = sameMonthDate.getDay() - self.settings.wday;
@@ -608,7 +658,7 @@
       };
 
       todayTime = new Date(todayYear, todayMonth - 1, todayNum).getTime();
-      todayText = [todayYear, todayMonth, todayNum].join('/');
+      todayText = [todayYear, todayMonth, todayNum].join('-');
 
       // 高亮选中日期、今天
       if (todayText === self.cacheDate.txt) {
@@ -733,11 +783,11 @@
     if (!self.isInteger(year)) {return};
 
     var nowDate = new Date();
-    var nowText = [nowDate.getFullYear(), nowDate.getMonth() + 1].join('/');
-    var selectedText = [self.cacheDate.year, self.cacheDate.month].join('/');
+    var nowText = [nowDate.getFullYear(), nowDate.getMonth() + 1].join('-');
+    var selectedText = [self.cacheDate.year, self.cacheDate.month].join('-');
 
     for (var i = start; i <= end; i++) {
-      todayText = year + '/' + i;
+      todayText = year + '-' + i;
       classValue = [];
 
       if (todayText === nowText) {
@@ -1074,26 +1124,25 @@
       settings = {};
     };
 
+    self.cacheDate = {};
     self.cacheInput = el;
 
-    // 默认日期
-    if (self.cacheInput.val() && self.cacheInput.val().length) {
-      settings.date = self.cacheInput.val();
+    var _value = self.cacheInput.val();
 
-      var theDate = self.parseDate(settings.date);
+    // 默认日期
+    if (_value && _value.length) {
+      var theDate = self.parseDate(_value);
 
       if (self.isDateObject(theDate)) {
+        settings.date = _value;
+
         self.cacheDate = {
           year: theDate.getFullYear(),
           month: theDate.getMonth() + 1,
           day: theDate.getDate(),
         };
-        self.cacheDate.txt = [self.cacheDate.year, self.cacheDate.month, self.cacheDate.day].join('/');
-        // self.cacheInput.val(self.formatDate(settings.format, theDate.getTime()));
+        self.cacheDate.txt = [self.cacheDate.year, self.cacheDate.month, self.cacheDate.day].join('-');
       };
-    } else {
-      settings.date = '';
-      self.cacheDate = {};
     };
 
     self.setOptions(settings);

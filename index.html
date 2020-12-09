@@ -147,12 +147,15 @@ $('#my_time').cxCalendar({
 
 // 选择日期和时间
 $('#my_datetime').cxCalendar({
+  // date: '2020-12-1 5:00',
   type: 'datetime',
   format: 'Y-m-d H:i:s'
 });
 
 // input 的 value 中有默认值
-$('#my_value').cxCalendar();
+$('#my_value').cxCalendar({
+  endDate: '2020-12-31',
+});
 
 // 限制可选日期
 $('#my_disable').cxCalendar({
@@ -178,6 +181,10 @@ $('#my_holyday').cxCalendar({
   var getRandomNumber = function(min, max) {
     return Math.round(Math.random() * (max - min) + min);
   };
+
+  $('#date_api').on('change', function(){
+    console.log('api-change');
+  });
 
   $('#date_api').cxCalendar({
     startDate: nowDate.getFullYear() - 1,
@@ -312,6 +319,10 @@ $('#my_holyday').cxCalendar({
     });
 
     dateLastApi.show();
+  });
+
+  dateLast.on('change', function(){
+    console.log('last-change');
   });
 })();
 </script>

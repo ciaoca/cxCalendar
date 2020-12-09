@@ -58,7 +58,7 @@ $('#demo').on('focus', 'input', function(event) {
 
 ```javascript
 // 需在引入 <script src="js/cxcalendar.js"></script> 之后，调用之前设置
-$.cxCalendar.defaults.startDate = 2020;
+$.cxCalendar.defaults.type = 'datetime';
 $.cxCalendar.defaults.language = {
   monthList: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], 
   weekList: ['Sun', 'Mon', 'Tur', 'Wed', 'Thu', 'Fri', 'Sat'] 
@@ -71,8 +71,8 @@ $.cxCalendar.defaults.language = {
 
 名称|默认值|说明
 ---|---|---
-endDate|undefined|**结束日期**（默认获取当前日期）<br>若设置值为 4 位数字，则转换为当年的12月31日，如: 2020 => 2020/12/31<br>若指定某一天，设置值为字符串或时间戳，该值需能被 `new Date(value)` 解析
-startDate|undefined|**起始日期**（默认获取 `endDate` 一年前的那一天）<br>若设置值为 4 位数字，则转换为当年的1月1日，如: 2020 => 2020/1/1<br>若大于结束日期，则会忽略<br>其他规则与 `endDate` 相同
+startDate|undefined|**起始日期**（默认获取当前日期的一年前）<br>若设置值为 4 位数字，则转换为当年的1月1日，如: 2020 => 2020/1/1<br>若指定某一天，设置值为字符串或时间戳，该值需能被 `new Date(value)` 解析
+endDate|undefined|**结束日期**（默认获取当前日期）<br>若设置值为 4 位数字，则转换为当年的12月31日，如: 2020 => 2020/12/31<br>其他规则与 `endDate` 相同
 date|undefined|**默认日期**（默认获取当前日期）<br>可使用字符串或时间戳，该值需能被 `new Date(value)` 解析<br>※ input 的 value 值优先级更高
 type|'date'|**日期类型** <br>`'year'` 年份<br>`'month'` 年份和月份<br>`'date'` 日期<br>`'datetime'` 日期和时间<br>`'time'` 时间
 format|'Y-m-d'|**日期值格式** <br>`'Y'` 年份，完整 4 位数字<br>`'y'` 年份，仅末尾 2 位数字<br>`'m'` 月份，数字带前导零（01-12）<br>`'n'` 月份（1-12）<br>`'d'` 月份中的第几天，有前导零（01-31）<br>`'j'` 月份中的第几天（1-31）<br>`'H'` 小时，24 小时格式，有前导零（00-23）<br>`'G'` 小时，24 小时格式（0-23）<br>`'h'` 小时，12 小时格式，有前导零（01-12）<br>`'g'` 小时，12 小时格式（1-12）<br>`'i'` 分钟，数字带前导零（00-59）<br>`'s'` 秒，数字带前导零（00-59）<br>`'timestamp'` 时间戳（毫秒）

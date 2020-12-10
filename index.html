@@ -125,7 +125,10 @@ body{margin:0;padding:0;}
 
 <script>
 // 默认：选择日期
-$('#my_day').cxCalendar();
+$('#my_day').cxCalendar({
+  startDate: '2020-12-10',
+  endDate: '2021-1-11'
+});
 
 // 选择月份
 $('#my_month').cxCalendar({

@@ -2,7 +2,7 @@
  * cxCalendar
  * @name cxcalendar.js
  * @version 2.0.0
- * @date 2020-12-09
+ * @date 2020-12-10
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -384,7 +384,7 @@
       minDate = new Date(self.maxDate.year - 1, self.maxDate.month - 1, self.maxDate.day);
     };
 
-    minDate.setHours(0, 0, 0);
+    minDate.setHours(0, 0, 0, 0);
 
     self.minDate = {
       year: minDate.getFullYear(),

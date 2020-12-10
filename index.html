@@ -59,7 +59,7 @@ body{margin:0;padding:0;}
   <fieldset>
     <legend>&lt;input&gt; 的 value 中设置默认值</legend>
     <label for="my_value">选择日期：</label>
-    <input id="my_value" type="text" value="2020-11-1" readonly data-start-date="2018">
+    <input id="my_value" type="text" value="2020-11-1" readonly>
   </fieldset>
 
   <fieldset>
@@ -125,10 +125,7 @@ body{margin:0;padding:0;}
 
 <script>
 // 默认：选择日期
-$('#my_day').cxCalendar({
-  startDate: '2020-12-10',
-  endDate: '2021-1-11'
-});
+$('#my_day').cxCalendar();
 
 // 选择月份
 $('#my_month').cxCalendar({
@@ -157,6 +154,7 @@ $('#my_datetime').cxCalendar({
 
 // input 的 value 中有默认值
 $('#my_value').cxCalendar({
+  startDate: '2020-10-15',
   endDate: '2020-12-31',
 });
 

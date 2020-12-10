@@ -71,9 +71,9 @@ $.cxCalendar.defaults.language = {
 
 名称|默认值|说明
 ---|---|---
-startDate|undefined|**起始日期**（默认获取当前日期的一年前）<br>若设置值为 4 位数字，则转换为当年的1月1日，如: 2020 => 2020/1/1<br>若指定某一天，设置值为字符串或时间戳，该值需能被 `new Date(value)` 解析
-endDate|undefined|**结束日期**（默认获取当前日期）<br>若设置值为 4 位数字，则转换为当年的12月31日，如: 2020 => 2020/12/31<br>其他规则与 `endDate` 相同
-date|undefined|**默认日期**（默认获取当前日期）<br>可使用字符串或时间戳，该值需能被 `new Date(value)` 解析<br>※ input 的 value 值优先级更高
+date|undefined|**默认日期**（默认获取当前日期）<br>可使用时间戳或字符串<br>※ input 的 value 值优先级更高
+startDate|undefined|**起始日期**（默认获取当前日期的一年前）<br>可使用时间戳或字符串，若设置值为 4 位数字，则转换为当年的1月1日，如: 2020 => 2020/1/1
+endDate|undefined|**结束日期**（默认获取当前日期）<br>可使用时间戳或字符串，若设置值为 4 位数字，则转换为当年的12月31日，如: 2020 => 2020/12/31
 type|'date'|**日期类型** <br>`'year'` 年份<br>`'month'` 年份和月份<br>`'date'` 日期<br>`'datetime'` 日期和时间<br>`'time'` 时间
 format|'Y-m-d'|**日期值格式** <br>`'Y'` 年份，完整 4 位数字<br>`'y'` 年份，仅末尾 2 位数字<br>`'m'` 月份，数字带前导零（01-12）<br>`'n'` 月份（1-12）<br>`'d'` 月份中的第几天，有前导零（01-31）<br>`'j'` 月份中的第几天（1-31）<br>`'H'` 小时，24 小时格式，有前导零（00-23）<br>`'G'` 小时，24 小时格式（0-23）<br>`'h'` 小时，12 小时格式，有前导零（01-12）<br>`'g'` 小时，12 小时格式（1-12）<br>`'i'` 分钟，数字带前导零（00-59）<br>`'s'` 秒，数字带前导零（00-59）<br>`'timestamp'` 时间戳（毫秒）
 wday|0|**星期开始于周几**<br>`0` 星期日<br>`1` 星期一<br>`2` 星期二<br>`3` 星期三<br>`4` 星期四<br>`5` 星期五<br>`6` 星期六
@@ -88,14 +88,19 @@ position|undefined|**面板显示位置**<br>详见：[[Demo Position](http://co
 baseClass|undefined|**自定义 class 名称**<br>仅在面板容器增加 class，不会覆盖默认的 class
 language|undefined|**自定义语言**<br>值类型为 `object`  或  `string`<br>若为 `string`，为语言配置文件中的属性名称（需要载入 `cxcalendar.languages.js` ）
 
+`date`, `startDate`, `endDate` 的优先级与范围
+- 当 `date` 早于 `startDate` 时，则为 `startDate`，晚于 `endDate` 时，则为 `endDate`
+- 当 `startDate` 日期晚于 `endDate` 时，调整为 `endDate` 的一年前
+- 支持的日期格式：`y`, `y-m`, `y-m-d`, `y-m-d h:i`, `y-m-d h:i:s`, `m-d`, `m-d h:i`, `m-d h:i:s`, `h:i`, `h:i:s`_（连接符 '-' 可替换为 '.' 或 '/'）_
+
 
 
 ## data 属性参数
 
 名称|说明
 ---|---
-data-end-date|结束日期
 data-start-date|起始日期
+data-end-date|结束日期
 data-type|日期类型
 data-format|日期值格式
 data-wday|星期开始于周几
@@ -108,7 +113,7 @@ data-disable-week|不可选择的日期（星期值），例：`data-disable-wee
 data-disable-day|不可选择的日期，例：`data-disable-day="1,5-2,2021-2-11"`
 data-position|面板显示位置
 data-base-class|自定义 class 名称
-data-language|自定义语言名称（ 仅支持 `languages` 已配置的键名）
+data-language|自定义语言名称（仅支持 `languages` 已配置的键名）
 
 ```html
 <input id="element_id" type="text" value="2020-12-1" data-start-date="2020" data-end-date="2021" data-format="Y/m/d" data-language="en">

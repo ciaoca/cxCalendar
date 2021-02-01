@@ -175,3 +175,9 @@ transition-delay:0s;
 .cxcalendar.holyday .cxcalendar_bd ul li.week{height:30px;font-size:14px;}
 .cxcalendar.holyday .cxcalendar_bd .days .holiday{position:relative;}
 .cxcalendar.holyday .cxcalendar_bd .days .holiday:before{content:attr(data-title);position:absolute;top:30px;left:0;right:0;overflow:hidden;font-size:10px;line-height:1;text-align:center;white-space:nowrap;text-overflow:ellipsis;}
+
+
+/* iPhone X ~ 12 */
+@media (device-width:375px) and (device-height:812px), (device-width:414px) and (device-height:896px), (device-width:390px) and (device-height:844px), (device-width:428px) and (device-height:926px){
+.cxcalendar.fixed .cxcalendar_bd{padding-bottom:30px;}
+}

@@ -2,7 +2,7 @@
  * cxCalendar
  * @name cxcalendar.js
  * @version 2.0.0
- * @date 2020-12-10
+ * @date 2021-03-12
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -1023,16 +1023,23 @@
     var theMonth = theDate.getMonth() + 1;
     var theDay = theDate.getDate();
     var theTime = theDate.getTime();
-    var theValue = self.formatDate(self.settings.format, theTime);
 
-    if (self.settings.type === 'year' && (theYear < self.minDate.year || theYear > self.maxDate.year)) {
-      return;
-    } else if (self.settings.type === 'month' && ((theYear === self.minDate.year && theMonth < self.minDate.month) || (theYear === self.maxDate.year && theMonth > self.maxDate.month))) {
-      return;
-
-    } else if ((self.settings.type === 'date' || self.settings.type === 'datetime') && (theTime < self.minDate.time || theTime > self.maxDate.time)) {
-      return;
+    if (theTime < self.minDate.time) {
+      theTime = self.minDate.time;
+    } else if (theTime > self.maxDate.time) {
+      theTime = self.maxDate.time;
     };
+
+    // if (self.settings.type === 'year' && (theYear < self.minDate.year || theYear > self.maxDate.year)) {
+    //   return;
+    // } else if (self.settings.type === 'month' && ((theYear === self.minDate.year && theMonth < self.minDate.month) || (theYear === self.maxDate.year && theMonth > self.maxDate.month))) {
+    //   return;
+
+    // } else if ((self.settings.type === 'date' || self.settings.type === 'datetime') && (theTime < self.minDate.time || theTime > self.maxDate.time)) {
+    //   return;
+    // };
+
+    var theValue = self.formatDate(self.settings.format, theTime);
 
     self.cacheInput.val(theValue).trigger('change');
   };

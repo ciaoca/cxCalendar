@@ -25,20 +25,26 @@
 
     <fieldset>
       <legend>默认</legend>
-      <label for="my_day">选择日期：</label>
-      <input id="my_day" type="text" readonly>
-      <br><br>
-      <label for="my_month">选择月份：</label>
-      <input id="my_month" type="text" readonly>
-      <br><br>
-      <label for="my_year">选择年份：</label>
-      <input id="my_year" type="text" readonly>
-      <br><br>
-      <label for="my_time">选择时间：</label>
-      <input id="my_time" type="text" readonly>
-      <br><br>
-      <label for="my_datetime">选择日期和时间：</label>
-      <input id="my_datetime" type="text" readonly>
+      <section>
+        <label for="my_day">选择日期：</label>
+        <input id="my_day" type="text" readonly>
+      </section>
+      <section>
+        <label for="my_month">选择月份：</label>
+        <input id="my_month" type="text" readonly>
+      </section>
+      <section>
+        <label for="my_year">选择年份：</label>
+        <input id="my_year" type="text" readonly>
+      </section>
+      <section>
+        <label for="my_time">选择时间：</label>
+        <input id="my_time" type="text" readonly>
+      </section>
+      <section>
+        <label for="my_datetime">选择日期和时间：</label>
+        <input id="my_datetime" type="text" readonly>
+      </section>
     </fieldset>
     
     <fieldset>
@@ -55,10 +61,12 @@
     </fieldset>
 
     <fieldset>
-      <legend>API 示例</legend>
-      <label for="date_api">选择日期：</label>
-      <input id="date_api" type="text" class="input" readonly>
-      <div id="acts" class="acts">
+      <section>
+        <legend>API 示例</legend>
+        <label for="date_api">选择日期：</label>
+        <input id="date_api" type="text" class="input" readonly>
+      </section>
+      <section id="acts" class="acts">
         <div class="group">
           <a href="javascript://" rel="type" rev="year">type: year</a>
           <a href="javascript://" rel="type" rev="month">type: month</a>
@@ -77,7 +85,7 @@
           <a href="javascript://" rel="lang" rev="en">设置语言：英文</a>
           <a href="javascript://" rel="lang" rev="ja">设置语言：日文</a>
         </div>
-      </div>
+      </section>
     </fieldset>
 
     <fieldset>

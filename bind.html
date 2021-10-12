@@ -47,9 +47,12 @@
       </section>
     </fieldset>
 
-    <fieldset id="acts">
-      <button type="button" name="add">增加一个</button>
-      <button type="button" name="remove">删除最后一个</button>
+    <fieldset>
+      <legend>操作</legend>
+      <section id="acts" class="acts">
+        <a href="javascript://" rel="add">增加一个</a>
+        <a href="javascript://" rel="remove">清除日期值</a>
+      </section>
     </fieldset>
 
     <div class="about">
@@ -80,14 +83,14 @@
     $.cxCalendar(this);
   });
 
-  $('#acts').on('click', 'button', function(event) {
+  $('#acts').on('click', 'a', function(){
     event.preventDefault();
     var _this = this;
-    var _name = _this.name;
+    var _rel = _this.rel;
 
-    if (_name === 'add') {
+    if (_rel === 'add') {
       demo.append('<section><label>选择日期：</label><input type="text" readonly></section>');
-    } else if (_name === 'remove') {
+    } else if (_rel === 'remove') {
       demo.find('section').last().remove();
     };
   });

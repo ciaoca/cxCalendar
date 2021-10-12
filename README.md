@@ -12,8 +12,8 @@ cxCalendar 是基于 jQuery 的日期选择器插件，支持日期、时间、�
 
 **版本：**
 
-* jQuery v1.7+ | Zepto v1.0+
-* jQuery cxCalendar v2.0.0
+* jQuery v1.7+ || Zepto v1.0+
+* jQuery cxCalendar v2.0.1
 
 Demo: https://ciaoca.github.io/cxCalendar/
 

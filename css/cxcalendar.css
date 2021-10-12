@@ -2,13 +2,13 @@
  * cxCalendar Style
  * ------------------------------ */
 .cxcalendar{position:absolute;z-index:10000;top:-999px;left:-999px;width:262px;border:1px solid #ccd1d9;border-radius:3px;background-color:#fff;box-shadow:1px 2px 3px rgba(0,0,0,0.2);color:#434a54;font-size:14px;opacity:0;
--webkit-user-select:none;
--moz-user-select:none;
-user-select:none;
 transform:translate(0,5%);
 transition-property:opacity,transform;
 transition-duration:0.3s;
 transition-delay:0.1s;
+-webkit-user-select:none;
+-moz-user-select:none;
+user-select:none;
 }
 .cxcalendar.show{opacity:1;
 transform:translate(0,0);
@@ -127,6 +127,7 @@ appearance:none;
 .cxcalendar_acts .today:before{content:'今天';}
 .cxcalendar_acts .clear:before{content:'清除';}
 
+
 /* 固定屏幕底部 */
 .cxcalendar.fixed{position:fixed;top:auto;bottom:-500px;left:0;right:0;width:auto;border:none;border-radius:0;box-shadow:none;opacity:1;
 transform:none;
@@ -158,9 +159,11 @@ transition-delay:0s;
 .cxcalendar.fixed .cxcalendar_acts a{float:left;width:auto;padding:0 10px;border-radius:3px 3px 0 0;box-shadow:none;}
 .cxcalendar.fixed .cxcalendar_acts a + a{margin:0 0 0 10px;}
 
+
 /* 不显示秒输入框 */
 .cxcalendar.notsecs .times .mint + i,
 .cxcalendar.notsecs .times .secs{display:none;}
+
 
 /* 英文 */
 .cxcalendar.en .cxcalendar_hd .year + em:after,
@@ -168,16 +171,8 @@ transition-delay:0s;
 .cxcalendar.en .cxcalendar_bd .months li:after,
 .cxcalendar.en .cxcalendar_bd .years li:after{content:'';}
 
-/* 节假日 */
-.cxcalendar.holyday{width:400px;}
-.cxcalendar.holyday .cxcalendar_bd{font-size:18px;line-height:30px;}
-.cxcalendar.holyday .cxcalendar_bd ul li{height:50px;}
-.cxcalendar.holyday .cxcalendar_bd ul li.week{height:30px;font-size:14px;}
-.cxcalendar.holyday .cxcalendar_bd .days .holiday{position:relative;}
-.cxcalendar.holyday .cxcalendar_bd .days .holiday:before{content:attr(data-title);position:absolute;top:30px;left:0;right:0;overflow:hidden;font-size:10px;line-height:1;text-align:center;white-space:nowrap;text-overflow:ellipsis;}
-
 
 /* iPhone X ~ 12 */
-@media (device-width:375px) and (device-height:812px), (device-width:414px) and (device-height:896px), (device-width:390px) and (device-height:844px), (device-width:428px) and (device-height:926px){
-.cxcalendar.fixed .cxcalendar_bd{padding-bottom:30px;}
+@media (width:375px) and (height:812px), (width:414px) and (height:896px), (width:390px) and (height:844px), (width:428px) and (height:926px){
+.cxcalendar.fixed .cxcalendar_bd{padding-bottom:env(safe-area-inset-bottom);}
 }

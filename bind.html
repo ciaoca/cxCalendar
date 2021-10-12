@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>cxCalendar 日期选择器 - 动态绑定</title>
+<link rel="stylesheet" href="css/cxcalendar.css">
+<link rel="stylesheet" href="css/demo.css">
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>cxCalendar 日期选择器</h1>
+  </div>
+</header>
+<div class="main">
+  <div class="wrap">
+    <nav>
+      <a href="index.html">常规示例</a>
+      <a href="position.html">位置设定</a>
+      <a class="active" href="bind.html">动态绑定</a>
+    </nav>
+
+    <h2>动态绑定</h2>
+
+    <fieldset id="demo">
+      <legend>默认</legend>
+      <section>
+        <label for="my_day">选择日期：</label>
+        <input id="my_day" type="text" readonly>
+      </section>
+      <section>
+        <label for="my_month">选择月份：</label>
+        <input id="my_month" type="text" readonly data-type="month" data-format="Y-m">
+      </section>
+      <section>
+        <label for="my_year">选择年份：</label>
+        <input id="my_year" type="text" readonly data-type="year" data-format="Y">
+      </section>
+      <section>
+        <label for="my_time">选择时间：</label>
+        <input id="my_time" type="text" readonly data-type="time" data-format="H:i:s">
+      </section>
+      <section>
+        <label for="my_datetime">选择日期和时间：</label>
+        <input id="my_datetime" type="text" readonly data-type="datetime" data-format="Y-m-d H:i:s">
+      </section>
+    </fieldset>
+
+    <fieldset id="acts">
+      <button type="button" name="add">增加一个</button>
+      <button type="button" name="remove">删除最后一个</button>
+    </fieldset>
+
+    <div class="about">
+      <section>
+        <h2>文档</h2>
+        <p><a target="_blank" href="https://github.com/ciaoca/cxCalendar">Github</a></p>
+      </section>
+      <section>
+        <h2>作者</h2>
+        <p><a target="_blank" href="http://ciaoca.com/">Ciaoca</a></p>
+      </section>
+      <section>
+        <h2>协议</h2>
+        <p>Released under the MIT license</p>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- <script src="//cdn.staticfile.org/jquery/1.7.1/jquery.min.js"></script> -->
+<script src="//cdn.staticfile.org/zepto/1.1.1/zepto.min.js"></script>
+<script src="js/cxcalendar.js"></script>
+<script>
+(function(){
+  var demo = $('#demo');
+
+  demo.on('focus', 'input', function(event) {
+    $.cxCalendar(this);
+  });
+
+  $('#acts').on('click', 'button', function(event) {
+    event.preventDefault();
+    var _this = this;
+    var _name = _this.name;
+
+    if (_name === 'add') {
+      demo.append('<section><label>选择日期：</label><input type="text" readonly></section>');
+    } else if (_name === 'remove') {
+      demo.find('section').last().remove();
+    };
+  });
+})();
+</script>
+</body>
+</html>

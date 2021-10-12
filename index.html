@@ -3,126 +3,112 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>cxCalendar 日期选择器</title>
+<title>cxCalendar 日期选择器 - 示例</title>
 <link rel="stylesheet" href="css/cxcalendar.css">
-<script src="http://cdn.staticfile.org/jquery/2.1.1-rc2/jquery.min.js"></script>
-<script src="js/cxcalendar.js"></script>
-<script src="js/cxcalendar.languages.js"></script>
-<style>
-body{background:#ddd;font:14px/1.7 tahoma,'\5fae\8f6f\96c5\9ed1',sans-serif;}
-h1,h2,h3{font-size:36px;line-height:1;}
-h2{font-size:24px;}
-h3{font-size:18px;}
-fieldset{margin:2em 0;}
-fieldset legend{font-weight:bold;font-size:16px;line-height:2;}
-input,select,button{padding:0.5em;}
-a{color:#06f;text-decoration:none;}
-a:hover{color:#00f;}
-
-.wrap{width:800px;margin:0 auto;padding:20px 40px;border-radius:8px;background:#fff;box-shadow:0 0 10px rgba(0,0,0,0.5);}
-
-.acts{font-size:12px;}
-.acts .group{margin-top:10px;}
-.acts a{display:inline-block;padding:5px 10px;border-radius:3px;background-color:#eee;color:#888;}
-.acts a:hover{color:#333;}
-
-@media (max-width:900px){
-body{margin:0;padding:0;}
-.wrap{width:auto;border-radius:0;padding:10px 20px;box-shadow:none;}
-}
-</style>
+<link rel="stylesheet" href="css/demo.css">
 </head>
 <body>
-<div class="wrap">
-  <h1>cxCalendar 日期选择器</h1>
+<header>
+  <div class="wrap">
+    <h1>cxCalendar 日期选择器</h1>
+  </div>
+</header>
+<div class="main">
+  <div class="wrap">
+    <nav>
+      <a class="active" href="index.html">常规示例</a>
+      <a href="position.html">位置设定</a>
+      <a href="bind.html">动态绑定</a>
+    </nav>
 
-  <h2>示例</h2>
+    <h2>示例</h2>
 
-  <fieldset>
-    <legend>默认</legend>
-    <label for="my_day">选择日期：</label>
-    <input id="my_day" type="text" readonly>
-    <br><br>
-    <label for="my_month">选择月份：</label>
-    <input id="my_month" type="text" readonly>
-    <br><br>
-    <label for="my_year">选择年份：</label>
-    <input id="my_year" type="text" readonly>
-    <br><br>
-    <label for="my_time">选择时间：</label>
-    <input id="my_time" type="text" readonly>
-    <br><br>
-    <label for="my_datetime">选择日期和时间：</label>
-    <input id="my_datetime" type="text" readonly>
-  </fieldset>
-  
-  <fieldset>
-    <legend>&lt;input&gt; 的 value 中设置默认值</legend>
-    <label for="my_value">选择日期：</label>
-    <input id="my_value" type="text" value="2020-11-1" readonly>
-  </fieldset>
+    <fieldset>
+      <legend>默认</legend>
+      <label for="my_day">选择日期：</label>
+      <input id="my_day" type="text" readonly>
+      <br><br>
+      <label for="my_month">选择月份：</label>
+      <input id="my_month" type="text" readonly>
+      <br><br>
+      <label for="my_year">选择年份：</label>
+      <input id="my_year" type="text" readonly>
+      <br><br>
+      <label for="my_time">选择时间：</label>
+      <input id="my_time" type="text" readonly>
+      <br><br>
+      <label for="my_datetime">选择日期和时间：</label>
+      <input id="my_datetime" type="text" readonly>
+    </fieldset>
+    
+    <fieldset>
+      <legend>&lt;input&gt; 的 value 中设置默认值</legend>
+      <label for="my_value">选择日期：</label>
+      <input id="my_value" type="text" value="2020-11-1" readonly>
+    </fieldset>
 
-  <fieldset>
-    <legend>限制可选日期</legend>
-    <label for="my_disable">选择日期：</label>
-    <input id="my_disable" type="text" readonly>
-    <p>例：只能选择工作日，以及指定日期不可选。</p>
-  </fieldset>
+    <fieldset>
+      <legend>限制可选日期</legend>
+      <label for="my_disable">选择日期：</label>
+      <input id="my_disable" type="text" readonly>
+      <p>例：只能选择工作日，以及指定日期不可选。</p>
+    </fieldset>
 
-  <fieldset>
-    <legend>设定节假日</legend>
-    <label for="my_holyday">选择日期：</label>
-    <input id="my_holyday" type="text" readonly>
-    <p>※ 通过文件 cxcalendar.languages.js 配置。</p>
-  </fieldset>
-
-  <fieldset>
-    <legend>API 示例</legend>
-    <label for="date_api">选择日期：</label>
-    <input id="date_api" type="text" class="input" readonly>
-    <div id="acts" class="acts">
-      <div class="group">
-        <a href="javascript://" rel="type" rev="year">type: year</a>
-        <a href="javascript://" rel="type" rev="month">type: month</a>
-        <a href="javascript://" rel="type" rev="date">type: date</a>
-        <a href="javascript://" rel="type" rev="datetime">type: datetime</a>
-        <a href="javascript://" rel="type" rev="time">type: time</a>
+    <fieldset>
+      <legend>API 示例</legend>
+      <label for="date_api">选择日期：</label>
+      <input id="date_api" type="text" class="input" readonly>
+      <div id="acts" class="acts">
+        <div class="group">
+          <a href="javascript://" rel="type" rev="year">type: year</a>
+          <a href="javascript://" rel="type" rev="month">type: month</a>
+          <a href="javascript://" rel="type" rev="date">type: date</a>
+          <a href="javascript://" rel="type" rev="datetime">type: datetime</a>
+          <a href="javascript://" rel="type" rev="time">type: time</a>
+        </div>
+        <div class="group">
+          <a href="javascript://" rel="show">显示</a>
+          <a href="javascript://" rel="set">设置日期值</a>
+          <a href="javascript://" rel="get">获取日期值</a>
+          <a href="javascript://" rel="clear">清除日期值</a>
+        </div>
+        <div class="group">
+          <a href="javascript://" rel="lang" rev="zh-cn">设置语言：中文</a>
+          <a href="javascript://" rel="lang" rev="en">设置语言：英文</a>
+          <a href="javascript://" rel="lang" rev="ja">设置语言：日文</a>
+        </div>
       </div>
-      <div class="group">
-        <a href="javascript://" rel="show">显示</a>
-        <a href="javascript://" rel="set">设置日期值</a>
-        <a href="javascript://" rel="get">获取日期值</a>
-        <a href="javascript://" rel="clear">清除日期值</a>
-      </div>
-      <div class="group">
-        <a href="javascript://" rel="lang" rev="zh-cn">设置语言：中文</a>
-        <a href="javascript://" rel="lang" rev="en">设置语言：英文</a>
-        <a href="javascript://" rel="lang" rev="ja">设置语言：日文</a>
-      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>日期联动</legend>
+      <label for="date_first">开始日期：</label>
+      <input id="date_first" type="text" readonly>
+      <label for="date_last">结束日期：</label>
+      <input id="date_last" type="text" readonly>
+    </fieldset>
+
+    <div class="about">
+      <section>
+        <h2>文档</h2>
+        <p><a target="_blank" href="https://github.com/ciaoca/cxCalendar">Github</a></p>
+      </section>
+      <section>
+        <h2>作者</h2>
+        <p><a target="_blank" href="http://ciaoca.com/">Ciaoca</a></p>
+      </section>
+      <section>
+        <h2>协议</h2>
+        <p>Released under the MIT license</p>
+      </section>
     </div>
-  </fieldset>
-
-  <fieldset>
-    <legend>日期联动</legend>
-    <label for="date_first">开始日期：</label>
-    <input id="date_first" type="text" readonly>
-    <label for="date_last">结束日期：</label>
-    <input id="date_last" type="text" readonly>
-  </fieldset>
-
-  <p><a target="_blank" href="http://code.ciaoca.com/jquery/cxCalendar/demo/">查看更多示例</a></p>
-
-  <h2>文档</h2>
-  <ul>
-    <li><a target="_blank" href="https://github.com/ciaoca/cxCalendar">Github</a></li>
-    <li><a target="_blank" href="http://code.ciaoca.com/jquery/cxcalendar/">中文文档</a></li>
-  </ul>
-  
-  <h2>作者</h2>
-  <p><a target="_blank" href="http://ciaoca.com/">http://ciaoca.com/</a></p>
-  <p>Released under the MIT license</p>
+  </div>
 </div>
 
+<!-- <script src="//cdn.staticfile.org/jquery/1.7.1/jquery.min.js"></script> -->
+<script src="//cdn.staticfile.org/zepto/1.1.1/zepto.min.js"></script>
+<script src="js/cxcalendar.js"></script>
+<script src="js/cxcalendar.languages.js"></script>
 <script>
 // 默认：选择日期
 $('#my_day').cxCalendar();
@@ -153,10 +139,7 @@ $('#my_datetime').cxCalendar({
 });
 
 // input 的 value 中有默认值
-$('#my_value').cxCalendar({
-  startDate: '2020-10-15',
-  endDate: '2020-12-31',
-});
+$('#my_value').cxCalendar();
 
 // 限制可选日期
 $('#my_disable').cxCalendar({
@@ -167,11 +150,6 @@ $('#my_disable').cxCalendar({
     '1-2',          // 每年1月2号
     '2021-1-3',     // 具体日期
   ]
-});
-
-// 自定义节假日
-$('#my_holyday').cxCalendar({
-  baseClass: 'holyday'
 });
 
 // API 示例
@@ -318,7 +296,6 @@ $('#my_holyday').cxCalendar({
     dateLastApi.setOptions({
       startDate: firstTime
     });
-
     dateLastApi.show();
   });
 

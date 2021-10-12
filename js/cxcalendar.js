@@ -1,8 +1,7 @@
 /*!
  * cxCalendar
- * @name cxcalendar.js
- * @version 2.0.0
- * @date 2021-03-12
+ * 
+ * @version 2.0.1
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -1058,8 +1057,8 @@
     var winWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     var winHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-    var paneWidth = self.dom.pane.outerWidth();
-    var paneHeight = self.dom.pane.outerHeight();
+    var paneWidth = self.dom.pane.width();
+    var paneHeight = self.dom.pane.height();
 
     var elRect = self.cacheInput[0].getBoundingClientRect();
     var clientTop = elRect.top;

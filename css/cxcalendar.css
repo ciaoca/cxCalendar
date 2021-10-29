@@ -1,5 +1,5 @@
 /**
- * cxCalendar Style
+ * cxCalendar
  * ------------------------------ */
 .cxcalendar{position:absolute;z-index:10000;top:-999px;left:-999px;width:262px;border:1px solid #ccd1d9;border-radius:3px;background-color:#fff;box-shadow:1px 2px 3px rgba(0,0,0,0.2);color:#434a54;font-size:14px;opacity:0;
 transform:translate(0,5%);
@@ -51,8 +51,8 @@ appearance:none;
 display:flex;
 flex-wrap:wrap;
 }
-.cxcalendar_bd ul li{box-sizing:border-box;height:34px;margin:0;padding:0;border:2px solid #fff;border-radius:5px;cursor:pointer;
-flex-grow:0;
+.cxcalendar_bd ul li{box-sizing:border-box;position:relative;height:34px;margin:0;padding:0;border:2px solid #fff;border-radius:5px;cursor:pointer;
+flex:none;
 }
 .cxcalendar_bd ul li:hover{background-color:#e6e9ed;}
 .cxcalendar_bd ul li.week,
@@ -77,7 +77,7 @@ flex-grow:0;
 /* 日期列表 */
 .cxcalendar_bd .days{text-align:center;}
 .cxcalendar_bd .days li{
-flex-basis:14%;
+flex-basis:14.25%;
 }
 .cxcalendar_bd .days .sat{color:#4a89dc}
 .cxcalendar_bd .days .sun{color:#da4453;}
@@ -127,6 +127,14 @@ appearance:none;
 .cxcalendar_acts .today:before{content:'今天';}
 .cxcalendar_acts .clear:before{content:'清除';}
 
+/* 显示周数 */
+.cxcalendar.weeknum .cxcalendar_bd .days{padding-left:24px;}
+.cxcalendar.weeknum .cxcalendar_bd .days li[data-week-num]:before{content:attr(data-week-num);position:absolute;top:50%;left:-14px;width:2.6ch;margin-top:-8px;margin-left:-1.3ch;border-radius:3px;background-color:#ddd;color:#fff;font-size:12px;line-height:16px;text-align:center;pointer-events:none;}
+
+
+/* 不显示秒输入框 */
+.cxcalendar.notsecs .times .mint + i,
+.cxcalendar.notsecs .times .secs{display:none;}
 
 /* 固定屏幕底部 */
 .cxcalendar.fixed{position:fixed;top:auto;bottom:-500px;left:0;right:0;width:auto;border:none;border-radius:0;box-shadow:none;opacity:1;
@@ -158,11 +166,6 @@ transition-delay:0s;
 .cxcalendar.fixed .cxcalendar_acts{top:auto;left:auto;bottom:100%;right:10px;width:auto;line-height:30px;}
 .cxcalendar.fixed .cxcalendar_acts a{float:left;width:auto;padding:0 10px;border-radius:3px 3px 0 0;box-shadow:none;}
 .cxcalendar.fixed .cxcalendar_acts a + a{margin:0 0 0 10px;}
-
-
-/* 不显示秒输入框 */
-.cxcalendar.notsecs .times .mint + i,
-.cxcalendar.notsecs .times .secs{display:none;}
 
 
 /* 英文 */

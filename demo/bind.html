@@ -45,13 +45,17 @@
         <label for="my_datetime">选择日期和时间：</label>
         <input id="my_datetime" type="text" readonly data-type="datetime" data-format="Y-m-d H:i:s">
       </section>
+      <section>
+        <label for="my_weeknum">显示周数：</label>
+        <input id="my_weeknum" type="text" readonly data-wday="1" data-base-class="weeknum">
+      </section>
     </fieldset>
 
     <fieldset>
       <legend>操作</legend>
       <section id="acts" class="acts">
         <a href="javascript://" rel="add">增加一个</a>
-        <a href="javascript://" rel="remove">清除日期值</a>
+        <a href="javascript://" rel="remove">删除最后一个</a>
       </section>
     </fieldset>
 

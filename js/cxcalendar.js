@@ -1,7 +1,7 @@
 /*!
  * cxCalendar
  * 
- * @version 2.0.1
+ * @version 2.0.2
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -55,14 +55,14 @@
   };
 
   // 补充前置零
-  cxCalendar.fillLeadZero = function(value) {
-    var val = parseInt(value, 10);
+  cxCalendar.fillLeadZero = function(value, num) {
+    var str = String(value);
 
-    if (isNaN(val)) {
-      return value;
-    } else {
-      return val < 10 ? '0' + String(val) : String(val);
+    if (str.length < num) {
+      str = Array(num - str.length).fill(0).join('') + value;
     };
+
+    return str;
   };
 
   // 获取当年每月的天数
@@ -70,6 +70,37 @@
     var leapYearDay = ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) ? 1 : 0;
 
     return [31, 28 + leapYearDay, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  };
+
+  // 获取周数
+  cxCalendar.getWeekNum = function(dateObj) {
+    var self = this;
+    var curTime = dateObj.getTime();
+    var yearFirstDate = new Date(dateObj.getFullYear(), 0, 1, 0, 0, 0, 0);
+    var weekFirstTime = yearFirstDate.getTime();
+    var weekDay = yearFirstDate.getDay();
+    var weekNum = 0;
+
+    if (weekDay === 0) {
+      weekDay = 7;
+    };
+
+    var weekOffset = weekDay > 4 ? -1 : 0;
+
+    if (weekDay > 4) {
+      weekFirstTime += (8 - weekDay) * 86400000;
+    } else {
+      weekFirstTime += (1 - weekDay) * 86400000;
+    };
+
+    if (curTime < weekFirstTime) {
+      weekNum = self.getWeekNum(new Date(dateObj.getFullYear() - 1, 11, 31));
+    } else {
+      weekNum = Math.floor((curTime - weekFirstTime) / 86400000) + 1;
+      weekNum = Math.ceil(weekNum / 7);
+    };
+
+    return weekNum;
   };
 
   /**
@@ -161,37 +192,46 @@
       return time;
     };
 
-    attr.yyyy = date.getFullYear();
-    attr.yy = attr.yyyy.toString(10).slice(-2);
+    attr.Y = date.getFullYear();
+    attr.y = attr.Y.toString(10).slice(-2);
     attr.n = date.getMonth() + 1;
-    attr.m = self.fillLeadZero(attr.n);
+    attr.m = self.fillLeadZero(attr.n, 2);
     attr.j = date.getDate();
-    attr.d = self.fillLeadZero(attr.j);
+    attr.d = self.fillLeadZero(attr.j, 2);
 
-    attr.gg = date.getHours(); // 0-23
-    attr.hh = self.fillLeadZero(attr.gg); // 00-23
-    attr.g = attr.gg > 12 ? attr.gg - 12 : attr.gg; // 1-12
-    attr.h = self.fillLeadZero(attr.g); // 01-12
-    attr.i = self.fillLeadZero(date.getMinutes());
-    attr.s = self.fillLeadZero(date.getSeconds());
+    attr.G = date.getHours();
+    attr.H = self.fillLeadZero(attr.G, 2);
+    attr.g = attr.G > 12 ? attr.G - 12 : attr.G;
+    attr.h = self.fillLeadZero(attr.g, 2);
+    attr.i = self.fillLeadZero(date.getMinutes(), 2);
+    attr.s = self.fillLeadZero(date.getSeconds(), 2);
 
     attr.time = date.getTime();
 
-    style = style.replace(/timestamp/g, attr.time);
-    style = style.replace(/Y/g, attr.yyyy);
-    style = style.replace(/y/g, attr.yy);
-    style = style.replace(/m/g, attr.m);
-    style = style.replace(/n/g, attr.n);
-    style = style.replace(/d/g, attr.d);
-    style = style.replace(/j/g, attr.j);
-    style = style.replace(/H/g, attr.hh);
-    style = style.replace(/G/g, attr.gg);
-    style = style.replace(/h/g, attr.h);
-    style = style.replace(/g/g, attr.g);
-    style = style.replace(/i/g, attr.i);
-    style = style.replace(/s/g, attr.s);
+    var str = style;
+    var keys = ['timestamp','Y','y','m','n','d','j','H','h','G','g','i','s'];
+    var reg = new RegExp('(' + keys.join('|') + ')', 'g');
 
-    return style;
+    // 转义边界符号
+    str = str.replace(/([\{\}])/g, '\\$1');
+
+    // 转义关键词
+    str = str.replace(reg, function(match, p1) {
+      return '{{' + p1 + '}}';
+    });
+
+    // 还原转义字符
+    str = str.replace(/\\\{\{(.)\}\}/g, '$1');
+
+    // 替换关键词
+    for (var i = keys.length - 1; i >= 0; i--) {
+      str = str.replace(new RegExp('{{' + keys[i] + '}}', 'g'), attr[keys[i]]);
+    };
+
+    // 还原转义内容
+    str = str.replace(/\\(.)/g, '$1');
+
+    return str;
   };
 
   cxCalendar.init = function() {
@@ -600,6 +640,7 @@
     // 自适应或固定行数
     var monthDayMax = self.settings.lockRow ? 42 : Math.ceil((monthDays[jsMonth] + monthFirstDay) / 7) * 7;
 
+    var todayDate;
     var todayYear;
     var todayMonth;
     var todayNum;
@@ -656,7 +697,8 @@
         };
       };
 
-      todayTime = new Date(todayYear, todayMonth - 1, todayNum).getTime();
+      todayDate = new Date(todayYear, todayMonth - 1, todayNum);
+      todayTime = todayDate.getTime();
       todayText = [todayYear, todayMonth, todayNum].join('-');
 
       // 高亮选中日期、今天
@@ -699,18 +741,23 @@
         };
       };
 
+
       html += '<li';
 
       if (classValue.length) {
         html += ' class="' + classValue.join(' ') + '"';
       };
 
+      if (classValue.indexOf('del') === -1) {
+        html += ' data-date="' + todayText + '"';
+      };
+
       if (todayName.length) {
         html += ' data-title="' + todayName + '"';
       };
 
-      if (classValue.indexOf('del') === -1) {
-        html += ' data-date="' + todayText + '"';
+      if (i % 7 === 0) {
+        html += ' data-week-num="' + self.getWeekNum(todayDate) + '"';
       };
 
       html += '>' + todayNum + '</li>';
@@ -759,9 +806,9 @@
       secsOptions += '<option value="' + optionValue + '">' + optionValue + '</option>';
     };
 
-    hourValue = self.fillLeadZero(hourValue);
-    mintValue = self.fillLeadZero(mintValue);
-    secsValue = self.fillLeadZero(secsValue);
+    hourValue = self.fillLeadZero(hourValue, 2);
+    mintValue = self.fillLeadZero(mintValue, 2);
+    secsValue = self.fillLeadZero(secsValue, 2);
 
     self.dom.hourSelect.html(hourOptions).val(hourValue);
     self.dom.mintSelect.html(mintOptions).val(mintValue);

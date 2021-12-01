@@ -1,7 +1,7 @@
 /*!
  * cxCalendar
  * 
- * @version 2.0.2
+ * @version 2.0.3
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -206,7 +206,7 @@
     attr.i = self.fillLeadZero(date.getMinutes(), 2);
     attr.s = self.fillLeadZero(date.getSeconds(), 2);
 
-    attr.time = date.getTime();
+    attr.timestamp = date.getTime();
 
     var str = style;
     var keys = ['timestamp','Y','y','m','n','d','j','H','h','G','g','i','s'];
@@ -1283,30 +1283,34 @@
     };
 
     if (typeof callback === 'function') {
-      callback({
-        setOptions: function(opts) {
-          settings = $.extend(settings, opts);
-        },
-        show: function() {
-          cxCalendar.show(input, settings);
-        },
-        hide: function() {
-          cxCalendar.hidePane();
-        },
-        getDate: function(style) {
-          cxCalendar.cacheInput = input;
-          return cxCalendar.getDate(style);
-        },
-        setDate: function(value) {
-          cxCalendar.cacheInput = input;
-          cxCalendar.setOptions(settings);
-          cxCalendar.setDate(value);
-        },
-        clearDate: function() {
-          cxCalendar.cacheInput = input;
-          cxCalendar.clearDate();
-        }
-      });
+      var api = function(input, settings){
+        return {
+          setOptions: function(opts) {
+            settings = $.extend(settings, opts);
+          },
+          show: function() {
+            cxCalendar.show(input, settings);
+          },
+          hide: function() {
+            cxCalendar.hidePane();
+          },
+          getDate: function(style) {
+            cxCalendar.cacheInput = input;
+            return cxCalendar.getDate(style);
+          },
+          setDate: function(value) {
+            cxCalendar.cacheInput = input;
+            cxCalendar.setOptions(settings);
+            cxCalendar.setDate(value);
+          },
+          clearDate: function() {
+            cxCalendar.cacheInput = input;
+            cxCalendar.clearDate();
+          }
+        };
+      };
+
+      callback(api(input, settings));
     };
 
     return this;

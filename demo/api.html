@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>cxCalendar 日期选择器 - 示例</title>
+<link rel="stylesheet" href="../dist/css/cxcalendar.css">
+<link rel="stylesheet" href="./css/demo.css">
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>cxCalendar 日期选择器</h1>
+  </div>
+</header>
+<div class="main">
+  <div class="wrap">
+    <nav>
+      <a href="index.html">常规示例</a>
+      <a href="position.html">位置设定</a>
+      <a href="bind.html">动态调用</a>
+      <a class="active" href="api.html">API 接口</a>
+    </nav>
+
+    <h2>API 接口</h2>
+
+    <fieldset>
+      <legend>API</legend>
+      <section>
+        <label for="date_api">选择日期：</label>
+        <input id="date_api" type="text" class="input" readonly>
+      </section>
+      <section class="acts">
+        <div class="group">
+          <a href="javascript://" rel="type" rev="date">type: date</a>
+          <a href="javascript://" rel="type" rev="datetime">type: datetime</a>
+          <a href="javascript://" rel="type" rev="year">type: year</a>
+          <a href="javascript://" rel="type" rev="month">type: month</a>
+          <a href="javascript://" rel="type" rev="time">type: time</a>
+        </div>
+        <div class="group">
+          <a href="javascript://" rel="show">显示</a>
+          <a href="javascript://" rel="set">设置日期值</a>
+          <a href="javascript://" rel="get">获取日期值</a>
+          <a href="javascript://" rel="clear">清除日期值</a>
+        </div>
+        <div class="group">
+          <a href="javascript://" rel="lang" rev="zh-cn">设置语言：中文</a>
+          <a href="javascript://" rel="lang" rev="en">设置语言：英文</a>
+          <a href="javascript://" rel="lang" rev="ja">设置语言：日文</a>
+        </div>
+        <div class="group">
+          <a href="javascript://" rel="attach">Attach</a>
+          <a href="javascript://" rel="detach">Detach</a>
+        </div>
+      </section>
+      <p>※ 打开控制台查看</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>日期联动</legend>
+      <label for="date_first">开始日期：</label>
+      <input id="date_first" type="text" readonly>
+      <label for="date_last">结束日期：</label>
+      <input id="date_last" type="text" readonly>
+    </fieldset>
+
+    <div class="about">
+      <section>
+        <h2>文档</h2>
+        <p><a target="_blank" href="https://github.com/ciaoca/cxCalendar">Github</a></p>
+      </section>
+      <section>
+        <h2>作者</h2>
+        <p><a target="_blank" href="http://ciaoca.com/">Ciaoca</a></p>
+      </section>
+      <section>
+        <h2>协议</h2>
+        <p>Released under the MIT license</p>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script src="../dist/js/cxcalendar.js"></script>
+<script src="../dist/js/cxcalendar.languages.js"></script>
+<script>
+(function() {
+  const nowDate = new Date();
+  let theApi;
+
+  const getRandomNumber = (min, max) => {
+    return Math.round(Math.random() * (max - min) + min);
+  };
+
+  const apiInput = document.getElementById('date_api');
+
+  apiInput.addEventListener('change', (e) => {
+    console.log('api-change-event');
+  });
+
+  const attach = () => {
+    theApi = cxCalendar.attach(apiInput, {
+      startDate: nowDate.getFullYear() - 1,
+      endDate: nowDate.getFullYear() + 1,
+    });
+    console.log(theApi);
+  };
+
+  document.body.addEventListener('click', (e) => {
+    const el = e.target;
+    const nodeName = el.nodeName.toLowerCase();
+
+    if (nodeName === 'a' && el.rel) {
+      const rel = el.rel;
+      const rev = el.rev;
+      let opts;
+    
+      switch (rel) {
+        case 'show':
+          theApi.show();
+          break;
+
+        case 'get':
+          const value = theApi.getDate();
+          console.log('getDate:', value);
+          break;
+
+        case 'set':
+          opts = [nowDate.getFullYear(), getRandomNumber(1, 12), getRandomNumber(1, 31)].join('/');
+          console.log('setDate:', opts);
+          theApi.setDate(opts);
+          break;
+
+        case 'clear':
+          theApi.clearDate();
+          break;
+
+        case 'type':
+          opts = {
+            type: rev
+          };
+
+          switch (rev) {
+            case 'year':
+              opts.format = 'Y';
+              break;
+
+            case 'month':
+              opts.format = 'Y-m';
+              break;
+
+            case 'datetime':
+              opts.format = 'Y-m-d H:i:s';
+              break;
+
+            case 'time':
+              opts.format = 'H:i:s';
+              break;
+
+            default:
+              opts.format = 'Y-m-d';
+              break;
+          };
+
+          theApi.setOptions(opts);
+          theApi.show();
+          break;
+
+        case 'lang':
+          opts = {
+            language: rev,
+            baseClass: ''
+          };
+
+          if (rev !== 'zh-cn') {
+            opts.baseClass = 'en';
+          };
+
+          theApi.setOptions(opts);
+          theApi.show();
+          break;
+
+        case 'attach':
+          attach();
+          break;
+
+        case 'detach':
+          cxCalendar.detach(apiInput);
+          theApi = null;
+          break;
+      };
+    }
+  });
+
+  attach();
+})();
+
+// 日期联动
+(function() {
+  const firstInput = document.getElementById('date_first');
+  const lastInput = document.getElementById('date_last');
+
+  const firstApi = cxCalendar.attach(firstInput);
+  const lastApi = cxCalendar.attach(lastInput);
+
+  firstInput.addEventListener('change', () => {
+    console.log('first-change-event');
+
+    const firstTime = parseInt(firstApi.getDate('timestamp'), 10);
+    const lastTime = parseInt(lastApi.getDate('timestamp'), 10);
+
+    if (lastTime < firstTime) {
+      lastApi.clearDate();
+    };
+
+    lastApi.setOptions({
+      startDate: firstTime
+    });
+    lastApi.show();
+  });
+
+  lastInput.addEventListener('change', () => {
+    console.log('last-change-event');
+  });
+})();
+</script>
+</body>
+</html>

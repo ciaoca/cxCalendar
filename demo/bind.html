@@ -1,11 +1,11 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>cxCalendar 日期选择器 - 动态绑定</title>
-<link rel="stylesheet" href="../css/cxcalendar.css">
-<link rel="stylesheet" href="../css/demo.css">
+<title>cxCalendar 日期选择器 - 动态调用</title>
+<link rel="stylesheet" href="../dist/css/cxcalendar.css">
+<link rel="stylesheet" href="./css/demo.css">
 </head>
 <body>
 <header>
@@ -18,42 +18,39 @@
     <nav>
       <a href="index.html">常规示例</a>
       <a href="position.html">位置设定</a>
-      <a class="active" href="bind.html">动态绑定</a>
+      <a class="active" href="bind.html">动态调用</a>
+      <a href="api.html">API 接口</a>
     </nav>
 
-    <h2>动态绑定</h2>
+    <h2>动态调用</h2>
 
     <fieldset id="demo">
-      <legend>默认</legend>
+      <legend>常用</legend>
       <section>
         <label for="my_day">选择日期：</label>
         <input id="my_day" type="text" readonly>
-      </section>
-      <section>
-        <label for="my_month">选择月份：</label>
-        <input id="my_month" type="text" readonly data-type="month" data-format="Y-m">
-      </section>
-      <section>
-        <label for="my_year">选择年份：</label>
-        <input id="my_year" type="text" readonly data-type="year" data-format="Y">
-      </section>
-      <section>
-        <label for="my_time">选择时间：</label>
-        <input id="my_time" type="text" readonly data-type="time" data-format="H:i:s">
       </section>
       <section>
         <label for="my_datetime">选择日期和时间：</label>
         <input id="my_datetime" type="text" readonly data-type="datetime" data-format="Y-m-d H:i:s">
       </section>
       <section>
-        <label for="my_weeknum">显示周数：</label>
-        <input id="my_weeknum" type="text" readonly data-wday="1" data-base-class="weeknum">
+        <label for="my_year">选择年份：</label>
+        <input id="my_year" type="text" readonly data-type="year" data-format="Y">
+      </section>
+      <section>
+        <label for="my_month">选择月份：</label>
+        <input id="my_month" type="text" readonly data-type="month" data-format="Y-m">
+      </section>
+      <section>
+        <label for="my_time">选择时间：</label>
+        <input id="my_time" type="text" readonly data-type="time" data-format="H:i:s">
       </section>
     </fieldset>
 
     <fieldset>
       <legend>操作</legend>
-      <section id="acts" class="acts">
+      <section class="acts">
         <a href="javascript://" rel="add">增加一个</a>
         <a href="javascript://" rel="remove">删除最后一个</a>
       </section>
@@ -76,26 +73,35 @@
   </div>
 </div>
 
-<!-- <script src="//cdn.staticfile.org/jquery/1.7.1/jquery.min.js"></script> -->
-<script src="//cdn.staticfile.org/zepto/1.1.1/zepto.min.js"></script>
-<script src="../js/cxcalendar.js"></script>
+<script src="../dist/js/cxcalendar.js"></script>
 <script>
-(function(){
-  var demo = $('#demo');
+(function() {
+  const demo = document.getElementById('demo');
 
-  demo.on('focus', 'input', function(event) {
-    $.cxCalendar(this);
-  });
+  document.body.addEventListener('click', (e) => {
+    const el = e.target;
+    const nodeName = el.nodeName.toLowerCase();
 
-  $('#acts').on('click', 'a', function(){
-    event.preventDefault();
-    var _this = this;
-    var _rel = _this.rel;
+    if (nodeName === 'a' && el.rel) {
+      const rel = el.rel;
 
-    if (_rel === 'add') {
-      demo.append('<section><label>选择日期：</label><input type="text" readonly></section>');
-    } else if (_rel === 'remove') {
-      demo.find('section').last().remove();
+      if (['add','remove'].indexOf(rel) >= 0) {
+        event.preventDefault();
+
+        if (rel === 'add') {
+          demo.insertAdjacentHTML('beforeend', '<section><label>选择日期：</label><input type="text" readonly></section>');
+
+        } else if (rel === 'remove') {
+          const list = demo.querySelectorAll('section');
+
+          if (list.length) {
+            demo.removeChild(list[list.length - 1]);
+          };
+        };
+      };
+
+    } else if (nodeName === 'input') {
+      cxCalendar(el);
     };
   });
 })();

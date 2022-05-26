@@ -28,7 +28,7 @@
       <legend>常用</legend>
       <section>
         <label for="my_day">选择日期：</label>
-        <input id="my_day" type="text" readonly data-start-date="2022-1-1" data-lock-row="true">
+        <input id="my_day" type="text" readonly>
       </section>
       <section>
         <label for="my_datetime">选择日期和时间：</label>
@@ -95,7 +95,7 @@ cxCalendar.attach(document.getElementById('my_datetime'), {
 
 // 选择年份
 cxCalendar.attach(document.getElementById('my_year'), {
-  startDate: 1913,
+  startDate: 1949,
   yearNum: 20,
   type: 'year',
   format: 'Y'
@@ -115,7 +115,7 @@ cxCalendar.attach(document.getElementById('my_time'), {
 
 // 显示周数
 cxCalendar.attach(document.getElementById('my_weeknum'), {
-  baseClass: 'weeknum',
+  baseClass: 'has_weeknum',
   wday: 1,
 });
 

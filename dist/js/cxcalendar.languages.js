@@ -1,5 +1,16 @@
+/**
+ * cxCalendar 多语言配置
+ * @type {Object}
+ * 
+ * 配置多种语言可以让浏览器自动适配，语言名称使用小写
+ * 浏览器语言参考
+ * https://developer.mozilla.org/zh-CN/docs/Web/API/Navigator/language
+ */
 cxCalendar.languages = {
-  // 如果只使用一种语言，可以只保留 default
+  /**
+   * 如果只使用一种语言，可以只保留 default
+   * 当无法自动适配时，将使用 default 的配置
+   */
   'default': {
     monthList: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
     weekList: ['日', '一', '二', '三', '四', '五', '六'],

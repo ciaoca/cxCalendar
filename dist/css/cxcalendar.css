@@ -51,7 +51,7 @@
 .cxcalendar_hd {
   position: relative;
   height: 32px;
-  padding: 8px 50px 0;
+  padding: 8px 8px 0;
   font-weight: 700;
   font-size: 16px;
   line-height: 32px;
@@ -224,6 +224,7 @@
 .cxcalendar_bd .months li:after,
 .cxcalendar_bd .years li:after {
   content: '月';
+  display: inline-block;
   margin-left: 2px;
   color: var(--cxcalendar-note-color);
   font-size: 10px;
@@ -315,25 +316,6 @@
 .cxcalendar.m_month .cxcalendar_acts .today:before {
   content: '本月'
 }
-.cxcalendar.has_weeknum .cxcalendar_bd .days {
-  padding-left: 24px
-}
-.cxcalendar.has_weeknum .cxcalendar_bd .days li[data-week-num]:before {
-  content: attr(data-week-num);
-  position: absolute;
-  top: 50%;
-  left: -16px;
-  width: 16px;
-  margin-top: -8px;
-  margin-left: -8px;
-  border-radius: 3px;
-  background-color: #ddd;
-  color: #fff;
-  font-size: 12px;
-  line-height: 16px;
-  text-align: center;
-  pointer-events: none
-}
 .cxcalendar.fixed {
   position: fixed;
   top: auto;
@@ -409,6 +391,25 @@
 }
 .cxcalendar.fixed .cxcalendar_acts a + a {
   margin: 0 0 0 12px
+}
+.cxcalendar.has_weeknum .cxcalendar_bd .days ul {
+  padding-left: 24px
+}
+.cxcalendar.has_weeknum .cxcalendar_bd .days li[data-week-num]:before {
+  content: attr(data-week-num);
+  position: absolute;
+  top: 50%;
+  left: -16px;
+  width: 16px;
+  margin-top: -8px;
+  margin-left: -8px;
+  border-radius: 3px;
+  background-color: #ddd;
+  color: #fff;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  pointer-events: none
 }
 .cxcalendar.not_secs .times .mint + i,
 .cxcalendar.not_secs .times .secs {

@@ -5,7 +5,7 @@
 .cxcalendar_mask{display:none;position:fixed;z-index:9999;top:0;left:0;right:0;bottom:0;background-color:rgba(0,0,0,0)}
 .cxcalendar.show{opacity:1;transform:translate(0,0)}
 .cxcalendar.show+.cxcalendar_mask{display:block}
-.cxcalendar_hd{position:relative;height:32px;padding:8px 50px 0;font-weight:700;font-size:16px;line-height:32px;text-align:center}
+.cxcalendar_hd{position:relative;height:32px;padding:8px 8px 0;font-weight:700;font-size:16px;line-height:32px;text-align:center}
 .cxcalendar_hd .next,.cxcalendar_hd .prev{position:absolute;top:8px;width:30px;height:30px;padding:0;border:1px solid transparent;border-radius:3px;color:var(--cxcalendar-text-color);font-size:0;line-height:0;text-decoration:none;outline:0}
 .cxcalendar_hd .prev{left:8px}
 .cxcalendar_hd .next{right:8px}
@@ -34,7 +34,7 @@
 .cxcalendar_bd .days li.week.sat,.cxcalendar_bd .days li.week.sun{color:inherit}
 .cxcalendar_bd .months li{flex-basis:33%}
 .cxcalendar_bd .years li{flex-basis:25%}
-.cxcalendar_bd .months li:after,.cxcalendar_bd .years li:after{content:'月';margin-left:2px;color:var(--cxcalendar-note-color);font-size:10px;vertical-align:top}
+.cxcalendar_bd .months li:after,.cxcalendar_bd .years li:after{content:'月';display:inline-block;margin-left:2px;color:var(--cxcalendar-note-color);font-size:10px;vertical-align:top}
 .cxcalendar_bd .years li:after{content:'年'}
 .cxcalendar_bd .times{overflow:hidden;position:relative;padding-top:8px;border-top:1px solid var(--cxcalendar-btn-bg);color:var(--cxcalendar-note-color);line-height:32px;display:flex}
 .cxcalendar_bd .times:before{content:'选择时间';margin-right:.5em}
@@ -53,8 +53,6 @@
 .cxcalendar_acts .clear:before{content:'清除'}
 .cxcalendar.m_year .cxcalendar_acts .today:before{content:'今年'}
 .cxcalendar.m_month .cxcalendar_acts .today:before{content:'本月'}
-.cxcalendar.has_weeknum .cxcalendar_bd .days{padding-left:24px}
-.cxcalendar.has_weeknum .cxcalendar_bd .days li[data-week-num]:before{content:attr(data-week-num);position:absolute;top:50%;left:-16px;width:16px;margin-top:-8px;margin-left:-8px;border-radius:3px;background-color:#ddd;color:#fff;font-size:12px;line-height:16px;text-align:center;pointer-events:none}
 .cxcalendar.fixed{position:fixed;top:auto;bottom:-500px;left:0;right:0;width:auto;border:none;border-radius:0;box-shadow:none;opacity:1;transform:none;transition-property:bottom}
 .cxcalendar.fixed+.cxcalendar_mask{display:block;background-color:rgba(0,0,0,0);transform:translate(0,-100%);transition-property:background-color,transform;transition-duration:.3s,0s;transition-delay:0s,0.3s}
 .cxcalendar.fixed.show{bottom:0}
@@ -70,6 +68,8 @@
 .cxcalendar.fixed .cxcalendar_acts a{width:auto;padding:0 1em;border-radius:3px 3px 0 0;background-color:#555;box-shadow:none}
 .cxcalendar.fixed .cxcalendar_acts a:hover{background-color:#666}
 .cxcalendar.fixed .cxcalendar_acts a+a{margin:0 0 0 12px}
+.cxcalendar.has_weeknum .cxcalendar_bd .days ul{padding-left:24px}
+.cxcalendar.has_weeknum .cxcalendar_bd .days li[data-week-num]:before{content:attr(data-week-num);position:absolute;top:50%;left:-16px;width:16px;margin-top:-8px;margin-left:-8px;border-radius:3px;background-color:#ddd;color:#fff;font-size:12px;line-height:16px;text-align:center;pointer-events:none}
 .cxcalendar.not_secs .times .mint+i,.cxcalendar.not_secs .times .secs{display:none}
 .cxcalendar.not_acts .cxcalendar_acts{display:none}
 .cxcalendar.en .cxcalendar_bd .months li:after,.cxcalendar.en .cxcalendar_bd .years li:after,.cxcalendar.en .cxcalendar_hd .month+em:after,.cxcalendar.en .cxcalendar_hd .year+em:after{content:''}

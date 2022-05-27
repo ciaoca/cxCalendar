@@ -18,7 +18,7 @@ cxCalendar 是基于 JavaScript 的日期选择器插件，支持日期、时间
 
 Demo: https://ciaoca.github.io/cxCalendar/
 
-> 从 v3.0 开始，移除对 jQuery 的依赖，如果需要使用旧版，可查看 v2 分支。
+> 从 v3.0 开始，已移除 jQuery 的依赖，如果需要使用旧版，可查看 [v2 分支](https://github.com/ciaoca/cxCalendar/tree/v2)。
 
 
 
@@ -135,7 +135,7 @@ minuteStep|integer|1|**分钟间隔**
 secondStep|integer|1|**秒间隔**
 disableWeek|array|[]|**不可选择的日期（星期值）**<br />`0` 星期日<br/>`1` 星期一<br/>`2` 星期二<br/>`3` 星期三<br/>`4` 星期四<br/>`5` 星期五<br/>`6` 星期六<br />例：`[0,6]` 表示所有周六、周日不可选择
 disableDay|array|[]|**不可选择的日期**<br />`'1'` 每月 1 号<br />`'1-5'` 每年 1 月 5 日<br />`'2020-1-1'` 指定具体日期<br />※ 不要有前导零
-rangeMode|boolean|false|**是否使用日期范围模式**
+mode|string|'single'|**是否使用日期范围模式**<br />`'single'` 单选模式<br />`'range'` 范围模式
 rangeSymbol|string|' - '|**日期范围拼接符号**
 position|string|undefined|**显示位置**<br />`'top'` 上<br />`'bottom'` 下<br />`'left'` 左<br />`'right'` 右<br />`'fixed'` 自定义，配合 `baseClass` 使用<br />默认自适应，可参考：[[Demo Position](https://ciaoca.github.io/cxCalendar/position.html)]
 baseClass|string|undefined|**追加样式名称**<br />仅在面板容器增加 class，不会覆盖默认的 class
@@ -184,7 +184,7 @@ data-second-step|秒间隔
 data-lock-row|是否固定行数，值为 `1` 时视为 `true` ，例：`data-lock-row="1"`
 data-disable-week|不可选择的日期（星期值），例：`data-disable-week="0,6"`
 data-disable-day|不可选择的日期，例：`data-disable-day="1,5-2,2021-2-11"`
-data-range-mode|是否使用日期范围模式，值为 `1` 时视为 `true` ，例：`data-range-mode="1"`
+data-mode|选择模式
 data-range-symbol|日期范围拼接符号
 data-position|显示位置
 data-base-class|追加样式名称

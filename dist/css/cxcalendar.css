@@ -407,6 +407,13 @@
   transform: translate(0,0);
   transition-delay: 0s
 }
+.cxcalendar.fixed .cxcalendar_bd ul:nth-child(2),
+.cxcalendar.fixed .cxcalendar_hd section:nth-child(2) {
+  display: none
+}
+.cxcalendar.fixed .cxcalendar_bd .times {
+  display: block
+}
 .cxcalendar.fixed .cxcalendar_hd .prev {
   left: 24px
 }
@@ -491,6 +498,15 @@
 }
 .cxcalendar.en.range .cxcalendar_bd .times section:nth-child(2):before {
   content: 'End Time:'
+}
+@media (min-width:640px) {
+  .cxcalendar.fixed .cxcalendar_bd ul:nth-child(2),
+  .cxcalendar.fixed .cxcalendar_hd section:nth-child(2) {
+    display: inherit
+  }
+  .cxcalendar.fixed .cxcalendar_bd .times {
+    display: flex
+  }
 }
 @media (width:375px) and (height:812px),
 (width:414px) and (height:896px),

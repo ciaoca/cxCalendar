@@ -462,6 +462,14 @@
   transition-delay: 0s;
 }
 
+.cxcalendar.fixed .cxcalendar_hd section:nth-child(2),
+.cxcalendar.fixed .cxcalendar_bd ul:nth-child(2) {
+  display: none;
+}
+.cxcalendar.fixed .cxcalendar_bd .times {
+  display: block;
+}
+
 .cxcalendar.fixed .cxcalendar_hd .prev {
   left: 24px;
 }
@@ -563,11 +571,22 @@
 }
 
 
+@media (min-width: 640px) {
+.cxcalendar.fixed .cxcalendar_hd section:nth-child(2),
+.cxcalendar.fixed .cxcalendar_bd ul:nth-child(2) {
+  display: inherit;
+}
+.cxcalendar.fixed .cxcalendar_bd .times {
+  display: flex;
+}
+}
+
+
 /* iPhone X 以上全面屏 */
-@media (width:375px) and (height:812px),
-(width:414px) and (height:896px),
-(width:390px) and (height:844px),
-(width:428px) and (height:926px) {
+@media (width: 375px) and (height: 812px),
+(width: 414px) and (height: 896px),
+(width: 390px) and (height: 844px),
+(width: 428px) and (height: 926px) {
   .cxcalendar.fixed .cxcalendar_bd {
     padding-bottom: env(safe-area-inset-bottom);
   }

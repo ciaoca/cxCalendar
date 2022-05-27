@@ -334,7 +334,7 @@ theTool.bindEvent = function() {
         // 确认
         case 'confirm':
           self.hidePanel();
-          if (cacheApi.settings.rangeMode) {
+          if (cacheApi.settings.mode === 'range') {
             self.confirmRange();
           } else {
             self.confirmTime();
@@ -352,7 +352,7 @@ theTool.bindEvent = function() {
       }      el.classList.add('selected');
 
       // 范围选择，需手动确认
-      if (cacheApi.settings.rangeMode) {
+      if (cacheApi.settings.mode === 'range') {
         const theTime = self.parseDate(dateText).getTime();
 
         if (typeof self.cacheDate.startTime !== 'number' || self.cacheDate.startTime >= theTime || typeof self.cacheDate.endTime === 'number') {
@@ -421,7 +421,7 @@ theTool.buildPanel = function() {
   // 基础样式
   const classValue = ['cxcalendar', 'm_' + cacheApi.settings.type];
 
-  if (cacheApi.settings.rangeMode) {
+  if (cacheApi.settings.mode === 'range') {
     classValue.push('range');
   }
   if (typeof cacheApi.settings.baseClass === 'string' && cacheApi.settings.baseClass.length) {
@@ -431,7 +431,7 @@ theTool.buildPanel = function() {
 
   const splitHtml = '<em></em>';
   const prevNextHtml = '<a class="prev" href="javascript://" rel="prev"></a><a class="next" href="javascript://" rel="next"></a>';
-  const fillHtml = cacheApi.settings.rangeMode ? '<section class="fill"></section>' : '';
+  const fillHtml = cacheApi.settings.mode === 'range' ? '<section class="fill"></section>' : '';
   let html = '<section>';
 
   // 年份选择框
@@ -534,7 +534,7 @@ theTool.buildActs = function() {
       list.push('clear');
       break;
   }
-  if (cacheApi.settings.rangeMode) {
+  if (cacheApi.settings.mode === 'range') {
     if (list.indexOf('today') >= 0) {
       list.splice(list.indexOf('today'), 1);
     }    if (list.indexOf('confirm') === -1) {
@@ -681,7 +681,7 @@ theTool.buildDays = function(year, month) {
     let todayName = '';
 
     // 高亮已选择
-    if (cacheApi.settings.rangeMode) {
+    if (cacheApi.settings.mode === 'range') {
       if (todayInt === rangeValue.start || todayInt === rangeValue.end || (todayInt >= rangeValue.start && todayInt <= rangeValue.end)) {
         classValue.push('selected');
 
@@ -753,19 +753,14 @@ theTool.buildDays = function(year, month) {
 // 构建时间选择
 theTool.buildTimes = function() {
   const self = this;
-  const values = {};
-  let optionValue;
   const splitHtml = '<i></i>';
   let html = '<section>';
+  let optionValue;
 
   html += '<select name="hour" class="hour">';
 
   for (let i = 0; i < 24; i += cacheApi.settings.hourStep) {
     optionValue = self.fillLeadZero(i, 2);
-
-    if (i <= cacheApi.defDate.hour) {
-      values.hour = optionValue;
-    }
     html += '<option value="' + optionValue + '">' + optionValue + '</option>';
   }
   html += '</select>';
@@ -774,10 +769,6 @@ theTool.buildTimes = function() {
 
   for (let i = 0; i < 60; i += cacheApi.settings.minuteStep) {
     optionValue = self.fillLeadZero(i, 2);
-
-    if (i <= cacheApi.defDate.mint) {
-      values.mint = optionValue;
-    }
     html += '<option value="' + optionValue + '">' + optionValue + '</option>';
   }
   html += '</select>';
@@ -786,24 +777,47 @@ theTool.buildTimes = function() {
 
   for (let i = 0; i < 60; i += cacheApi.settings.secondStep) {
     optionValue = self.fillLeadZero(i, 2);
-
-    if (i <= cacheApi.defDate.secs) {
-      values.secs = optionValue;
-    }
     html += '<option value="' + optionValue + '">' + optionValue + '</option>';
   }
   html += '</select>';
   html += '</section>';
 
-  if (cacheApi.settings.rangeMode) {
+  if (cacheApi.settings.mode === 'range') {
     html += html;
   }
   self.dom.timeSet.innerHTML = html;
   self.dom.main.insertAdjacentElement('beforeend', self.dom.timeSet);
 
+  self.setTimesValues();
+};
+
+// 赋值时间选择
+theTool.setTimesValues = function() {
+  const self = this;
+  const values = [];
+
+  if (self.cacheDate.startTime && self.cacheDate.endTime) {
+    values.push(self.cacheDate.startTime, self.cacheDate.endTime);
+  } else if (self.cacheDate.startTime) {
+    values.push(self.cacheDate.startTime, self.cacheDate.startTime);
+  } else {
+    values.push(cacheApi.defDate.time, cacheApi.defDate.time);
+  }
+  const times = {
+    hour: [],
+    mint: [],
+    secs: [],
+  };
+
+  for (let x of values) {
+    const d = new Date(x);
+    times.hour.push(self.fillLeadZero(d.getHours(), 2));
+    times.mint.push(self.fillLeadZero(d.getMinutes(), 2));
+    times.secs.push(self.fillLeadZero(d.getSeconds(), 2));
+  }
   for (let x of self.dom.timeSet.querySelectorAll('select')) {
-    if (values[x.name]) {
-      x.value = values[x.name];
+    if (times[x.name] && times[x.name].length) {
+      x.value = times[x.name].shift();
     }  }};
 
 // 构建月份列表
@@ -835,7 +849,7 @@ theTool.buildMonths = function(year) {
     const todayText = year + '-' + i;
     const todayInt = parseInt(year + self.fillLeadZero(i, 2), 10);
 
-    if (cacheApi.settings.rangeMode) {
+    if (cacheApi.settings.mode === 'range') {
       if (todayInt === rangeValue.start || todayInt === rangeValue.end || (todayInt >= rangeValue.start && todayInt <= rangeValue.end)) {
         classValue.push('selected');
 
@@ -915,7 +929,7 @@ theTool.buildYears = function(year) {
   for (let i = start; i <= end; i++) {
     const classValue = [];
 
-    if (cacheApi.settings.rangeMode) {
+    if (cacheApi.settings.mode === 'range') {
       if (i === rangeValue.start || i === rangeValue.end || (i >= rangeValue.start && i <= rangeValue.end)) {
         classValue.push('selected');
 
@@ -1003,7 +1017,7 @@ theTool.gotoDate = function(value) {
     case 'datetime':
       html = self.buildDays(theYear, theMonth);
 
-      if (cacheApi.settings.rangeMode) {
+      if (cacheApi.settings.mode === 'range') {
         fillHtml = '<span class="year">';
         fillHtml += theMonth >= 12 ? (theYear + 1) : theYear;
         fillHtml += '</span><em></em><span class="month">';
@@ -1016,7 +1030,7 @@ theTool.gotoDate = function(value) {
     case 'month':
       html = self.buildMonths(theYear);
 
-      if (cacheApi.settings.rangeMode) {
+      if (cacheApi.settings.mode === 'range') {
         fillHtml = '<span class="year">' + (theYear + 1) + '</span><em></em>';
         html += self.buildMonths(theYear + 1);
       }      break;
@@ -1024,14 +1038,14 @@ theTool.gotoDate = function(value) {
     case 'year':
       html = self.buildYears(theYear);
 
-      if (cacheApi.settings.rangeMode) {
+      if (cacheApi.settings.mode === 'range') {
         fillHtml = '<span class="year">' + (theYear + cacheApi.settings.yearNum) + ' - ' + (theYear + cacheApi.settings.yearNum * 2 - 1) + '</span>';
         html += self.buildYears(theYear + cacheApi.settings.yearNum);
       }      break;
   }
   self.dom.dateSet.innerHTML = html;
 
-  if (cacheApi.settings.rangeMode) {
+  if (cacheApi.settings.mode === 'range') {
     let el = self.dom.head.querySelectorAll('section');
 
     if (el.length > 1) {
@@ -1168,14 +1182,14 @@ theTool.hidePanel = function() {
 // 确认选择日期范围
 theTool.confirmRange = function() {
   const self = this;
-  let value = [];
+  let values = [];
 
   if (self.cacheDate.startTime && self.cacheDate.endTime) {
-    value.push(self.cacheDate.startTime, self.cacheDate.endTime);
+    values.push(self.cacheDate.startTime, self.cacheDate.endTime);
   } else if (self.cacheDate.startTime) {
-    value.push(self.cacheDate.startTime, self.cacheDate.startTime);
+    values.push(self.cacheDate.startTime, self.cacheDate.startTime);
   } else {
-    value.push(cacheApi.defDate.time, cacheApi.defDate.time);
+    values.push(cacheApi.defDate.time, cacheApi.defDate.time);
   }
   if (['datetime', 'time'].indexOf(cacheApi.settings.type) >= 0) {
     const times = {
@@ -1188,14 +1202,26 @@ theTool.confirmRange = function() {
       if (times[x.name]) {
         times[x.name].push(x.value);
       }    }
-    value = value.map((item, index) => {
-      let d = new Date(item);
+    // 日期对比时间顺序
+    if (cacheApi.settings.type === 'datetime') {
+      const diffTime = [];
+
+      for (let i = 0, l = values.length; i < l; i++) {
+        diffTime.push(parseInt([1, times.hour[i], times.mint[i], times.secs[i]].join(''), 10));
+      }
+      if (diffTime[0] > diffTime[1]) {
+        for (let x in times) {
+          if (times[x].length > 1) {
+            times[x][1] = times[x][0];
+          }        }      }    }
+    values = values.map((item, index) => {
+      const d = new Date(item);
       d.setHours(times.hour[index], times.mint[index], times.secs[index], 0);
       return d.getTime();
     });
   }
-  value = value.join(cacheApi.settings.rangeSymbol);
-  cacheApi.setDate(value);
+  values = values.join(cacheApi.settings.rangeSymbol);
+  cacheApi.setDate(values);
 };
 
 // 确认选择
@@ -1279,7 +1305,7 @@ const picker = function() {
     lockRow: 'lockRow',
     minuteStep: 'minuteStep',
     position: 'position',
-    rangeMode: 'rangeMode',
+    mode: 'mode',
     rangeSymbol: 'rangeSymbol',
     secondStep: 'secondStep',
     startDate: 'startDate',
@@ -1380,7 +1406,7 @@ picker.prototype.setOptions = function(options) {
   const rangeValue = {};
 
   // 默认日期
-  if (self.settings.rangeMode) {
+  if (self.settings.mode === 'range') {
     const dateSp = String(self.settings.date).split(self.settings.rangeSymbol);
 
     if (dateSp.length === 2) {
@@ -1430,8 +1456,9 @@ picker.prototype.setOptions = function(options) {
 picker.prototype.show = function() {
   const self = this;
 
-  self.settings.date = self.input.value;
-  self.setOptions();
+  if (self.input.value || !self.settings.date) {
+    self.settings.date = self.input.value;
+  }  self.setOptions();
 
   cacheApi = self;
 
@@ -1451,7 +1478,7 @@ picker.prototype.getDate = function(style) {
   if (typeof style !== 'string' || !style.length) {
     style = self.settings.format;
   }
-  if (self.settings.rangeMode) {
+  if (self.settings.mode === 'range') {
     const dateSp = String(value).split(self.settings.rangeSymbol);
 
     if (dateSp.length === 2) {
@@ -1471,7 +1498,7 @@ picker.prototype.getDate = function(style) {
     }
     newValue.push(theTool.formatDate(style, theDate.getTime()));
   }
-  newValue = self.settings.rangeMode ? newValue.join(self.settings.rangeSymbol) : newValue.join('');
+  newValue = self.settings.mode === 'range' ? newValue.join(self.settings.rangeSymbol) : newValue.join('');
 
   return newValue;
 };
@@ -1481,7 +1508,7 @@ picker.prototype.setDate = function(value) {
   const oldValue = self.input.value;
   const dateList = [];
 
-  if (self.settings.rangeMode) {
+  if (self.settings.mode === 'range') {
     const dateSp = String(value).split(self.settings.rangeSymbol);
 
     if (dateSp.length === 2) {
@@ -1508,7 +1535,7 @@ picker.prototype.setDate = function(value) {
     }
     newValue.push(theTool.formatDate(self.settings.format, theTime));
   }
-  newValue = self.settings.rangeMode ? newValue.join(self.settings.rangeSymbol) : newValue.join('');
+  newValue = self.settings.mode === 'range' ? newValue.join(self.settings.rangeSymbol) : newValue.join('');
 
   if (oldValue !== newValue) {
     self.input.value = newValue;
@@ -1527,7 +1554,7 @@ picker.prototype.clearDate = function() {
 
 const cxCalendar = function(el, options, isAttach) {
   const result = new picker(...arguments);
-console.log(result);
+
   if (isAttach) {
     return result;
   }};
@@ -1555,7 +1582,7 @@ cxCalendar.defaults = {
   secondStep: 1,          // 秒间隔
   disableWeek: [],        // 不可选择的日期（星期值）
   disableDay: [],         // 不可选择的日期
-  rangeMode: false,       // 日期范围模式
+  mode: 'single',         // 选择模式
   rangeSymbol: ' - ',     // 日期范围拼接符号
   position: undefined,    // 面板位置
   baseClass: undefined,   // 基础样式

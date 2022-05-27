@@ -11,11 +11,12 @@ header{background-color:#2d2d2d;color:#fff;}
 header .wrap{padding:30px 0;}
 header h1{margin:0;}
 
-nav{display:flex;text-align:center;}
-nav a{position:relative;flex:1;padding:0.5em 0;border-radius:5px;background-color:#eee;
+nav{display:flex;flex-wrap:wrap;text-align:center;
+gap:0.5em 1em;
+}
+nav a{flex:none;position:relative;padding:0.5em 1em;border-radius:5px;background-color:#eee;
 transition:background-color 0.2s;
 }
-nav a + a{margin-left:1em;}
 nav a:hover{background-color:#e0e0e0;}
 nav a.active{background-color:#ddd;color:#333;}
 

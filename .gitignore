@@ -1,0 +1,15 @@
+# Folder
+_[a-z0-9]*/
+node_modules/
+
+# File
+_[a-z0-9]*.*
+*.zip
+*.rar
+
+# Windows System File
+Thumbs.db
+Desktop.ini
+
+# Mac System File
+*.DS_Store

@@ -1,0 +1,31 @@
+{
+  "name": "cxcalendar",
+  "version": "3.0.0",
+  "description": "JavaScript plugins for date and time picker.",
+  "author": "ciaoca <ciaoca@gmail.com> (https://github.com/ciaoca/cxCalendar)",
+  "license": "MIT",
+  "main": "dist/js/cxcalendar.js",
+  "module": "dist/js/cxcalendar.es.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ciaoca/cxCalendar.git"
+  },
+  "homepage": "https://github.com/ciaoca/cxCalendar",
+  "bugs": {
+    "url": "https://github.com/ciaoca/cxCalendar/issues"
+  },
+  "devDependencies": {
+    "rollup-plugin-terser": "^7.0.2"
+  },
+  "dependencies": {
+    "clean-css": "^5.3.0",
+    "rollup-plugin-css-only": "^3.1.0"
+  }
+}

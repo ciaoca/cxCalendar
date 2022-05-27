@@ -64,6 +64,12 @@
       <input id="my_disabled" type="text" readonly placeholder="周末不可选">
     </fieldset>
 
+    <fieldset>
+      <legend>选择日期范围</legend>
+      <label for="my_range">选择日期：</label>
+      <input id="my_range" type="text" readonly size="30">
+    </fieldset>
+
     <div class="about">
       <section>
         <h2>文档</h2>
@@ -138,6 +144,24 @@ cxCalendar.attach(document.getElementById('my_disabled'), {
     '1-2',          // 每年1月2号
     '2021-1-3',     // 具体日期
   ]
+});
+
+// 选择日期范围
+cxCalendar.attach(document.getElementById('my_range'), {
+  rangeMode: true,
+
+  startDate: 1949,
+  // type: 'year',
+  // format: 'Y',
+
+  // type: 'month',
+  // format: 'Y-m',
+
+  // type: 'date',
+  // format: 'Y-m-d',
+
+  type: 'time',
+  format: 'H:i:s',
 });
 </script>
 </body>

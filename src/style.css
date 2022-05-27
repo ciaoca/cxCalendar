@@ -3,8 +3,8 @@
  * ------------------------------ */
 .cxcalendar {
   --cxcalendar-bg: #fff;
-  --cxcalendar-btn-bg: #eee;
-  --cxcalendar-btn-border: #ccc;
+  --cxcalendar-item-bg: #eee;
+  --cxcalendar-item-border: #ccc;
 
   --cxcalendar-text-color: #333;
   --cxcalendar-days-color: #666;
@@ -16,12 +16,14 @@
   --cxcalendar-now-bg: #f3f3f3;
   --cxcalendar-set-bg: #8cc152;
 
+  --cxcalendar-gap-out: 8px;
+
   position: absolute;
   z-index: 10000;
   top: -999px;
   left: -999px;
   width: 266px;
-  border: 1px solid var(--cxcalendar-btn-border);
+  border: 1px solid var(--cxcalendar-item-border);
   border-radius: 3px;
   background-color: var(--cxcalendar-bg);
   box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
@@ -58,7 +60,8 @@
 .cxcalendar_hd {
   position: relative;
   height: 32px;
-  padding: 8px 8px 0;
+  padding: var(--cxcalendar-gap-out);
+  padding-bottom: 0;
   font-weight: bold;
   font-size: 16px;
   line-height: 32px;
@@ -69,7 +72,7 @@
 .cxcalendar_hd .prev,
 .cxcalendar_hd .next {
   position: absolute;
-  top: 8px;
+  top: var(--cxcalendar-gap-out);
   width: 30px;
   height: 30px;
   padding: 0;
@@ -80,13 +83,15 @@
   line-height: 0;
   text-decoration: none;
   outline: 0;
+  transition-property: border-color, background-color;
+  transition-duration: 0.2s;
 }
 
 .cxcalendar_hd .prev {
-  left: 8px;
+  left: var(--cxcalendar-gap-out);
 }
 .cxcalendar_hd .next {
-  right: 8px;
+  right: var(--cxcalendar-gap-out);
 }
 
 .cxcalendar_hd .prev:before,
@@ -128,6 +133,8 @@
   vertical-align: top;
   outline: none;
   cursor: pointer;
+  transition-property: border-color, background-color;
+  transition-duration: 0.2s;
   -webkit-appearance: none;
   appearance: none;
 }
@@ -144,23 +151,33 @@
   content: '月';
 }
 
+/* 次面板 */
+.cxcalendar_hd .fill {
+  font-weight: normal;
+  font-size: 14px;
+}
+.cxcalendar_hd .fill span {
+  padding:0 4px;
+}
+
 .cxcalendar_hd .prev:hover,
 .cxcalendar_hd .next:hover,
 .cxcalendar_hd select:hover,
 .cxcalendar_bd .times select:hover {
-  border: 1px solid var(--cxcalendar-btn-border);
-  background: var(--cxcalendar-btn-bg);
+  border-color: var(--cxcalendar-item-border);
+  background: var(--cxcalendar-item-bg);
 }
 
 /* 日期 */
 .cxcalendar_bd {
   position: relative;
-  padding: 0 8px 8px;
+  padding: var(--cxcalendar-gap-out);
+  padding-top: 0;
   z-index: 1;
 }
 
 .cxcalendar_bd ul {
-  overflow: hidden;
+  position: relative;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -170,6 +187,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  align-content: flex-start;
 }
 
 .cxcalendar_bd ul li {
@@ -182,6 +200,8 @@
   border-radius: 5px;
   cursor: pointer;
   flex: none;
+  transition-property: background-color;
+  transition-duration: 0.2s;
 }
 
 .cxcalendar_bd ul li.week,
@@ -207,13 +227,14 @@
 }
 
 .cxcalendar_bd ul li:hover {
-  background-color: var(--cxcalendar-btn-bg);
+  background-color: var(--cxcalendar-item-bg);
 }
 
 .cxcalendar_bd ul li.selected,
 .cxcalendar_bd ul li.selected.sat,
 .cxcalendar_bd ul li.selected.sun,
 .cxcalendar_bd ul li.selected.holiday,
+.cxcalendar_bd ul li.selected.other,
 .cxcalendar_bd ul li.selected:hover {
   background-color: var(--cxcalendar-set-bg);
   color: #fff;
@@ -269,21 +290,33 @@
 
 /* 时间 */
 .cxcalendar_bd .times {
-  overflow: hidden;
   position: relative;
-  padding-top: 8px;
-  border-top: 1px solid var(--cxcalendar-btn-bg);
+  padding-top: var(--cxcalendar-gap-out);
   color: var(--cxcalendar-note-color);
   line-height: 32px;
   display: flex;
 }
 .cxcalendar_bd .times:before {
-  content: '选择时间';
-  margin-right: 0.5em;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 10%, rgba(0, 0, 0, 0.1) 90%, rgba(0, 0, 0, 0) 100%);
+}
+.cxcalendar_bd .times:only-child:before {
+  display: none;
 }
 
-.cxcalendar_bd .times:only-child {
-  border-top: none;
+.cxcalendar_bd .times section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+.cxcalendar_bd .times section:before {
+  content: '选择时间';
+  margin-right: 0.5em;
 }
 
 .cxcalendar_bd .times select {
@@ -298,52 +331,34 @@
   content: ':';
 }
 
-.cxcalendar_bd .times .confirm {
-  height: 32px;
-  margin-left: auto;
-  padding: 0 1em;
-  border-radius: 3px;
-  background-color: var(--cxcalendar-sat-color);
-  color: #fff;
-  line-height: 32px;
-  text-decoration: none;
-  transition-property: opacity;
-  transition-duration: 0.2s;
-}
-.cxcalendar_bd .times .confirm:before {
-  content: '确定';
-}
-.cxcalendar_bd .times .confirm:hover {
-  opacity: 0.8;
-}
-
 /* 快捷操作 */
 .cxcalendar_acts {
-  position: absolute;
-  top: 40px;
-  left: 100%;
-  width: 2em;
+  padding: var(--cxcalendar-gap-out) 0;
+  border-top: 1px solid var(--cxcalendar-item-border);
+  border-radius: 0 0 3px 3px;
+  background-color: var(--cxcalendar-item-bg);
   font-size: 12px;
-  line-height: 1.2;
+  line-height: 30px;
+  display: flex;
+  justify-content: center;
 }
 
 .cxcalendar_acts a {
-  display: block;
-  width: 1em;
-  padding: 5px 0.5em;
-  border-radius: 0 3px 3px 0;
-  background-color: var(--cxcalendar-btn-border);
-  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  padding: 0 1em;
+  border-radius: 3px;
+  background-color: #666;
   color: #fff;
   text-decoration: none;
   text-align: center;
+  transition-property: opacity;
+  transition-duration: 0.2s;
 }
 .cxcalendar_acts a + a {
-  margin-top: 8px;
+  margin-left: 1em;
 }
 .cxcalendar_acts a:hover {
-  background-color: var(--cxcalendar-note-color);
   color: #fff;
+  opacity: 0.8;
 }
 
 .cxcalendar_acts .today:before {
@@ -352,13 +367,65 @@
 .cxcalendar_acts .clear:before {
   content: '清除';
 }
+.cxcalendar_acts .confirm {
+  background-color: var(--cxcalendar-sat-color);
+}
+.cxcalendar_acts .confirm:before {
+  content: '确定';
+}
+
 
 /* 不同日期类型 */
+.cxcalendar.m_time .cxcalendar_acts .today:before,
+.cxcalendar.m_datetime .cxcalendar_acts .today:before {
+  content: '现在';
+}
 .cxcalendar.m_year .cxcalendar_acts .today:before {
   content: '今年';
 }
 .cxcalendar.m_month .cxcalendar_acts .today:before {
   content: '本月';
+}
+
+
+/* 范围模式 */
+.cxcalendar.range {
+  width: 524px;
+}
+.cxcalendar.range .cxcalendar_hd,
+.cxcalendar.range .cxcalendar_bd .days,
+.cxcalendar.range .cxcalendar_bd .months,
+.cxcalendar.range .cxcalendar_bd .years {
+  display: flex;
+}
+.cxcalendar.range .cxcalendar_hd section,
+.cxcalendar.range .cxcalendar_bd ul {
+  flex: 1;
+}
+.cxcalendar.range .cxcalendar_bd ul + ul {
+  margin-left: var(--cxcalendar-gap-out);
+}
+.cxcalendar.range .cxcalendar_bd ul + ul:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -4px;
+  width: 1px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 35%, rgba(0, 0, 0, 0.1) 65%, rgba(0, 0, 0, 0) 100%);
+}
+.cxcalendar.range .cxcalendar_bd ul li.selected {
+  background-color: #80b8de;
+}
+.cxcalendar.range .cxcalendar_bd ul li.selected.start,
+.cxcalendar.range .cxcalendar_bd ul li.selected.end {
+  background-color: #508fb9
+}
+.cxcalendar.range .cxcalendar_bd .times section:nth-child(1):before {
+  content: '开始时间';
+}
+.cxcalendar.range .cxcalendar_bd .times section:nth-child(2):before {
+  content: '结束时间';
 }
 
 
@@ -377,7 +444,6 @@
   transform: none;
   transition-property: bottom;
 }
-
 .cxcalendar.fixed + .cxcalendar_mask {
   display: block;
   background-color: rgba(0, 0, 0, 0);
@@ -417,33 +483,22 @@
   padding-top: 10px;
   padding-bottom: 10px;
 }
-.cxcalendar.fixed .cxcalendar_bd .times .confirm {
-  height: 32px;
-  margin-top: -15px;
-  line-height: 30px;
-}
 
 .cxcalendar.fixed .cxcalendar_acts {
+  position: absolute;
   top: auto;
   left: auto;
   bottom: 100%;
   right: 10px;
   width: auto;
+  padding: 0;
+  border: none;
+  background: none;
   line-height: 32px;
   display: flex;
 }
 .cxcalendar.fixed .cxcalendar_acts a {
-  width: auto;
-  padding: 0 1em;
   border-radius: 3px 3px 0 0;
-  background-color: #555;
-  box-shadow: none;
-}
-.cxcalendar.fixed .cxcalendar_acts a:hover {
-  background-color: #666;
-}
-.cxcalendar.fixed .cxcalendar_acts a + a {
-  margin: 0 0 0 12px;
 }
 
 
@@ -488,31 +543,23 @@
 .cxcalendar.en .cxcalendar_bd .years li:after {
   content: '';
 }
-.cxcalendar.en .cxcalendar_bd .times:before {
+.cxcalendar.en .cxcalendar_bd .times section:before {
   content: 'Time:'
-}
-.cxcalendar.en .cxcalendar_bd .times .confirm:before {
-  content: 'Ok';
-}
-.cxcalendar.en .cxcalendar_acts {
-  top: 100%;
-  left: 8px;
-  line-height: 28px;
-  display: flex;
-}
-.cxcalendar.en .cxcalendar_acts a {
-  width: auto;
-  padding:0 1em;
-  border-radius: 0 0 3px 3px;
-}
-.cxcalendar.en .cxcalendar_acts a + a {
-  margin: 0 0 0 8px;
 }
 .cxcalendar.en .cxcalendar_acts .today:before {
   content: 'Now';
 }
 .cxcalendar.en .cxcalendar_acts .clear:before {
   content: 'Clear';
+}
+.cxcalendar.en .cxcalendar_acts .confirm:before {
+  content: 'Ok';
+}
+.cxcalendar.en.range .cxcalendar_bd .times section:nth-child(1):before {
+  content: 'Start Time:';
+}
+.cxcalendar.en.range .cxcalendar_bd .times section:nth-child(2):before {
+  content: 'End Time:';
 }
 
 

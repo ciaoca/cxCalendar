@@ -12,6 +12,8 @@ cxCalendar.languages = {
    * 当无法自动适配时，将使用 default 的配置
    */
   'default': {
+    am: '上午',
+    pm: '下午',
     monthList: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
     weekList: ['日', '一', '二', '三', '四', '五', '六'],
     holiday: []
@@ -19,6 +21,8 @@ cxCalendar.languages = {
 
   // English
   'en': {
+    am: 'AM',
+    pm: 'PM',
     monthList: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     weekList: ['Sun', 'Mon', 'Tur', 'Wed', 'Thu', 'Fri', 'Sat'],
     holiday: []
@@ -26,13 +30,17 @@ cxCalendar.languages = {
 
   // Japanese
   'ja': {
+    am: '午前',
+    pm: '午後',
     monthList: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
     weekList: ['日', '月', '火', '水', '木', '金', '土'],
     holiday: []
   },
 
-  // Chinese
+  // 简体中文
   'zh-cn': {
+    am: '上午',
+    pm: '下午',
     monthList: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
     weekList: ['日', '一', '二', '三', '四', '五', '六'],
     holiday: [

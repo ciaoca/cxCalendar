@@ -28,7 +28,7 @@
       <legend>API</legend>
       <section>
         <label for="date_api">选择日期：</label>
-        <input id="date_api" type="text" class="input" readonly>
+        <input id="date_api" type="text" class="input" readonly size="50">
       </section>
       <section class="acts">
         <div class="group">
@@ -50,6 +50,8 @@
           <a href="javascript://" rel="lang" rev="ja">设置语言：日文</a>
         </div>
         <div class="group">
+          <a href="javascript://" rel="range" rev="0">单选模式</a>
+          <a href="javascript://" rel="range" rev="1">范围模式</a>
           <a href="javascript://" rel="attach">Attach</a>
           <a href="javascript://" rel="detach">Detach</a>
         </div>
@@ -87,6 +89,7 @@
 <script>
 (function() {
   const nowDate = new Date();
+  let rangeMode = false;
   let theApi;
 
   const getRandomNumber = (min, max) => {
@@ -127,13 +130,29 @@
           break;
 
         case 'set':
-          opts = [nowDate.getFullYear(), getRandomNumber(1, 12), getRandomNumber(1, 31)].join('/');
+          if (rangeMode) {
+            opts = [nowDate.getFullYear(), getRandomNumber(1, 6), getRandomNumber(1, 31)].join('/');
+            opts += ' - ';
+            opts += [nowDate.getFullYear(), getRandomNumber(7, 12), getRandomNumber(1, 31)].join('/');
+
+          } else {
+            opts = [nowDate.getFullYear(), getRandomNumber(1, 12), getRandomNumber(1, 31)].join('/');
+          };
+
           console.log('setDate:', opts);
           theApi.setDate(opts);
           break;
 
         case 'clear':
           theApi.clearDate();
+          break;
+
+        case 'range':
+          rangeMode = Boolean(parseInt(rev, 10));
+          theApi.setOptions({
+            rangeMode: rangeMode
+          });
+          theApi.show();
           break;
 
         case 'type':

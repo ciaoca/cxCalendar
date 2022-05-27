@@ -17,7 +17,9 @@
   <div class="wrap">
     <nav>
       <a href="index.html">常规示例</a>
+      <a href="range.html">范围模式</a>
       <a href="position.html">位置设定</a>
+      <a href="mobile.html">移动端样式</a>
       <a href="bind.html">动态调用</a>
       <a class="active" href="api.html">API 接口</a>
     </nav>
@@ -50,8 +52,8 @@
           <a href="javascript://" rel="lang" rev="ja">设置语言：日文</a>
         </div>
         <div class="group">
-          <a href="javascript://" rel="range" rev="0">单选模式</a>
-          <a href="javascript://" rel="range" rev="1">范围模式</a>
+          <a href="javascript://" rel="mode" rev="">单选模式</a>
+          <a href="javascript://" rel="mode" rev="range">范围模式</a>
           <a href="javascript://" rel="attach">Attach</a>
           <a href="javascript://" rel="detach">Detach</a>
         </div>
@@ -89,7 +91,7 @@
 <script>
 (function() {
   const nowDate = new Date();
-  let rangeMode = false;
+  let mode = '';
   let theApi;
 
   const getRandomNumber = (min, max) => {
@@ -130,7 +132,7 @@
           break;
 
         case 'set':
-          if (rangeMode) {
+          if (mode === 'range') {
             opts = [nowDate.getFullYear(), getRandomNumber(1, 6), getRandomNumber(1, 31)].join('/');
             opts += ' - ';
             opts += [nowDate.getFullYear(), getRandomNumber(7, 12), getRandomNumber(1, 31)].join('/');
@@ -147,10 +149,9 @@
           theApi.clearDate();
           break;
 
-        case 'range':
-          rangeMode = Boolean(parseInt(rev, 10));
+        case 'mode':
           theApi.setOptions({
-            rangeMode: rangeMode
+            mode: rev
           });
           theApi.show();
           break;

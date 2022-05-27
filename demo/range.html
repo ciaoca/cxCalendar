@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>cxCalendar 日期选择器 - 动态调用</title>
+<title>cxCalendar 日期选择器 - 示例</title>
 <link rel="stylesheet" href="../dist/css/cxcalendar.css">
 <link rel="stylesheet" href="./css/demo.css">
 </head>
@@ -17,45 +17,43 @@
   <div class="wrap">
     <nav>
       <a href="index.html">常规示例</a>
-      <a href="range.html">范围模式</a>
+      <a class="active" href="range.html">范围模式</a>
       <a href="position.html">位置设定</a>
       <a href="mobile.html">移动端样式</a>
-      <a class="active" href="bind.html">动态调用</a>
+      <a href="bind.html">动态调用</a>
       <a href="api.html">API 接口</a>
     </nav>
 
-    <h2>动态调用</h2>
+    <h2>范围模式</h2>
 
-    <fieldset id="demo">
+    <fieldset>
       <legend>常用</legend>
       <section>
         <label for="my_day">选择日期：</label>
-        <input id="my_day" type="text" readonly>
+        <input id="my_day" type="text" size="30" readonly>
       </section>
       <section>
         <label for="my_datetime">选择日期和时间：</label>
-        <input id="my_datetime" type="text" readonly data-type="datetime" data-format="Y-m-d H:i:s">
+        <input id="my_datetime" type="text" size="50" readonly>
       </section>
       <section>
         <label for="my_year">选择年份：</label>
-        <input id="my_year" type="text" readonly data-type="year" data-format="Y">
+        <input id="my_year" type="text" readonly>
       </section>
       <section>
         <label for="my_month">选择月份：</label>
-        <input id="my_month" type="text" readonly data-type="month" data-format="Y-m">
+        <input id="my_month" type="text" readonly>
       </section>
       <section>
         <label for="my_time">选择时间：</label>
-        <input id="my_time" type="text" readonly data-type="time" data-format="H:i:s">
+        <input id="my_time" type="text" readonly>
       </section>
     </fieldset>
-
+    
     <fieldset>
-      <legend>操作</legend>
-      <section class="acts">
-        <a href="javascript://" rel="add">增加一个</a>
-        <a href="javascript://" rel="remove">删除最后一个</a>
-      </section>
+      <legend>设置默认值</legend>
+      <label for="my_value">选择日期：</label>
+      <input id="my_value" type="text" size="30" readonly>
     </fieldset>
 
     <div class="about">
@@ -77,35 +75,50 @@
 
 <script src="../dist/js/cxcalendar.js"></script>
 <script>
+cxCalendar.defaults.mode = 'range';
+// cxCalendar.defaults.rangeSymbol = ' 至 ';
+
+// 默认: 选择日期
+cxCalendar.attach(document.getElementById('my_day'));
+
+// 选择日期和时间
+cxCalendar.attach(document.getElementById('my_datetime'), {
+  type: 'datetime',
+  format: 'Y-m-d H:i:s'
+});
+
+// 选择年份
+cxCalendar.attach(document.getElementById('my_year'), {
+  startDate: 1949,
+  yearNum: 20,
+  type: 'year',
+  format: 'Y'
+});
+
+// 选择月份
+cxCalendar.attach(document.getElementById('my_month'), {
+  type: 'month',
+  format: 'Y-m'
+});
+
+// 选择时间
+cxCalendar.attach(document.getElementById('my_time'), {
+  type: 'time',
+  format: 'H:i:s'
+});
+
+// 设置默认值
+// 通过 value 和 date 方法的差异
 (function() {
-  const demo = document.getElementById('demo');
+  const input = document.getElementById('my_value');
+  const date = new Date();
+  const value = Array(2).fill([date.getFullYear(), date.getMonth()].join('-'));
+  value[0] += '-1';
+  value[1] += '-15';
 
-  document.body.addEventListener('click', (e) => {
-    const el = e.target;
-    const nodeName = el.nodeName.toLowerCase();
+  input.value = value.join(' - ');
 
-    if (nodeName === 'a' && el.rel) {
-      const rel = el.rel;
-
-      if (['add','remove'].indexOf(rel) >= 0) {
-        event.preventDefault();
-
-        if (rel === 'add') {
-          demo.insertAdjacentHTML('beforeend', '<section><label>选择日期：</label><input type="text" readonly></section>');
-
-        } else if (rel === 'remove') {
-          const list = demo.querySelectorAll('section');
-
-          if (list.length) {
-            demo.removeChild(list[list.length - 1]);
-          };
-        };
-      };
-
-    } else if (nodeName === 'input') {
-      cxCalendar(el);
-    };
-  });
+  cxCalendar.attach(input);
 })();
 </script>
 </body>

@@ -17,7 +17,9 @@
   <div class="wrap">
     <nav>
       <a class="active" href="index.html">常规示例</a>
+      <a href="range.html">范围模式</a>
       <a href="position.html">位置设定</a>
+      <a href="mobile.html">移动端样式</a>
       <a href="bind.html">动态调用</a>
       <a href="api.html">API 接口</a>
     </nav>
@@ -46,28 +48,36 @@
         <label for="my_time">选择时间：</label>
         <input id="my_time" type="text" readonly>
       </section>
+    </fieldset>
+    
+    <fieldset>
+      <legend>设置默认值</legend>
+      <section>
+        <label for="my_value_1">&lt;input&gt; 的 value</label>
+        <input id="my_value_1" type="text" readonly>
+      </section>
+      <section>
+        <label for="my_value_2">options.date</label>
+        <input id="my_value_2" type="text" readonly>
+      </section>
+    </fieldset>
+
+    <fieldset>
+      <legend>样式</legend>
       <section>
         <label for="my_weeknum">显示周数：</label>
         <input id="my_weeknum" type="text" readonly>
       </section>
-    </fieldset>
-    
-    <fieldset>
-      <legend>&lt;input&gt; 的 value 中设置默认值</legend>
-      <label for="my_value">选择日期：</label>
-      <input id="my_value" type="text" readonly>
+      <section>
+        <label for="my_notsecs">隐藏秒数：</label>
+        <input id="my_notsecs" type="text" readonly>
+      </section>
     </fieldset>
 
     <fieldset>
       <legend>限制可选日期</legend>
       <label for="my_disabled">选择日期：</label>
       <input id="my_disabled" type="text" readonly placeholder="周末不可选">
-    </fieldset>
-
-    <fieldset>
-      <legend>选择日期范围</legend>
-      <label for="my_range">选择日期：</label>
-      <input id="my_range" type="text" readonly size="30">
     </fieldset>
 
     <div class="about">
@@ -94,7 +104,6 @@ cxCalendar.attach(document.getElementById('my_day'));
 
 // 选择日期和时间
 cxCalendar.attach(document.getElementById('my_datetime'), {
-  // date: '2022-1-1 5:00',
   type: 'datetime',
   format: 'Y-m-d H:i:s'
 });
@@ -119,21 +128,33 @@ cxCalendar.attach(document.getElementById('my_time'), {
   format: 'H:i:s'
 });
 
+// 设置默认值
+// 通过 value 和 date 方法的差异
+(function() {
+  const input = document.getElementById('my_value_1');
+  const date = new Date();
+  date.setMonth(date.getMonth() - 1);
+
+  input.value = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-');
+  cxCalendar.attach(input);
+
+  cxCalendar.attach(document.getElementById('my_value_2'), {
+    date: date.getTime()
+  });
+})();
+
 // 显示周数
 cxCalendar.attach(document.getElementById('my_weeknum'), {
   baseClass: 'has_weeknum',
   wday: 1,
 });
 
-// input 的 value 中有默认值
-(function() {
-  const input = document.getElementById('my_value');
-  const date = new Date();
-  date.setMonth(date.getMonth() - 1);
-
-  input.value = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-');
-  cxCalendar.attach(input);
-})();
+// 隐藏秒数
+cxCalendar.attach(document.getElementById('my_notsecs'), {
+  type: 'datetime',
+  format: 'Y-m-d H:i',
+  baseClass: 'not_secs',
+});
 
 // 限制可选日期
 cxCalendar.attach(document.getElementById('my_disabled'), {
@@ -144,24 +165,6 @@ cxCalendar.attach(document.getElementById('my_disabled'), {
     '1-2',          // 每年1月2号
     '2021-1-3',     // 具体日期
   ]
-});
-
-// 选择日期范围
-cxCalendar.attach(document.getElementById('my_range'), {
-  rangeMode: true,
-
-  startDate: 1949,
-  // type: 'year',
-  // format: 'Y',
-
-  // type: 'month',
-  // format: 'Y-m',
-
-  // type: 'date',
-  // format: 'Y-m-d',
-
-  type: 'time',
-  format: 'H:i:s',
 });
 </script>
 </body>

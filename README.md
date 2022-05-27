@@ -36,12 +36,12 @@ Demo: https://ciaoca.github.io/cxCalendar/
 ### 从 NPM 安装，作为模块引入
 
 ```shell
-npm install cxcalendar
+npm install cxcalendar3
 ```
 
 ```javascript
 import 'cxcalendar.css';
-import cxCalendar from 'cxcalendar';
+import cxCalendar from 'cxcalendar3';
 ```
 
 

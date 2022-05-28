@@ -1024,12 +1024,13 @@ theTool.gotoDate = function(value) {
       html = self.buildDays(theYear, theMonth);
 
       if (cacheApi.settings.mode === 'range') {
-        fillHtml = '<span class="year">';
-        fillHtml += theMonth >= 12 ? (theYear + 1) : theYear;
-        fillHtml += '</span><em></em><span class="month">';
-        fillHtml += theMonth >= 12 ? '1' : (theMonth + 1);
-        fillHtml += '</span><em></em>';
+        let fillMonth = theMonth + 1;
 
+        if (fillMonth > 12) {
+          fillMonth = 1;
+        }
+        fillHtml = '<span class="year">' + theYear + '</span><em></em>';
+        fillHtml += '<span class="month">' + cacheApi.language.monthList[fillMonth - 1] + '</span><em></em>';
         html += self.buildDays(theYear, theMonth + 1);
       }      break;
 

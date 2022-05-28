@@ -135,7 +135,7 @@ minuteStep|integer|1|**分钟间隔**
 secondStep|integer|1|**秒间隔**
 disableWeek|array|[]|**不可选择的日期（星期值）**<br />`0` 星期日<br/>`1` 星期一<br/>`2` 星期二<br/>`3` 星期三<br/>`4` 星期四<br/>`5` 星期五<br/>`6` 星期六<br />例：`[0,6]` 表示所有周六、周日不可选择
 disableDay|array|[]|**不可选择的日期**<br />`'1'` 每月 1 号<br />`'1-5'` 每年 1 月 5 日<br />`'2020-1-1'` 指定具体日期<br />※ 不要有前导零
-mode|string|'single'|**是否使用日期范围模式**<br />`'single'` 单选模式<br />`'range'` 范围模式
+mode|string|'single'|**选择模式**<br />`'single'` 单选模式<br />`'range'` 范围模式
 rangeSymbol|string|' - '|**日期范围拼接符号**
 position|string|undefined|**显示位置**<br />`'top'` 上<br />`'bottom'` 下<br />`'left'` 左<br />`'right'` 右<br />`'fixed'` 自定义，配合 `baseClass` 使用<br />默认自适应，可参考：[[Demo Position](https://ciaoca.github.io/cxCalendar/position.html)]
 baseClass|string|undefined|**追加样式名称**<br />仅在面板容器增加 class，不会覆盖默认的 class

@@ -4,8 +4,6 @@ cxCalendar 是基于 JavaScript 的日期选择器插件，支持日期、时间
 
 它灵活自由，你可以自定义外观，日期的范围，返回的格式等。
 
-
-
 **优点**
 
 - 无第三方依赖
@@ -14,11 +12,11 @@ cxCalendar 是基于 JavaScript 的日期选择器插件，支持日期、时间
 - 支持多语言扩展
 - 全局仅有一个选择器，不对 DOM 造成污染
 
-
-
 Demo: https://ciaoca.github.io/cxCalendar/
 
 > 从 v3.0 开始，已移除 jQuery 的依赖，如果需要使用旧版，可查看 [v2 分支](https://github.com/ciaoca/cxCalendar/tree/v2)。
+
+![preview](./preview.png)
 
 
 

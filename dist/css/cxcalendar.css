@@ -339,6 +339,16 @@
 .cxcalendar.m_month .cxcalendar_acts .today:before {
   content: '本月'
 }
+.cxcalendar.at_end .cxcalendar_hd .next,
+.cxcalendar.at_start .cxcalendar_hd .prev {
+  color: var(--cxcalendar-other-color);
+  cursor: default
+}
+.cxcalendar.at_end .cxcalendar_hd .next:hover,
+.cxcalendar.at_start .cxcalendar_hd .prev:hover {
+  border-color: transparent;
+  background: 0 0
+}
 .cxcalendar.range {
   width: 524px
 }

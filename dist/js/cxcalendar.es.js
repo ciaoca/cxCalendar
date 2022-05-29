@@ -1009,6 +1009,23 @@ theTool.gotoDate = function(value) {
       self.rebuildMonthSelect();
       selects.month.value = theMonth;
     }  }
+  const atState = {
+    start: true,
+    end: true,
+  };
+
+  for (let x in selects) {
+    if (selects[x].selectedIndex !== 0) {
+      atState.start = false;
+    }    if (selects[x].selectedIndex !== selects[x].length - 1) {
+      atState.end = false;
+    }  }
+  for (let x in atState) {
+    if (atState[x]) {
+      self.dom.panel.classList.add('at_' + x);
+    } else if (self.dom.panel.classList.contains('at_' + x)) {
+      self.dom.panel.classList.remove('at_' + x);
+    }  }
   let html = '';
   let fillHtml = '';
 
@@ -1139,8 +1156,9 @@ theTool.showPanel = function() {
   const panelRect = self.dom.panel.getBoundingClientRect();
   const panelWidth = panelRect.width;
   const panelHeight = panelRect.height;
-  let panelTop = ((elClientTop + elHeight + panelHeight) > winHeight) ? elTop - panelHeight : elTop + elHeight;
-  let panelLeft = ((elClientLeft + panelWidth) > winWidth) ? elLeft - panelWidth + elWidth : elLeft;
+
+  let panelTop = (elClientTop + elHeight + panelHeight > winHeight && elTop - panelHeight >= 0) ? elTop - panelHeight : elTop + elHeight;
+  let panelLeft = (elClientLeft + panelWidth > winWidth && elLeft - panelWidth >= 0) ? elLeft - panelWidth + elWidth : elLeft;
 
   if (typeof pos === 'string' && pos.length) {
     switch(pos) {
@@ -1291,7 +1309,7 @@ const picker = function() {
     } else if (typeof x === 'boolean') {
       isAttach = x;
     }  }
-  if (!self.input || !self.input.nodeName || self.input.nodeName.toLowerCase() !== 'input') {
+  if (!self.input || !self.input.nodeName || ['input', 'textarea'].indexOf(self.input.nodeName.toLowerCase()) === -1) {
     console.warn('[cxCalendar] Not input element.');
     return;
   }

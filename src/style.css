@@ -387,6 +387,18 @@
   content: '本月';
 }
 
+/* 始末状态 */
+.cxcalendar.at_start .cxcalendar_hd .prev,
+.cxcalendar.at_end .cxcalendar_hd .next {
+  color: var(--cxcalendar-other-color);
+  cursor: default;
+}
+.cxcalendar.at_start .cxcalendar_hd .prev:hover,
+.cxcalendar.at_end .cxcalendar_hd .next:hover {
+  border-color: transparent;
+  background: none;
+}
+
 
 /* 范围模式 */
 .cxcalendar.range {

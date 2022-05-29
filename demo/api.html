@@ -92,6 +92,7 @@
 (function() {
   const nowDate = new Date();
   let mode = '';
+  let rangeSymbol = ' - ';
   let theApi;
 
   const getRandomNumber = (min, max) => {
@@ -134,7 +135,7 @@
         case 'set':
           if (mode === 'range') {
             opts = [nowDate.getFullYear(), getRandomNumber(1, 6), getRandomNumber(1, 31)].join('/');
-            opts += ' - ';
+            opts += rangeSymbol;
             opts += [nowDate.getFullYear(), getRandomNumber(7, 12), getRandomNumber(1, 31)].join('/');
 
           } else {
@@ -150,6 +151,7 @@
           break;
 
         case 'mode':
+          mode = rev;
           theApi.setOptions({
             mode: rev
           });

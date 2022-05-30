@@ -560,32 +560,20 @@ theTool.buildPanel = function() {
 // 构建操作按钮
 theTool.buildActs = function() {
   const self = this;
+  const nowDate = new Date();
+  const nowTime = nowDate.getTime();
   const list = [];
 
-  switch (cacheApi.settings.type) {
-    case 'date':
-    case 'month':
-    case 'year':
-      list.push('today', 'clear');
-      break;
-
-    case 'datetime':
-    case 'time':
-      list.push('today', 'clear', 'confirm');
-      break;
-
-    default:
-      list.push('clear');
-      break;
+  if (cacheApi.settings.button.today !== false && cacheApi.settings.mode !== 'range' && cacheApi.minDate.time <= nowTime && cacheApi.maxDate.time >= nowTime) {
+      list.push('today');
   };
 
-  if (cacheApi.settings.mode === 'range') {
-    if (list.indexOf('today') >= 0) {
-      list.splice(list.indexOf('today'), 1);
-    };
-    if (list.indexOf('confirm') === -1) {
-      list.push('confirm');
-    };
+  if (cacheApi.settings.button.clear !== false) {
+    list.push('clear');
+  };
+
+  if (cacheApi.settings.mode === 'range' || ['datetime', 'time'].indexOf(cacheApi.settings.type) >= 0) {
+    list.push('confirm');
   };
 
   let html = '';
@@ -1800,6 +1788,7 @@ cxCalendar.defaults = {
   disableDay: [],         // 不可选择的日期
   mode: 'single',         // 选择模式
   rangeSymbol: ' - ',     // 日期范围拼接符号
+  button: {},
   position: undefined,    // 面板位置
   baseClass: undefined,   // 基础样式
   language: undefined     // 语言配置

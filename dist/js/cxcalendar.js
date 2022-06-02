@@ -1598,7 +1598,7 @@ cxCalendar.defaults = {
   disableDay: [],         // 不可选择的日期
   mode: 'single',         // 选择模式
   rangeSymbol: ' - ',     // 日期范围拼接符号
-  button: {},
+  button: {},             // 操作按钮
   position: undefined,    // 面板位置
   baseClass: undefined,   // 基础样式
   language: undefined     // 语言配置

@@ -3,8 +3,8 @@
  * ------------------------------ */
 .cxcalendar {
   --cxcalendar-bg: #fff;
+  --cxcalendar-border: #ccc;
   --cxcalendar-item-bg: #eee;
-  --cxcalendar-item-border: #ccc;
 
   --cxcalendar-text-color: #333;
   --cxcalendar-days-color: #666;
@@ -15,20 +15,31 @@
 
   --cxcalendar-now-bg: #f3f3f3;
   --cxcalendar-set-bg: #8cc152;
+  --cxcalendar-range-bg: #dceffc;
+  --cxcalendar-range-set-bg: #70a9ce;
+
+  --cxcalendar-btn-color: #fff;
+  --cxcalendar-btn-bg: #666;
+  --cxcalendar-confirm-bg: #4a89dc;
 
   --cxcalendar-gap-out: 8px;
+
+  --cxcalendar-text-size: 14px;
+  --cxcalendar-title-size: 16px;
+  --cxcalendar-unit-size: 10px;
+  --cxcalendar-btn-size: 12px;
 
   position: absolute;
   z-index: 10000;
   top: -999px;
   left: -999px;
   width: 266px;
-  border: 1px solid var(--cxcalendar-item-border);
+  border: 1px solid var(--cxcalendar-border);
   border-radius: 3px;
   background-color: var(--cxcalendar-bg);
   box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
   color: var(--cxcalendar-text-color);
-  font-size: 14px;
+  font-size: var(--cxcalendar-text-size);
   opacity: 0;
   transform: translate(0, 5%);
   transition-property: opacity, transform;
@@ -63,7 +74,7 @@
   padding: var(--cxcalendar-gap-out);
   padding-bottom: 0;
   font-weight: bold;
-  font-size: 16px;
+  font-size: var(--cxcalendar-title-size);
   line-height: 32px;
   text-align: center;
 }
@@ -127,7 +138,7 @@
   background: none;
   color: var(--cxcalendar-text-color);
   font-weight: bold;
-  font-size: 16px;
+  font-size: var(--cxcalendar-title-size);
   line-height: 32px;
   text-align: center;
   vertical-align: top;
@@ -154,7 +165,7 @@
 /* 次面板 */
 .cxcalendar_hd .fill {
   font-weight: normal;
-  font-size: 14px;
+  font-size: var(--cxcalendar-text-size);
 }
 .cxcalendar_hd .fill span {
   padding:0 4px;
@@ -164,7 +175,7 @@
 .cxcalendar_hd .next:hover,
 .cxcalendar_hd select:hover,
 .cxcalendar_bd .times select:hover {
-  border-color: var(--cxcalendar-item-border);
+  border-color: var(--cxcalendar-border);
   background: var(--cxcalendar-item-bg);
 }
 
@@ -200,7 +211,7 @@
   border-radius: 5px;
   cursor: pointer;
   flex: none;
-  transition-property: background-color;
+  transition-property: background-color, color;
   transition-duration: 0.2s;
 }
 
@@ -237,7 +248,7 @@
 .cxcalendar_bd ul li.selected.other,
 .cxcalendar_bd ul li.selected:hover {
   background-color: var(--cxcalendar-set-bg);
-  color: #fff;
+  color: var(--cxcalendar-btn-color);
 }
 
 .cxcalendar_bd ul li.del:after,
@@ -281,7 +292,7 @@
   display: inline-block;
   margin-left: 2px;
   color: var(--cxcalendar-note-color);
-  font-size: 10px;
+  font-size: var(--cxcalendar-unit-size);
   vertical-align: top;
 }
 .cxcalendar_bd .years li:after {
@@ -291,6 +302,7 @@
 /* 时间 */
 .cxcalendar_bd .times {
   position: relative;
+  margin-top: var(--cxcalendar-gap-out);
   padding-top: var(--cxcalendar-gap-out);
   color: var(--cxcalendar-note-color);
   line-height: 32px;
@@ -303,7 +315,7 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 10%, rgba(0, 0, 0, 0.1) 90%, rgba(0, 0, 0, 0) 100%);
+  background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 15%, rgba(0, 0, 0, 0.1) 85%, rgba(0, 0, 0, 0) 100%);
 }
 .cxcalendar_bd .times:only-child:before {
   display: none;
@@ -321,7 +333,7 @@
 
 .cxcalendar_bd .times select {
   font-weight: normal;
-  font-size: 14px;
+  font-size: var(--cxcalendar-text-size);
 }
 .cxcalendar_bd .times i {
   padding: 0 1px;
@@ -334,10 +346,10 @@
 /* 快捷操作 */
 .cxcalendar_acts {
   padding: var(--cxcalendar-gap-out) 0;
-  border-top: 1px solid var(--cxcalendar-item-border);
+  border-top: 1px solid var(--cxcalendar-border);
   border-radius: 0 0 3px 3px;
   background-color: var(--cxcalendar-item-bg);
-  font-size: 12px;
+  font-size: var(--cxcalendar-btn-size);
   line-height: 30px;
   display: flex;
   justify-content: center;
@@ -346,8 +358,8 @@
 .cxcalendar_acts a {
   padding: 0 1em;
   border-radius: 3px;
-  background-color: #666;
-  color: #fff;
+  background-color: var(--cxcalendar-btn-bg);
+  color: var(--cxcalendar-btn-color);
   text-decoration: none;
   text-align: center;
   transition-property: opacity;
@@ -357,7 +369,7 @@
   margin-left: 1em;
 }
 .cxcalendar_acts a:hover {
-  color: #fff;
+  color: var(--cxcalendar-btn-color);
   opacity: 0.8;
 }
 
@@ -368,7 +380,7 @@
   content: '清除';
 }
 .cxcalendar_acts .confirm {
-  background-color: var(--cxcalendar-sat-color);
+  background-color: var(--cxcalendar-confirm-bg);
 }
 .cxcalendar_acts .confirm:before {
   content: '确定';
@@ -427,11 +439,13 @@
   background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 35%, rgba(0, 0, 0, 0.1) 65%, rgba(0, 0, 0, 0) 100%);
 }
 .cxcalendar.range .cxcalendar_bd ul li.selected {
-  background-color: #80b8de;
+  background-color: var(--cxcalendar-range-bg);
+  color: var(--cxcalendar-days-color);
 }
 .cxcalendar.range .cxcalendar_bd ul li.selected.start,
 .cxcalendar.range .cxcalendar_bd ul li.selected.end {
-  background-color: #508fb9
+  background-color: var(--cxcalendar-range-set-bg);
+  color: var(--cxcalendar-btn-color);
 }
 .cxcalendar.range .cxcalendar_bd .times section:nth-child(1):before {
   content: '开始时间';
@@ -535,9 +549,9 @@
   margin-top: -8px;
   margin-left: -8px;
   border-radius: 3px;
-  background-color: #ddd;
+  background-color: rgba(0, 0, 0, 0.1);
   color: #fff;
-  font-size: 12px;
+  font-size: var(--cxcalendar-unit-size);
   line-height: 16px;
   text-align: center;
   pointer-events: none;
@@ -583,14 +597,61 @@
 }
 
 
+/* 深色模式 */
+@media (prefers-color-scheme: dark) {
+  .cxcalendar {
+    --cxcalendar-bg: #222;
+    --cxcalendar-item-bg: #333;
+    --cxcalendar-border: #444;
+
+    --cxcalendar-text-color: #eee;
+    --cxcalendar-days-color: #ddd;
+    --cxcalendar-other-color: #555;
+    --cxcalendar-note-color: #888;
+
+    --cxcalendar-now-bg: #333;
+    --cxcalendar-set-bg: #8cc152;
+
+    --cxcalendar-btn-color: #333;
+    --cxcalendar-btn-bg: #ccc;
+    --cxcalendar-confirm-bg: #4a89dc;
+  }
+
+  .cxcalendar_bd ul li.selected,
+  .cxcalendar_bd ul li.selected.holiday,
+  .cxcalendar_bd ul li.selected.other,
+  .cxcalendar_bd ul li.selected.sat,
+  .cxcalendar_bd ul li.selected.sun,
+  .cxcalendar_bd ul li.selected:hover,
+  .cxcalendar_acts .confirm,
+  .cxcalendar_acts .confirm:hover {
+    color: #fff;
+  }
+
+  .cxcalendar_bd .times:before {
+    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 15%, rgba(255, 255, 255, 0.1) 85%, rgba(255, 255, 255, 0) 100%);
+  }
+  .cxcalendar.range .cxcalendar_bd ul + ul:before {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 35%, rgba(255, 255, 255, 0.1) 65%, rgba(255, 255, 255, 0) 100%);
+  }
+  .cxcalendar.range .cxcalendar_bd ul li.selected {
+    background-color: #29485d;
+  }
+  .cxcalendar.has_weeknum .cxcalendar_bd .days li[data-week-num]:before {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #888;
+  }
+}
+
+
 @media (min-width: 640px) {
-.cxcalendar.fixed .cxcalendar_hd section:nth-child(2),
-.cxcalendar.fixed .cxcalendar_bd ul:nth-child(2) {
-  display: inherit;
-}
-.cxcalendar.fixed .cxcalendar_bd .times {
-  display: flex;
-}
+  .cxcalendar.fixed .cxcalendar_hd section:nth-child(2),
+  .cxcalendar.fixed .cxcalendar_bd ul:nth-child(2) {
+    display: inherit;
+  }
+  .cxcalendar.fixed .cxcalendar_bd .times {
+    display: flex;
+  }
 }
 
 

@@ -94,11 +94,10 @@
 .cxcalendar.en.range .cxcalendar_bd .times section:first-child:before{content:'Start Time:'}
 .cxcalendar.en.range .cxcalendar_bd .times section:nth-child(2):before{content:'End Time:'}
 @media (prefers-color-scheme:dark){
-.cxcalendar{--cxcalendar-bg:#222;--cxcalendar-item-bg:#333;--cxcalendar-border:#444;--cxcalendar-text-color:#eee;--cxcalendar-days-color:#ddd;--cxcalendar-other-color:#555;--cxcalendar-note-color:#888;--cxcalendar-now-bg:#333;--cxcalendar-set-bg:#8cc152;--cxcalendar-btn-color:#333;--cxcalendar-btn-bg:#ccc;--cxcalendar-confirm-bg:#4a89dc}
-.cxcalendar_acts .confirm,.cxcalendar_acts .confirm:hover,.cxcalendar_bd ul li.selected,.cxcalendar_bd ul li.selected.holiday,.cxcalendar_bd ul li.selected.other,.cxcalendar_bd ul li.selected.sat,.cxcalendar_bd ul li.selected.sun,.cxcalendar_bd ul li.selected:hover{color:#fff}
+.cxcalendar{--cxcalendar-bg:#222;--cxcalendar-item-bg:#333;--cxcalendar-border:#444;--cxcalendar-text-color:#eee;--cxcalendar-days-color:#ddd;--cxcalendar-other-color:#555;--cxcalendar-note-color:#888;--cxcalendar-now-bg:#333;--cxcalendar-set-bg:#8cc152;--cxcalendar-range-bg:#29485d;--cxcalendar-range-set-bg:#70a9ce;--cxcalendar-btn-color:#333;--cxcalendar-btn-bg:#ccc;--cxcalendar-confirm-bg:#4a89dc}
+.cxcalendar.range .cxcalendar_bd ul li.selected.end,.cxcalendar.range .cxcalendar_bd ul li.selected.start,.cxcalendar_acts .confirm,.cxcalendar_acts .confirm:hover,.cxcalendar_bd ul li.selected,.cxcalendar_bd ul li.selected.holiday,.cxcalendar_bd ul li.selected.other,.cxcalendar_bd ul li.selected.sat,.cxcalendar_bd ul li.selected.sun,.cxcalendar_bd ul li.selected:hover{color:#fff}
 .cxcalendar_bd .times:before{background:linear-gradient(to right,rgba(255,255,255,0) 0,rgba(255,255,255,.1) 15%,rgba(255,255,255,.1) 85%,rgba(255,255,255,0) 100%)}
 .cxcalendar.range .cxcalendar_bd ul+ul:before{background:linear-gradient(to bottom,rgba(255,255,255,0) 0,rgba(255,255,255,.1) 35%,rgba(255,255,255,.1) 65%,rgba(255,255,255,0) 100%)}
-.cxcalendar.range .cxcalendar_bd ul li.selected{background-color:#29485d}
 .cxcalendar.has_weeknum .cxcalendar_bd .days li[data-week-num]:before{background-color:rgba(255,255,255,.1);color:#888}
 }
 @media (min-width:640px){

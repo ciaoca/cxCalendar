@@ -1,6 +1,6 @@
 /**
  * cxCalendar
- * @version 3.0.0
+ * @version 3.0.1
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar

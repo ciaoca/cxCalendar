@@ -213,7 +213,7 @@ theTool.formatDate = function(style, time) {
   attr.h = self.fillLeadZero(attr.g, 2);
   attr.i = self.fillLeadZero(theDate.getMinutes(), 2);
   attr.s = self.fillLeadZero(theDate.getSeconds(), 2);
-  attr.a = attr.G > 12 ? cacheApi.language.pm - 12 : attr.am;
+  attr.a = attr.G > 12 ? cacheApi.language.pm : cacheApi.language.am;
 
   const keys = ['timestamp', 'Y', 'y', 'm', 'n', 'd', 'j', 'W', 'H', 'h', 'G', 'g', 'i', 's', 'a'];
   const reg = new RegExp('(' + keys.join('|') + ')', 'g');

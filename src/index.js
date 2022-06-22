@@ -197,9 +197,10 @@ theTool.parseDate = function(value, mustDef) {
 };
 
 // 格式化日期值
-theTool.formatDate = function(style, time) {
+theTool.formatDate = function(style, time, lang) {
   const self = this;
   const theDate = self.parseDate(time);
+  const language = self.extend({}, cxCalendar.languages.default, lang);
 
   if (typeof style !== 'string' || !self.isDate(theDate)) {
     return time;
@@ -223,7 +224,7 @@ theTool.formatDate = function(style, time) {
   attr.h = self.fillLeadZero(attr.g, 2);
   attr.i = self.fillLeadZero(theDate.getMinutes(), 2);
   attr.s = self.fillLeadZero(theDate.getSeconds(), 2);
-  attr.a = attr.G > 12 ? cacheApi.language.pm : cacheApi.language.am;
+  attr.a = attr.G > 12 ? language.pm : language.am;
 
   const keys = ['timestamp', 'Y', 'y', 'm', 'n', 'd', 'j', 'W', 'H', 'h', 'G', 'g', 'i', 's', 'a'];
   const reg = new RegExp('(' + keys.join('|') + ')', 'g');
@@ -1691,7 +1692,7 @@ picker.prototype.getDate = function(style) {
       break;
     };
 
-    newValue.push(theTool.formatDate(style, theDate.getTime()));
+    newValue.push(theTool.formatDate(style, theDate.getTime(), self.language));
   };
 
   newValue = self.settings.mode === 'range' ? newValue.join(self.settings.rangeSymbol) : newValue.join('');
@@ -1733,7 +1734,7 @@ picker.prototype.setDate = function(value) {
       theTime = self.maxDate.time;
     };
 
-    newValue.push(theTool.formatDate(self.settings.format, theTime));
+    newValue.push(theTool.formatDate(self.settings.format, theTime, self.language));
   };
 
   newValue = self.settings.mode === 'range' ? newValue.join(self.settings.rangeSymbol) : newValue.join('');

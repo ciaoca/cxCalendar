@@ -28,26 +28,6 @@
 
     <fieldset id="demo">
       <legend>常用</legend>
-      <section>
-        <label for="my_day">选择日期：</label>
-        <input id="my_day" type="text" readonly>
-      </section>
-      <section>
-        <label for="my_datetime">选择日期和时间：</label>
-        <input id="my_datetime" type="text" readonly data-type="datetime" data-format="Y-m-d H:i:s">
-      </section>
-      <section>
-        <label for="my_year">选择年份：</label>
-        <input id="my_year" type="text" readonly data-type="year" data-format="Y">
-      </section>
-      <section>
-        <label for="my_month">选择月份：</label>
-        <input id="my_month" type="text" readonly data-type="month" data-format="Y-m">
-      </section>
-      <section>
-        <label for="my_time">选择时间：</label>
-        <input id="my_time" type="text" readonly data-type="time" data-format="H:i:s">
-      </section>
     </fieldset>
 
     <fieldset>
@@ -79,6 +59,13 @@
 <script>
 (function() {
   const demo = document.getElementById('demo');
+  const list = [
+    {title: '日期', type: 'date', format: 'Y-m-d'},
+    {title: '日期和时间', type: 'datetime', format: 'Y-m-d H:i:s'},
+    {title: '年份', type: 'year', format: 'Y'},
+    {title: '月份', type: 'month', format: 'Y-m'},
+    {title: '时间', type: 'time', format: 'H:i:s'},
+  ];
 
   document.body.addEventListener('click', (e) => {
     const el = e.target;
@@ -87,18 +74,14 @@
     if (nodeName === 'a' && el.rel) {
       const rel = el.rel;
 
-      if (['add','remove'].indexOf(rel) >= 0) {
+      if (['add', 'remove'].indexOf(rel) >= 0) {
         event.preventDefault();
 
         if (rel === 'add') {
-          demo.insertAdjacentHTML('beforeend', '<section><label>选择日期：</label><input type="text" readonly></section>');
+          addItem(list[Math.floor(Math.random() * list.length)]);
 
         } else if (rel === 'remove') {
-          const list = demo.querySelectorAll('section');
-
-          if (list.length) {
-            demo.removeChild(list[list.length - 1]);
-          };
+          removeItem();
         };
       };
 
@@ -106,6 +89,22 @@
       cxCalendar(el);
     };
   });
+
+  const addItem = (data) => {
+    demo.insertAdjacentHTML('beforeend', '<section><label>选择' + data.title + '：</label><input type="text" readonly data-type="' + data.type + '" data-format="' + data.format + '"></section>');
+  };
+
+  const removeItem = () => {
+    const el = demo.querySelectorAll('section');
+
+    if (el.length) {
+      demo.removeChild(el[el.length - 1]);
+    };
+  };
+
+  for (let x of list) {
+    addItem(x);
+  };
 })();
 </script>
 </body>

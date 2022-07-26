@@ -1,6 +1,6 @@
 /**
  * cxCalendar
- * @version 3.0.3
+ * @version 3.0.4
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -12,22 +12,23 @@ const theTool = {
     isYear: /^\d{4}$/,
     isTime: /^\d{1,2}(\:\d{1,2}){1,2}$/
   },
-  cacheDate: {},
   cxId: 1,
   bindFuns: {},
+  cacheDate: {},
+  cacheApi: null,
 
-  isElement: function(o) {
+  isElement: (o) => {
     if (o && (typeof HTMLElement === 'function' || typeof HTMLElement === 'object') && o instanceof HTMLElement) {
       return true;
     } else {
       return (o && o.nodeType && o.nodeType === 1) ? true : false;
     }  },
-  isInteger: function(value) {
+  isInteger: (value) => {
     if (typeof value === 'string' && /^\-?\d+$/.test(value)) {
       value = parseInt(value, 10);
     }    return typeof value === 'number' && isFinite(value);
   },
-  isObject: function(value) {
+  isObject: (value) => {
     if (value === undefined || value === null || Object.prototype.toString.call(value) !== '[object Object]') {
       return false;
     }
@@ -36,7 +37,7 @@ const theTool = {
     }
     return true;
   },
-  isDate: function(value) {
+  isDate: (value) => {
     return (value instanceof Date || Object.prototype.toString.call(value) === '[object Date]') && isFinite(value.getTime());
   },
 };
@@ -185,7 +186,7 @@ theTool.parseDate = function(value, mustDef) {
 theTool.formatDate = function(style, time, lang) {
   const self = this;
   const theDate = self.parseDate(time);
-  const language = self.extend({}, cxCalendar.languages.default, lang);
+  const language = self.extend({}, window.cxCalendar.languages.default, lang);
 
   if (typeof style !== 'string' || !self.isDate(theDate)) {
     return time;
@@ -251,10 +252,10 @@ theTool.getLanguage = function(name) {
   if (typeof name === 'string') {
     name = name.toLowerCase();
   }
-  if (typeof name === 'string' && name.length && typeof cxCalendar.languages[name] === 'object') {
-    return cxCalendar.languages[name];
+  if (typeof name === 'string' && name.length && typeof window.cxCalendar.languages[name] === 'object') {
+    return window.cxCalendar.languages[name];
   } else {
-    return cxCalendar.languages['default'];
+    return window.cxCalendar.languages['default'];
   }};
 
 theTool.init = function() {
@@ -323,19 +324,19 @@ theTool.bindEvent = function() {
         // 今日
         case 'today':
           self.hidePanel();
-          cacheApi.setDate(new Date().getTime());
+          self.cacheApi.setDate(new Date().getTime());
           break;
 
         // 清除
         case 'clear':
           self.hidePanel();
-          cacheApi.clearDate();
+          self.cacheApi.clearDate();
           break;
 
         // 确认
         case 'confirm':
           self.hidePanel();
-          if (cacheApi.settings.mode === 'range') {
+          if (self.cacheApi.settings.mode === 'range') {
             self.confirmRange();
           } else {
             self.confirmTime();
@@ -343,7 +344,7 @@ theTool.bindEvent = function() {
       }
     // 选择日期
     } else if (nodeName === 'li' && el.dataset.date) {
-      let dateText = el.dataset.date;
+      const dateText = el.dataset.date;
 
       if (typeof dateText !== 'string' || !dateText.length) {
         return;
@@ -353,26 +354,40 @@ theTool.bindEvent = function() {
       }      el.classList.add('selected');
 
       // 范围选择，需手动确认
-      if (cacheApi.settings.mode === 'range') {
-        const theTime = self.parseDate(dateText).getTime();
+      if (self.cacheApi.settings.mode === 'range') {
+        const theDate = self.parseDate(dateText);
+        theDate.setHours(0, 0, 0, 0);
+        const theTime = theDate.getTime();
 
-        if (typeof self.cacheDate.startTime !== 'number' || self.cacheDate.startTime >= theTime || typeof self.cacheDate.endTime === 'number') {
+        if (typeof self.cacheDate.startTime === 'number' && typeof self.cacheDate.endTime === 'number') {
+          if ((theTime >= self.cacheDate.startTime && theTime <= self.cacheDate.endTime)) {
+            delete self.cacheDate.startTime;
+            delete self.cacheDate.endTime;
+          } else {
+            self.cacheDate.startTime = theTime;
+            delete self.cacheDate.endTime;
+          }
+        } else if (typeof self.cacheDate.startTime === 'number') {
+          if (theTime === self.cacheDate.startTime) {
+            delete self.cacheDate.startTime;
+          } else if (theTime > self.cacheDate.startTime) {
+            self.cacheDate.endTime = theTime;
+          } else {
+            self.cacheDate.startTime = theTime;
+          }
+        } else {
           self.cacheDate.startTime = theTime;
-          delete self.cacheDate.endTime;
-          el.classList.add('start');
-          return;
         }
-        self.cacheDate.endTime = theTime;
         self.gotoDate();
         return;
       }
       // 时间选择，需手动确认
-      if (cacheApi.settings.type === 'datetime') {
+      if (self.cacheApi.settings.type === 'datetime') {
         self.cacheDate.time = self.parseDate(dateText).getTime();
         return;
       }
       self.hidePanel();
-      cacheApi.setDate(dateText);
+      self.cacheApi.setDate(dateText);
     }  });
 
   // 选择年月
@@ -404,14 +419,14 @@ theTool.getSelects = function(list, values) {
 theTool.buildPanel = function() {
   const self = this;
 
-  if (cacheApi.settings.date) {
+  if (self.cacheApi.settings.date) {
     self.cacheDate = {
-      time: cacheApi.defDate.time,
+      time: self.cacheApi.defDate.time,
     };
 
-    if (typeof cacheApi.defDate.start === 'number' && typeof cacheApi.defDate.end === 'number') {
-      self.cacheDate.startTime = cacheApi.defDate.start;
-      self.cacheDate.endTime = cacheApi.defDate.end;
+    if (typeof self.cacheApi.defDate.start === 'number' && typeof self.cacheApi.defDate.end === 'number') {
+      self.cacheDate.startTime = self.cacheApi.defDate.start;
+      self.cacheDate.endTime = self.cacheApi.defDate.end;
     }
   } else {
     self.cacheDate = {};
@@ -420,45 +435,45 @@ theTool.buildPanel = function() {
   self.dom.main.innerHTML = '';
 
   // 基础样式
-  const classValue = ['cxcalendar', 'm_' + cacheApi.settings.type];
+  const classValue = ['cxcalendar', 'm_' + self.cacheApi.settings.type];
 
-  if (cacheApi.settings.mode === 'range') {
+  if (self.cacheApi.settings.mode === 'range') {
     classValue.push('range');
   }
-  if (typeof cacheApi.settings.baseClass === 'string' && cacheApi.settings.baseClass.length) {
-    classValue.push(cacheApi.settings.baseClass);
+  if (typeof self.cacheApi.settings.baseClass === 'string' && self.cacheApi.settings.baseClass.length) {
+    classValue.push(self.cacheApi.settings.baseClass);
   }
   self.dom.panel.className = classValue.join(' ');
 
   const splitHtml = '<em></em>';
   const prevNextHtml = '<a class="prev" href="javascript://" rel="prev"></a><a class="next" href="javascript://" rel="next"></a>';
-  const fillHtml = cacheApi.settings.mode === 'range' ? '<section class="fill"></section>' : '';
+  const fillHtml = self.cacheApi.settings.mode === 'range' ? '<section class="fill"></section>' : '';
   let html = '<section>';
 
   // 年份选择框
-  if (['month', 'date', 'datetime'].indexOf(cacheApi.settings.type) >= 0) {
+  if (['month', 'date', 'datetime'].indexOf(self.cacheApi.settings.type) >= 0) {
     html += '<select name="year" class="year">';
 
-    for (let i = cacheApi.minDate.year; i <= cacheApi.maxDate.year; i++) {
+    for (let i = self.cacheApi.minDate.year; i <= self.cacheApi.maxDate.year; i++) {
       html += '<option value="' + i + '">' + i + '</option>';
     }
     html += '</select>';
 
-  } else if (cacheApi.settings.type === 'year') {
-    let start = Math.floor(cacheApi.minDate.year / 10) * 10;
+  } else if (self.cacheApi.settings.type === 'year') {
+    const start = Math.floor(self.cacheApi.minDate.year / 10) * 10;
 
     html += '<select name="year" class="year">';
 
-    for (let i = start; i <= cacheApi.maxDate.year; i += cacheApi.settings.yearNum) {
-      let end = i + cacheApi.settings.yearNum - 1;
+    for (let i = start; i <= self.cacheApi.maxDate.year; i += self.cacheApi.settings.yearNum) {
+      const end = i + self.cacheApi.settings.yearNum - 1;
       html += '<option value="' + i + '">' + i + ' - ';
-      // html += end < cacheApi.maxDate.year ? end : cacheApi.maxDate.year;
+      // html += end < self.cacheApi.maxDate.year ? end : self.cacheApi.maxDate.year;
       html += end;
       html += '</option>';
     }
     html += '</select>';
   }
-  if (['date', 'datetime'].indexOf(cacheApi.settings.type) >= 0) {
+  if (['date', 'datetime'].indexOf(self.cacheApi.settings.type) >= 0) {
     html += splitHtml;
     html += '<select name="month" class="month"></select>';
     html += splitHtml;
@@ -472,19 +487,19 @@ theTool.buildPanel = function() {
     self.dom.main.insertAdjacentElement('beforeend', self.dom.dateSet);
     self.dom.panel.insertAdjacentElement('afterbegin', self.dom.head);
 
-    if (cacheApi.settings.type === 'datetime') {
+    if (self.cacheApi.settings.type === 'datetime') {
       self.buildTimes();
     }
     self.rebuildMonthSelect();
-    self.gotoDate([cacheApi.defDate.year, cacheApi.defDate.month].join('-'));
+    self.gotoDate([self.cacheApi.defDate.year, self.cacheApi.defDate.month].join('-'));
 
-  } else if (cacheApi.settings.type === 'time') {
+  } else if (self.cacheApi.settings.type === 'time') {
     if (self.dom.panel.contains(self.dom.head)) {
       self.dom.panel.removeChild(self.dom.head);
     }
     self.buildTimes();
 
-  } else if (cacheApi.settings.type === 'month') {
+  } else if (self.cacheApi.settings.type === 'month') {
     html += splitHtml;
     html += '</section>';
     html += fillHtml;
@@ -496,9 +511,9 @@ theTool.buildPanel = function() {
     self.dom.main.insertAdjacentElement('beforeend', self.dom.dateSet);
     self.dom.panel.insertAdjacentElement('afterbegin', self.dom.head);
 
-    self.gotoDate(cacheApi.defDate.year);
+    self.gotoDate(self.cacheApi.defDate.year);
 
-  } else if (cacheApi.settings.type === 'year') {
+  } else if (self.cacheApi.settings.type === 'year') {
     html += '</section>';
     html += fillHtml;
     html += prevNextHtml;
@@ -509,7 +524,7 @@ theTool.buildPanel = function() {
     self.dom.main.insertAdjacentElement('beforeend', self.dom.dateSet);
     self.dom.panel.insertAdjacentElement('afterbegin', self.dom.head);
 
-    self.gotoDate(cacheApi.defDate.year);
+    self.gotoDate(self.cacheApi.defDate.year);
   }
   self.buildActs();
 };
@@ -521,13 +536,13 @@ theTool.buildActs = function() {
   const nowTime = nowDate.getTime();
   const list = [];
 
-  if (cacheApi.settings.button.today !== false && cacheApi.settings.mode !== 'range' && cacheApi.minDate.time <= nowTime && cacheApi.maxDate.time >= nowTime) {
+  if (self.cacheApi.settings.button.today !== false && self.cacheApi.settings.mode !== 'range' && self.cacheApi.minDate.time <= nowTime && self.cacheApi.maxDate.time >= nowTime) {
       list.push('today');
   }
-  if (cacheApi.settings.button.clear !== false) {
+  if (self.cacheApi.settings.button.clear !== false) {
     list.push('clear');
   }
-  if (cacheApi.settings.mode === 'range' || ['datetime', 'time'].indexOf(cacheApi.settings.type) >= 0) {
+  if (self.cacheApi.settings.mode === 'range' || ['datetime', 'time'].indexOf(self.cacheApi.settings.type) >= 0) {
     list.push('confirm');
   }
   let html = '';
@@ -551,13 +566,13 @@ theTool.rebuildMonthSelect = function() {
   let start = 1;
   let end = 12;
 
-  if (values.year === cacheApi.minDate.year && values.year === cacheApi.maxDate.year) {
-    start = cacheApi.minDate.month;
-    end = cacheApi.maxDate.month;
-  } else if (values.year === cacheApi.minDate.year) {
-    start = cacheApi.minDate.month;
-  } else if (values.year === cacheApi.maxDate.year) {
-    end = cacheApi.maxDate.month;
+  if (values.year === self.cacheApi.minDate.year && values.year === self.cacheApi.maxDate.year) {
+    start = self.cacheApi.minDate.month;
+    end = self.cacheApi.maxDate.month;
+  } else if (values.year === self.cacheApi.minDate.year) {
+    start = self.cacheApi.minDate.month;
+  } else if (values.year === self.cacheApi.maxDate.year) {
+    end = self.cacheApi.maxDate.month;
   }
   let html = '';
 
@@ -567,7 +582,7 @@ theTool.rebuildMonthSelect = function() {
     if (values.month === i) {
       html += ' selected';
     }
-    html += '>' + cacheApi.language.monthList[i - 1] + '</option>';
+    html += '>' + self.cacheApi.language.monthList[i - 1] + '</option>';
   }
   selects.month.innerHTML = html;
 };
@@ -583,13 +598,13 @@ theTool.buildDays = function(year, month) {
   year = theDate.getFullYear();
   month = theDate.getMonth() + 1;
 
-  if (year < cacheApi.minDate.year || (year === cacheApi.minDate.year && month < cacheApi.minDate.month)) {
-    year = cacheApi.minDate.year;
-    month = cacheApi.minDate.month;
+  if (year < self.cacheApi.minDate.year || (year === self.cacheApi.minDate.year && month < self.cacheApi.minDate.month)) {
+    year = self.cacheApi.minDate.year;
+    month = self.cacheApi.minDate.month;
 
-  // } else if (year > cacheApi.maxDate.year || (year === cacheApi.maxDate.year && month > cacheApi.maxDate.month)) {
-  //   year = cacheApi.maxDate.year;
-  //   month = cacheApi.maxDate.month;
+  // } else if (year > self.cacheApi.maxDate.year || (year === self.cacheApi.maxDate.year && month > self.cacheApi.maxDate.month)) {
+  //   year = self.cacheApi.maxDate.year;
+  //   month = self.cacheApi.maxDate.month;
   }
   const jsMonth = month - 1;
   const monthDays = self.getMonthDays(year);
@@ -599,23 +614,27 @@ theTool.buildDays = function(year, month) {
   const selectedText = self.formatDate('Y-n-j', self.cacheDate.time);
 
   // 获取当月第一天
-  let monthFirstDay = sameMonthDate.getDay() - cacheApi.settings.weekStart;
+  let monthFirstDay = sameMonthDate.getDay() - self.cacheApi.settings.weekStart;
   if (monthFirstDay < 0) {
     monthFirstDay += 7;
   }
   // 获取周末位置
-  const saturday = 6 - cacheApi.settings.weekStart;
-  const sunday = (7 - cacheApi.settings.weekStart) % 7;
+  const saturday = 6 - self.cacheApi.settings.weekStart;
+  const sunday = (7 - self.cacheApi.settings.weekStart) % 7;
 
   // 自适应或固定行数
-  let monthDayMax = cacheApi.settings.lockRow ? 42 : Math.ceil((monthDays[jsMonth] + monthFirstDay) / 7) * 7;
+  const monthDayMax = self.cacheApi.settings.lockRow ? 42 : Math.ceil((monthDays[jsMonth] + monthFirstDay) / 7) * 7;
 
   // 日期范围值
   const rangeValue = {};
+  let rangeMaxTime = 0;
 
   if (typeof self.cacheDate.startTime === 'number') {
     rangeValue.start = parseInt(self.formatDate('Ymd', self.cacheDate.startTime), 10);
 
+    if (typeof self.cacheApi.settings.rangeMaxDay === 'number' && self.cacheApi.settings.rangeMaxDay) {
+      rangeMaxTime = self.cacheDate.startTime + self.cacheApi.settings.rangeMaxDay * 86400000;
+    }
     if (typeof self.cacheDate.endTime === 'number') {
       rangeValue.end = parseInt(self.formatDate('Ymd', self.cacheDate.endTime), 10);
     } else {
@@ -633,7 +652,7 @@ theTool.buildDays = function(year, month) {
     } else if(i === sunday) {
       html += ' sun';
     }
-    html += '">' + cacheApi.language.weekList[(i + cacheApi.settings.weekStart) % 7] + '</li>';
+    html += '">' + self.cacheApi.language.weekList[(i + self.cacheApi.settings.weekStart) % 7] + '</li>';
   }
   for (let i = 0; i < monthDayMax; i++) {
     const classValue = [];
@@ -671,7 +690,7 @@ theTool.buildDays = function(year, month) {
     let todayName = '';
 
     // 高亮已选择
-    if (cacheApi.settings.mode === 'range') {
+    if (self.cacheApi.settings.mode === 'range') {
       if (todayInt === rangeValue.start || todayInt === rangeValue.end || (todayInt >= rangeValue.start && todayInt <= rangeValue.end)) {
         classValue.push('selected');
 
@@ -693,30 +712,33 @@ theTool.buildDays = function(year, month) {
     } else if (i % 7 === sunday) {
       classValue.push('sun');
     }
+    if (rangeMaxTime && todayTime > rangeMaxTime) {
+      classValue.push('del');
+
     // 超出范围的无效日期
-    if (todayTime < cacheApi.minDate.time || todayTime > cacheApi.maxDate.time) {
+    } else if (todayTime < self.cacheApi.minDate.time || todayTime > self.cacheApi.maxDate.time) {
       classValue.push('del');
 
     // 不可选择的日期（星期）
-    } else if (Array.isArray(cacheApi.settings.disableWeek) && cacheApi.settings.disableWeek.length && cacheApi.settings.disableWeek.indexOf((i + cacheApi.settings.weekStart) % 7) >= 0) {
+    } else if (Array.isArray(self.cacheApi.settings.disableWeek) && self.cacheApi.settings.disableWeek.length && self.cacheApi.settings.disableWeek.indexOf((i + self.cacheApi.settings.weekStart) % 7) >= 0) {
       classValue.push('del');
 
     // 不可选择的日期
-    } else if (Array.isArray(cacheApi.settings.disableDay) && cacheApi.settings.disableDay.length) {
-      if (cacheApi.settings.disableDay.indexOf(String(todayNum)) >= 0 || cacheApi.settings.disableDay.indexOf([todayMonth, todayNum].join('-')) >= 0 || cacheApi.settings.disableDay.indexOf([todayYear, todayMonth, todayNum].join('-')) >= 0) {
+    } else if (Array.isArray(self.cacheApi.settings.disableDay) && self.cacheApi.settings.disableDay.length) {
+      if (self.cacheApi.settings.disableDay.indexOf(String(todayNum)) >= 0 || self.cacheApi.settings.disableDay.indexOf([todayMonth, todayNum].join('-')) >= 0 || self.cacheApi.settings.disableDay.indexOf([todayYear, todayMonth, todayNum].join('-')) >= 0) {
         classValue.push('del');
       }    }
     // 判断是否有节假日
-    if (cacheApi.holiday) {
+    if (self.cacheApi.holiday) {
       const keys = [
         [todayYear, todayMonth, todayNum].join('-'),
         [todayMonth, todayNum].join('-'),
       ];
 
       for (let x of keys) {
-        if (typeof cacheApi.holiday[x] === 'string') {
+        if (typeof self.cacheApi.holiday[x] === 'string') {
           classValue.push('holiday');
-          todayName = cacheApi.holiday[x];
+          todayName = self.cacheApi.holiday[x];
           break;
         }      }    }
     html += '<li';
@@ -745,34 +767,33 @@ theTool.buildTimes = function() {
   const self = this;
   const splitHtml = '<i></i>';
   let html = '<section>';
-  let optionValue;
 
   html += '<select name="hour" class="hour">';
 
-  for (let i = 0; i < 24; i += cacheApi.settings.hourStep) {
-    optionValue = self.fillLeadZero(i, 2);
+  for (let i = 0; i < 24; i += self.cacheApi.settings.hourStep) {
+    const optionValue = self.fillLeadZero(i, 2);
     html += '<option value="' + optionValue + '">' + optionValue + '</option>';
   }
   html += '</select>';
   html += splitHtml;
   html += '<select name="mint" class="mint">';
 
-  for (let i = 0; i < 60; i += cacheApi.settings.minuteStep) {
-    optionValue = self.fillLeadZero(i, 2);
+  for (let i = 0; i < 60; i += self.cacheApi.settings.minuteStep) {
+    const optionValue = self.fillLeadZero(i, 2);
     html += '<option value="' + optionValue + '">' + optionValue + '</option>';
   }
   html += '</select>';
   html += splitHtml;
   html += '<select name="secs" class="secs">';
 
-  for (let i = 0; i < 60; i += cacheApi.settings.secondStep) {
-    optionValue = self.fillLeadZero(i, 2);
+  for (let i = 0; i < 60; i += self.cacheApi.settings.secondStep) {
+    const optionValue = self.fillLeadZero(i, 2);
     html += '<option value="' + optionValue + '">' + optionValue + '</option>';
   }
   html += '</select>';
   html += '</section>';
 
-  if (cacheApi.settings.mode === 'range') {
+  if (self.cacheApi.settings.mode === 'range') {
     html += html;
   }
   self.dom.timeSet.innerHTML = html;
@@ -791,7 +812,7 @@ theTool.setTimesValues = function() {
   } else if (self.cacheDate.startTime) {
     values.push(self.cacheDate.startTime, self.cacheDate.startTime);
   } else {
-    values.push(cacheApi.defDate.time, cacheApi.defDate.time);
+    values.push(self.cacheApi.defDate.time, self.cacheApi.defDate.time);
   }
   const times = {
     hour: [],
@@ -820,13 +841,21 @@ theTool.buildMonths = function(year) {
   const nowDate = new Date();
   const nowText = [nowDate.getFullYear(), nowDate.getMonth() + 1].join('-');
   const selectedText = self.formatDate('Y-n', self.cacheDate.time);
+  const maxInt = parseInt(self.cacheApi.maxDate.year + self.fillLeadZero(self.cacheApi.maxDate.month, 2), 10);
+  const minInt = parseInt(self.cacheApi.minDate.year + self.fillLeadZero(self.cacheApi.minDate.month, 2), 10);
 
   // 日期范围值
   const rangeValue = {};
+  let rangeMaxInt = 0;
 
   if (typeof self.cacheDate.startTime === 'number') {
     rangeValue.start = parseInt(self.formatDate('Ym', self.cacheDate.startTime), 10);
 
+    if (typeof self.cacheApi.settings.rangeMaxMonth === 'number' && self.cacheApi.settings.rangeMaxMonth) {
+      const rangeDate = new Date(self.cacheDate.startTime);
+      rangeDate.setMonth(rangeDate.getMonth() + self.cacheApi.settings.rangeMaxMonth);
+      rangeMaxInt = parseInt(self.formatDate('Ym', rangeDate.getTime()), 10);
+    }
     if (typeof self.cacheDate.endTime === 'number') {
       rangeValue.end = parseInt(self.formatDate('Ym', self.cacheDate.endTime), 10);
     } else {
@@ -839,7 +868,7 @@ theTool.buildMonths = function(year) {
     const todayText = year + '-' + i;
     const todayInt = parseInt(year + self.fillLeadZero(i, 2), 10);
 
-    if (cacheApi.settings.mode === 'range') {
+    if (self.cacheApi.settings.mode === 'range') {
       if (todayInt === rangeValue.start || todayInt === rangeValue.end || (todayInt >= rangeValue.start && todayInt <= rangeValue.end)) {
         classValue.push('selected');
 
@@ -854,9 +883,10 @@ theTool.buildMonths = function(year) {
     if (todayText === nowText) {
       classValue.push('now');
     }
-    if (year < cacheApi.minDate.year || year > cacheApi.maxDate.year) {
+    if (rangeMaxInt && todayInt > rangeMaxInt) {
       classValue.push('del');
-    } else if ((year === cacheApi.minDate.year && i < cacheApi.minDate.month) || (year === cacheApi.maxDate.year && i > cacheApi.maxDate.month)) {
+
+    } else if (todayInt < minInt || todayInt > maxInt) {
       classValue.push('del');
     }
     html += '<li';
@@ -867,7 +897,7 @@ theTool.buildMonths = function(year) {
     if (classValue.indexOf('del') === -1) {
       html += ' data-date="' + todayText + '"';
     }
-    html += '>' + cacheApi.language.monthList[i - 1] + '</li>';
+    html += '>' + self.cacheApi.language.monthList[i - 1] + '</li>';
   }
   html += '</ul>';
 
@@ -877,7 +907,7 @@ theTool.buildMonths = function(year) {
 // 构建年份列表
 theTool.buildYears = function(year) {
   const self = this;
-  let start = cacheApi.minDate.year;
+  let start = self.cacheApi.minDate.year;
   let end;
   let diff;
 
@@ -888,38 +918,42 @@ theTool.buildYears = function(year) {
   const nowYear = nowDate.getFullYear();
   const selectedText = parseInt(self.formatDate('Y', self.cacheDate.time), 10);
 
-  if (year < cacheApi.minDate.year) {
-    start = cacheApi.minDate.year;
+  if (year < self.cacheApi.minDate.year) {
+    start = self.cacheApi.minDate.year;
   }
   start = Math.floor(start / 10) * 10;
   diff = year - start;
 
-  if (diff >= cacheApi.settings.yearNum) {
-    start += Math.floor(diff / cacheApi.settings.yearNum) * cacheApi.settings.yearNum;
+  if (diff >= self.cacheApi.settings.yearNum) {
+    start += Math.floor(diff / self.cacheApi.settings.yearNum) * self.cacheApi.settings.yearNum;
   }
-  end = start + cacheApi.settings.yearNum - 1;
+  end = start + self.cacheApi.settings.yearNum - 1;
 
-  // if (end > cacheApi.maxDate.year) {
-  //   end = cacheApi.maxDate.year;
+  // if (end > self.cacheApi.maxDate.year) {
+  //   end = self.cacheApi.maxDate.year;
   // };
 
   // 日期范围值
   const rangeValue = {};
+  let rangeMaxYear = 0;
 
   if (typeof self.cacheDate.startTime === 'number') {
     rangeValue.start = parseInt(self.formatDate('Y', self.cacheDate.startTime), 10);
 
+    if (typeof self.cacheApi.settings.rangeMaxYear === 'number' && self.cacheApi.settings.rangeMaxYear) {
+      rangeMaxYear = rangeValue.start + self.cacheApi.settings.rangeMaxYear;
+    }
     if (typeof self.cacheDate.endTime === 'number') {
       rangeValue.end = parseInt(self.formatDate('Y', self.cacheDate.endTime), 10);
     } else {
-      rangeValue.start = rangeValue.end;
+      rangeValue.end = rangeValue.start;
     }  }
   let html = '<ul>';
 
   for (let i = start; i <= end; i++) {
     const classValue = [];
 
-    if (cacheApi.settings.mode === 'range') {
+    if (self.cacheApi.settings.mode === 'range') {
       if (i === rangeValue.start || i === rangeValue.end || (i >= rangeValue.start && i <= rangeValue.end)) {
         classValue.push('selected');
 
@@ -934,7 +968,10 @@ theTool.buildYears = function(year) {
     if (i === nowYear) {
       classValue.push('now');
     }
-    if (i < cacheApi.minDate.year || i > cacheApi.maxDate.year) {
+    if (rangeMaxYear && i > rangeMaxYear) {
+      classValue.push('del');
+
+    } else if (i < self.cacheApi.minDate.year || i > self.cacheApi.maxDate.year) {
       classValue.push('del');
     }
     html += '<li';
@@ -967,19 +1004,19 @@ theTool.gotoDate = function(value) {
   const theDate = self.parseDate(value, true);
   const theTime = theDate.getTime();
 
-  if (theTime < cacheApi.minDate.time) {
-    theDate.setTime(cacheApi.minDate.time);
-  } else if (theTime > cacheApi.maxDate.time) {
-    theDate.setTime(cacheApi.maxDate.time);
+  if (theTime < self.cacheApi.minDate.time) {
+    theDate.setTime(self.cacheApi.minDate.time);
+  } else if (theTime > self.cacheApi.maxDate.time) {
+    theDate.setTime(self.cacheApi.maxDate.time);
   }
   let theYear = theDate.getFullYear();
   let theMonth = theDate.getMonth() + 1;
 
-  if (cacheApi.settings.type === 'year') {
+  if (self.cacheApi.settings.type === 'year') {
     let startYear = theYear;
 
     for (let x of selects.year.options) {
-      let val = parseInt(x.value, 10);
+      const val = parseInt(x.value, 10);
 
       if (val <= theYear) {
         startYear = val;
@@ -1019,26 +1056,26 @@ theTool.gotoDate = function(value) {
   let html = '';
   let fillHtml = '';
 
-  switch (cacheApi.settings.type) {
+  switch (self.cacheApi.settings.type) {
     case 'date':
     case 'datetime':
       html = self.buildDays(theYear, theMonth);
 
-      if (cacheApi.settings.mode === 'range') {
+      if (self.cacheApi.settings.mode === 'range') {
         let fillMonth = theMonth + 1;
 
         if (fillMonth > 12) {
           fillMonth = 1;
         }
         fillHtml = '<span class="year">' + theYear + '</span><em></em>';
-        fillHtml += '<span class="month">' + cacheApi.language.monthList[fillMonth - 1] + '</span><em></em>';
+        fillHtml += '<span class="month">' + self.cacheApi.language.monthList[fillMonth - 1] + '</span><em></em>';
         html += self.buildDays(theYear, theMonth + 1);
       }      break;
 
     case 'month':
       html = self.buildMonths(theYear);
 
-      if (cacheApi.settings.mode === 'range') {
+      if (self.cacheApi.settings.mode === 'range') {
         fillHtml = '<span class="year">' + (theYear + 1) + '</span><em></em>';
         html += self.buildMonths(theYear + 1);
       }      break;
@@ -1046,15 +1083,15 @@ theTool.gotoDate = function(value) {
     case 'year':
       html = self.buildYears(theYear);
 
-      if (cacheApi.settings.mode === 'range') {
-        fillHtml = '<span class="year">' + (theYear + cacheApi.settings.yearNum) + ' - ' + (theYear + cacheApi.settings.yearNum * 2 - 1) + '</span>';
-        html += self.buildYears(theYear + cacheApi.settings.yearNum);
+      if (self.cacheApi.settings.mode === 'range') {
+        fillHtml = '<span class="year">' + (theYear + self.cacheApi.settings.yearNum) + ' - ' + (theYear + self.cacheApi.settings.yearNum * 2 - 1) + '</span>';
+        html += self.buildYears(theYear + self.cacheApi.settings.yearNum);
       }      break;
   }
   self.dom.dateSet.innerHTML = html;
 
-  if (cacheApi.settings.mode === 'range') {
-    let el = self.dom.head.querySelectorAll('section');
+  if (self.cacheApi.settings.mode === 'range') {
+    const el = self.dom.head.querySelectorAll('section');
 
     if (el.length > 1) {
       el[1].innerHTML = fillHtml;
@@ -1065,7 +1102,7 @@ theTool.gotoPrev = function() {
   const self = this;
   const selects = self.getSelects(['year', 'month']);
 
-  switch (cacheApi.settings.type) {
+  switch (self.cacheApi.settings.type) {
     case 'date':
     case 'datetime':
       const monthIndex = selects.month.selectedIndex;
@@ -1096,7 +1133,7 @@ theTool.gotoNext = function() {
   const self = this;
   const selects = self.getSelects(['year', 'month']);
 
-  switch (cacheApi.settings.type) {
+  switch (self.cacheApi.settings.type) {
     case 'date':
     case 'datetime':
       const monthIndex = selects.month.selectedIndex;
@@ -1130,12 +1167,12 @@ theTool.showPanel = function() {
   if (self.delayHide) {
     clearTimeout(self.delayHide);
   }
-  const pos = cacheApi.settings.position;
+  const pos = self.cacheApi.settings.position;
 
   const winWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
   const winHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
 
-  const elRect = cacheApi.input.getBoundingClientRect();
+  const elRect = self.cacheApi.input.getBoundingClientRect();
   const elWidth = elRect.width;
   const elHeight = elRect.height;
   const elClientTop = elRect.top;
@@ -1198,9 +1235,9 @@ theTool.confirmRange = function() {
   } else if (self.cacheDate.startTime) {
     values.push(self.cacheDate.startTime, self.cacheDate.startTime);
   } else {
-    values.push(cacheApi.defDate.time, cacheApi.defDate.time);
+    values.push(self.cacheApi.defDate.time, self.cacheApi.defDate.time);
   }
-  if (['datetime', 'time'].indexOf(cacheApi.settings.type) >= 0) {
+  if (['datetime', 'time'].indexOf(self.cacheApi.settings.type) >= 0) {
     const times = {
       hour: [],
       mint: [],
@@ -1209,10 +1246,10 @@ theTool.confirmRange = function() {
 
     for (let x of self.dom.timeSet.querySelectorAll('select')) {
       if (times[x.name]) {
-        times[x.name].push(x.value);
+        times[x.name].push(parseInt(x.value));
       }    }
     // 日期对比时间顺序
-    if (cacheApi.settings.type === 'datetime') {
+    if (self.cacheApi.settings.type === 'datetime') {
       const diffTime = [];
 
       for (let i = 0, l = values.length; i < l; i++) {
@@ -1223,23 +1260,22 @@ theTool.confirmRange = function() {
           if (times[x].length > 1) {
             times[x][1] = times[x][0];
           }        }      }    }
-    values = values.map((item, index) => {
-      const d = new Date(item);
+    values = values.map((val, index) => {
+      const d = new Date(val);
       d.setHours(times.hour[index], times.mint[index], times.secs[index], 0);
       return d.getTime();
     });
   }
-  values = values.join(cacheApi.settings.rangeSymbol);
-  cacheApi.setDate(values);
+  self.cacheApi.setDate(values.join(self.cacheApi.settings.rangeSymbol));
 };
 
 // 确认选择
 theTool.confirmTime = function() {
   const self = this;
   const theDate = new Date();
-  let theTime = cacheApi.defDate.time;
+  let theTime = self.cacheApi.defDate.time;
 
-  if (cacheApi.settings.type === 'datetime' && typeof self.cacheDate.time === 'number') {
+  if (self.cacheApi.settings.type === 'datetime' && typeof self.cacheDate.time === 'number') {
     theTime = self.cacheDate.time;
   }
   theDate.setTime(theTime);
@@ -1258,7 +1294,7 @@ theTool.confirmTime = function() {
     }  }
   theDate.setHours(...times);
 
-  cacheApi.setDate(theDate.getTime());
+  self.cacheApi.setDate(theDate.getTime());
 };
 
 // 解除绑定
@@ -1280,10 +1316,6 @@ document.addEventListener('DOMContentLoaded', () => {
   theTool.init();
 });
 
-// 缓存项
-let cacheApi;
-
-
 // 选择器实例
 const picker = function() {
   const self = this;
@@ -1303,51 +1335,70 @@ const picker = function() {
     console.warn('[cxCalendar] Not input element.');
     return;
   }
-  const maps = {
-    baseClass: 'baseClass',
-    disableWeek: 'disableWeek',
-    disableDay: 'disableDay',
-    endDate: 'endDate',
-    format: 'format',
-    hourStep: 'hourStep',
-    language: 'language',
-    lockRow: 'lockRow',
-    minuteStep: 'minuteStep',
-    position: 'position',
-    mode: 'mode',
-    rangeSymbol: 'rangeSymbol',
-    secondStep: 'secondStep',
-    startDate: 'startDate',
-    type: 'type',
-    weekStart: 'weekStart',
-    yearNum: 'yearNum',
-  };
-
   // 合并输入框参数
+  const keys = [
+    'baseClass',
+    'disableWeek',
+    'disableDay',
+    'endDate',
+    'format',
+    'hourStep',
+    'language',
+    'lockRow',
+    'minuteStep',
+    'position',
+    'mode',
+    'rangeSymbol',
+    'rangeMaxDay',
+    'rangeMaxMonth',
+    'rangeMaxYear',
+    'secondStep',
+    'startDate',
+    'type',
+    'weekStart',
+    'yearNum',
+  ];
   const inputSettings = {};
 
-  for (let x in maps) {
-    if (typeof self.input.dataset[maps[x]] === 'string' && self.input.dataset[maps[x]].length) {
-      if (x === 'lockRow') {
-        inputSettings[x] = Boolean(parseInt(self.input.dataset[maps[x]], 10));
+  for (let x of keys) {
+    if (typeof self.input.dataset[x] === 'string' && self.input.dataset[x].length) {
+      switch (x) {
+        case 'hourStep':
+        case 'minuteStep':
+        case 'secondStep':
+        case 'rangeMaxDay':
+        case 'rangeMaxMonth':
+        case 'rangeMaxYear':
+        case 'weekStart':
+        case 'yearNum':
+          inputSettings[x] = parseInt(self.input.dataset[x], 10);
+          break;
 
-      } else if (['disableWeek', 'disableDay'].indexOf(x) >= 0) {
-        inputSettings[x] = self.input.dataset[maps[x]].split(',');
+        case 'lockRow':
+          inputSettings[x] = Boolean(parseInt(self.input.dataset[x], 10));
+          break;
 
-      } else {
-        inputSettings[x] = self.input.dataset[maps[x]];
+        case 'disableWeek':
+        case 'disableDay':
+          inputSettings[x] = self.input.dataset[x].split(',');
+          break;
+
+        default:
+          inputSettings[x] = self.input.dataset[x];
+          break;
       }    }  }
   if (Array.isArray(inputSettings.disableWeek)) {
-    inputSettings.disableWeek.forEach((val) => {
+    inputSettings.disableWeek = inputSettings.disableWeek.map((val) => {
+      return parseInt(val, 10);
     });
   }
-  self.settings = theTool.extend({}, cxCalendar.defaults, options, inputSettings);
+  self.settings = theTool.extend({}, window.cxCalendar.defaults, options, inputSettings);
   self.setOptions();
 
   let alias = 'id_' + self.input.dataset.cxCalendarId;
 
   if (typeof theTool.bindFuns[alias] === 'function') {
-    self.detach(self.input);
+    theTool.detach(self.input);
   }
   self.eventChange = new CustomEvent('change', {
     bubbles: true
@@ -1469,8 +1520,7 @@ picker.prototype.show = function() {
     self.settings.date = self.input.value;
   }  self.setOptions();
 
-  cacheApi = self;
-
+  theTool.cacheApi = self;
   theTool.buildPanel();
   theTool.showPanel();
 };
@@ -1481,20 +1531,20 @@ picker.prototype.hide = function() {
 
 picker.prototype.getDate = function(style) {
   const self = this;
-  const value = self.input.value;
+  const oldValue = self.input.value;
   const dateList = [];
 
   if (typeof style !== 'string' || !style.length) {
     style = self.settings.format;
   }
   if (self.settings.mode === 'range') {
-    const dateSp = String(value).split(self.settings.rangeSymbol);
+    const dateSp = String(oldValue).split(self.settings.rangeSymbol);
 
     if (dateSp.length === 2) {
       dateList.push(...dateSp);
     }
   } else {
-    dateList.push(value);
+    dateList.push(oldValue);
   }
   let newValue = [];
 
@@ -1560,7 +1610,6 @@ picker.prototype.clearDate = function() {
     self.input.dispatchEvent(self.eventChange);
   }};
 
-
 const cxCalendar = function(el, options, isAttach) {
   const result = new picker(...arguments);
 
@@ -1576,7 +1625,7 @@ cxCalendar.detach = function(el) {
   theTool.detach(el);
 };
 
-// 默认值
+// 默认配置
 cxCalendar.defaults = {
   startDate: undefined,   // 开始日期
   endDate: undefined,     // 结束日期
@@ -1593,13 +1642,16 @@ cxCalendar.defaults = {
   disableDay: [],         // 不可选择的日期
   mode: 'single',         // 选择模式
   rangeSymbol: ' - ',     // 日期范围拼接符号
+  rangeMaxDay: 0,         // 日期范围间隔
+  rangeMaxMonth: 0,       // 月份范围间隔
+  rangeMaxYear: 0,        // 年份范围间隔
   button: {},             // 操作按钮
   position: undefined,    // 面板位置
   baseClass: undefined,   // 基础样式
   language: undefined     // 语言配置
 };
 
-// 默认语言配置
+// 默认语言
 cxCalendar.languages = {
   'default': {
     am: '上午',

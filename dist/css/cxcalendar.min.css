@@ -64,6 +64,7 @@
 .cxcalendar.range .cxcalendar_bd ul,.cxcalendar.range .cxcalendar_hd section{flex:1}
 .cxcalendar.range .cxcalendar_bd ul+ul{margin-left:var(--cxcalendar-gap-out)}
 .cxcalendar.range .cxcalendar_bd ul+ul:before{content:'';position:absolute;top:0;bottom:0;left:-4px;width:1px;background:linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,.1) 35%,rgba(0,0,0,.1) 65%,rgba(0,0,0,0) 100%)}
+.cxcalendar.range .cxcalendar_bd ul li.other{visibility:hidden}
 .cxcalendar.range .cxcalendar_bd ul li.selected{background-color:var(--cxcalendar-range-bg);color:var(--cxcalendar-days-color)}
 .cxcalendar.range .cxcalendar_bd ul li.selected.end,.cxcalendar.range .cxcalendar_bd ul li.selected.start{background-color:var(--cxcalendar-range-set-bg);color:var(--cxcalendar-btn-color)}
 .cxcalendar.range .cxcalendar_bd .times section:first-child:before{content:'开始时间'}
@@ -77,7 +78,7 @@
 .cxcalendar.fixed .cxcalendar_hd .prev{left:24px}
 .cxcalendar.fixed .cxcalendar_hd .next{right:24px}
 .cxcalendar.fixed .cxcalendar_bd{padding-bottom:20px}
-.cxcalendar.fixed .cxcalendar_bd ul{line-height:40px}
+.cxcalendar.fixed .cxcalendar_bd ul{line-height:36px}
 .cxcalendar.fixed .cxcalendar_bd ul li{height:40px}
 .cxcalendar.fixed .cxcalendar_bd .times{padding-top:10px;padding-bottom:10px}
 .cxcalendar.fixed .cxcalendar_acts{position:absolute;top:auto;left:auto;bottom:100%;right:10px;width:auto;padding:0;border:none;background:0 0;line-height:32px;display:flex}

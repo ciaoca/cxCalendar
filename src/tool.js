@@ -1,17 +1,3 @@
-/**
- * cxCalendar
- * @version 3.0.4
- * @author ciaoca
- * @email ciaoca@gmail.com
- * @site https://github.com/ciaoca/cxCalendar
- * @license Released under the MIT license
- */
-(function (global, factory) {
-typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-typeof define === 'function' && define.amd ? define(factory) :
-(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.cxCalendar = factory());
-})(this, (function () { 'use strict';
-
 const theTool = {
   dom: {},
   reg: {
@@ -28,19 +14,23 @@ const theTool = {
       return true;
     } else {
       return (o && o.nodeType && o.nodeType === 1) ? true : false;
-    }  },
+    };
+  },
   isInteger: (value) => {
     if (typeof value === 'string' && /^\-?\d+$/.test(value)) {
       value = parseInt(value, 10);
-    }    return typeof value === 'number' && isFinite(value);
+    };
+    return typeof value === 'number' && isFinite(value);
   },
   isObject: (value) => {
     if (value === undefined || value === null || Object.prototype.toString.call(value) !== '[object Object]') {
       return false;
-    }
+    };
+
     if (value.constructor && !Object.prototype.hasOwnProperty.call(value.constructor.prototype, 'isPrototypeOf')) {
       return false;
-    }
+    };
+
     return true;
   },
   isDate: (value) => {
@@ -54,11 +44,13 @@ theTool.extend = function(target, ...sources) {
 
   if (!self.isObject(target)) {
     return;
-  }
+  };
+
   for (let x of sources) {
     if (!self.isObject(x)) {
       continue;
-    }
+    };
+
     for (let y in x) {
       if (Array.isArray(x[y])) {
         target[y] = [].concat(x[y]);
@@ -66,11 +58,15 @@ theTool.extend = function(target, ...sources) {
       } else if (self.isObject(x[y])) {
         if (!self.isObject(target[y])) {
           target[y] = {};
-        }        self.extend(target[y], x[y]);
+        };
+        self.extend(target[y], x[y]);
 
       } else {
         target[y] = x[y];
-      }    }  }
+      };
+    };
+  };
+
   return target;
 };
 
@@ -80,7 +76,8 @@ theTool.fillLeadZero = function(value, num) {
 
   if (str.length < num) {
     str = Array(num - str.length).fill(0).join('') + value;
-  }
+  };
+
   return str;
 };
 
@@ -101,18 +98,21 @@ theTool.getWeekNum = function(dateObj) {
 
   if (weekDay === 0) {
     weekDay = 7;
-  }
+  };
+
   if (weekDay > 4) {
     weekFirstTime += (8 - weekDay) * 86400000;
   } else {
     weekFirstTime += (1 - weekDay) * 86400000;
-  }
+  };
+
   if (curTime < weekFirstTime) {
     weekNum = self.getWeekNum(new Date(dateObj.getFullYear() - 1, 11, 31));
   } else {
     weekNum = Math.floor((curTime - weekFirstTime) / 86400000) + 1;
     weekNum = Math.ceil(weekNum / 7);
-  }
+  };
+
   return weekNum;
 };
 
@@ -154,7 +154,8 @@ theTool.parseDate = function(value, mustDef) {
         tags = tags.concat(Array(4 - tags.length).fill(0));
       } else if (tags.length > 4) {
         tags.length = 4;
-      }
+      };
+
       theDate.setHours.apply(theDate, tags);
 
     } else {
@@ -163,28 +164,34 @@ theTool.parseDate = function(value, mustDef) {
         value = theDate.getFullYear() + '-' + value;
       } else if (/^\d{4}-\d{1,2}$/.test(value)) {
         value += '-1';
-      }
+      };
+
       tags = value.split(/[\-\sT\:]/).map((x) => {
         return parseInt(x, 10);
       });
 
       if (tags.length > 1) {
         tags[1] -= 1;
-      }
+      };
+
       if (tags.length < 7) {
         tags = tags.concat(Array(7 - tags.length).fill(0));
       } else if (tags.length > 7) {
         tags.length = 7;
-      }
+      };
+
       theDate.setFullYear.apply(theDate, tags.slice(0, 3));
       theDate.setHours.apply(theDate, tags.slice(3));
-    }
+    };
+
   } else {
     theDate = null;
-  }
+  };
+
   if (mustDef === true && !self.isDate(theDate)) {
     theDate = new Date();
-  }
+  };
+
   return theDate;
 };
 
@@ -196,7 +203,8 @@ theTool.formatDate = function(style, time, lang) {
 
   if (typeof style !== 'string' || !self.isDate(theDate)) {
     return time;
-  }
+  };
+
   const attr = {
     Y: theDate.getFullYear(),
     n: theDate.getMonth() + 1,
@@ -235,7 +243,8 @@ theTool.formatDate = function(style, time, lang) {
   // 替换关键词
   for (let x of keys) {
     str = str.replace(new RegExp('{{' + x + '}}', 'g'), attr[x]);
-  }
+  };
+
   // 还原转义内容
   str = str.replace(/\\(.)/g, '$1');
 
@@ -248,21 +257,26 @@ theTool.getLanguage = function(name) {
 
   if (self.isObject(name)) {
     return name;
-  }
+  };
+
   if (typeof name !== 'string' || !name.length) {
     if (typeof navigator.language === 'string') {
       name = navigator.language;
     } else if (typeof navigator.browserLanguage === 'string') {
       name = navigator.browserLanguage;
-    }  }
+    };
+  };
+
   if (typeof name === 'string') {
     name = name.toLowerCase();
-  }
+  };
+
   if (typeof name === 'string' && name.length && typeof window.cxCalendar.languages[name] === 'object') {
     return window.cxCalendar.languages[name];
   } else {
     return window.cxCalendar.languages['default'];
-  }};
+  };
+};
 
 theTool.init = function() {
   const self = this;
@@ -346,18 +360,22 @@ theTool.bindEvent = function() {
             self.confirmRange();
           } else {
             self.confirmTime();
-          }          break;
-      }
+          };
+          break;
+      };
+
     // 选择日期
     } else if (nodeName === 'li' && el.dataset.date) {
       const dateText = el.dataset.date;
 
       if (typeof dateText !== 'string' || !dateText.length) {
         return;
-      }
+      };
+
       for (let x of el.parentNode.parentNode.querySelectorAll('li')) {
         x.classList.remove('selected');
-      }      el.classList.add('selected');
+      };
+      el.classList.add('selected');
 
       // 范围选择，需手动确认
       if (self.cacheApi.settings.mode === 'range') {
@@ -372,7 +390,8 @@ theTool.bindEvent = function() {
           } else {
             self.cacheDate.startTime = theTime;
             delete self.cacheDate.endTime;
-          }
+          };
+
         } else if (typeof self.cacheDate.startTime === 'number') {
           if (theTime === self.cacheDate.startTime) {
             delete self.cacheDate.startTime;
@@ -380,21 +399,26 @@ theTool.bindEvent = function() {
             self.cacheDate.endTime = theTime;
           } else {
             self.cacheDate.startTime = theTime;
-          }
+          };
+
         } else {
           self.cacheDate.startTime = theTime;
-        }
+        };
+
         self.gotoDate();
         return;
-      }
+      };
+
       // 时间选择，需手动确认
       if (self.cacheApi.settings.type === 'datetime') {
         self.cacheDate.time = self.parseDate(dateText).getTime();
         return;
-      }
+      };
+
       self.hidePanel();
       self.cacheApi.setDate(dateText);
-    }  });
+    };
+  });
 
   // 选择年月
   self.dom.panel.addEventListener('change', (e) => {
@@ -403,7 +427,8 @@ theTool.bindEvent = function() {
 
     if (nodeName === 'select' && ['year', 'month'].indexOf(el.name) >= 0) {
       self.gotoDate();
-    }  });
+    };
+  });
 };
 
 // 获取内部选框控件
@@ -417,7 +442,10 @@ theTool.getSelects = function(list, values) {
 
       if (self.isObject(values)) {
         values[x.name] = parseInt(x.value, 10);
-      }    }  }
+      };
+    };
+  };
+
   return selects;
 };
 
@@ -433,10 +461,12 @@ theTool.buildPanel = function() {
     if (typeof self.cacheApi.defDate.start === 'number' && typeof self.cacheApi.defDate.end === 'number') {
       self.cacheDate.startTime = self.cacheApi.defDate.start;
       self.cacheDate.endTime = self.cacheApi.defDate.end;
-    }
+    };
+
   } else {
     self.cacheDate = {};
-  }
+  };
+
   self.dom.head.innerHTML = '';
   self.dom.main.innerHTML = '';
 
@@ -445,10 +475,12 @@ theTool.buildPanel = function() {
 
   if (self.cacheApi.settings.mode === 'range') {
     classValue.push('range');
-  }
+  };
+
   if (typeof self.cacheApi.settings.baseClass === 'string' && self.cacheApi.settings.baseClass.length) {
     classValue.push(self.cacheApi.settings.baseClass);
-  }
+  };
+
   self.dom.panel.className = classValue.join(' ');
 
   const splitHtml = '<em></em>';
@@ -462,7 +494,8 @@ theTool.buildPanel = function() {
 
     for (let i = self.cacheApi.minDate.year; i <= self.cacheApi.maxDate.year; i++) {
       html += '<option value="' + i + '">' + i + '</option>';
-    }
+    };
+
     html += '</select>';
 
   } else if (self.cacheApi.settings.type === 'year') {
@@ -476,9 +509,11 @@ theTool.buildPanel = function() {
       // html += end < self.cacheApi.maxDate.year ? end : self.cacheApi.maxDate.year;
       html += end;
       html += '</option>';
-    }
+    };
+
     html += '</select>';
-  }
+  };
+
   if (['date', 'datetime'].indexOf(self.cacheApi.settings.type) >= 0) {
     html += splitHtml;
     html += '<select name="month" class="month"></select>';
@@ -495,14 +530,16 @@ theTool.buildPanel = function() {
 
     if (self.cacheApi.settings.type === 'datetime') {
       self.buildTimes();
-    }
+    };
+
     self.rebuildMonthSelect();
     self.gotoDate([self.cacheApi.defDate.year, self.cacheApi.defDate.month].join('-'));
 
   } else if (self.cacheApi.settings.type === 'time') {
     if (self.dom.panel.contains(self.dom.head)) {
       self.dom.panel.removeChild(self.dom.head);
-    }
+    };
+
     self.buildTimes();
 
   } else if (self.cacheApi.settings.type === 'month') {
@@ -531,7 +568,8 @@ theTool.buildPanel = function() {
     self.dom.panel.insertAdjacentElement('afterbegin', self.dom.head);
 
     self.gotoDate(self.cacheApi.defDate.year);
-  }
+  };
+
   self.buildActs();
 };
 
@@ -544,25 +582,30 @@ theTool.buildActs = function() {
 
   if (self.cacheApi.settings.button.today !== false && self.cacheApi.settings.mode !== 'range' && self.cacheApi.minDate.time <= nowTime && self.cacheApi.maxDate.time >= nowTime) {
       list.push('today');
-  }
+  };
+
   if (self.cacheApi.settings.button.clear !== false) {
     list.push('clear');
-  }
+  };
+
   if (self.cacheApi.settings.mode === 'range' || ['datetime', 'time'].indexOf(self.cacheApi.settings.type) >= 0) {
     list.push('confirm');
-  }
+  };
+
   let html = '';
 
   for (let x of list) {
     html += '<a class="' + x + '" href="javascript://" rel="' + x + '"></a>';
-  }
+  };
+
   if (html.length) {
     self.dom.acts.innerHTML = html;
     self.dom.panel.insertAdjacentElement('beforeend', self.dom.acts);
 
   } else if (self.dom.panel.contains(self.dom.acts)) {
     self.dom.panel.removeChild(self.dom.acts);
-  }};
+  };
+};
 
 // 重新构建月份选项
 theTool.rebuildMonthSelect = function() {
@@ -579,7 +622,8 @@ theTool.rebuildMonthSelect = function() {
     start = self.cacheApi.minDate.month;
   } else if (values.year === self.cacheApi.maxDate.year) {
     end = self.cacheApi.maxDate.month;
-  }
+  };
+
   let html = '';
 
   for (let i = start; i <= end; i++) {
@@ -587,9 +631,11 @@ theTool.rebuildMonthSelect = function() {
 
     if (values.month === i) {
       html += ' selected';
-    }
+    };
+
     html += '>' + self.cacheApi.language.monthList[i - 1] + '</option>';
-  }
+  };
+
   selects.month.innerHTML = html;
 };
 
@@ -599,7 +645,8 @@ theTool.buildDays = function(year, month) {
 
   if (!self.isInteger(year) || !self.isInteger(month)) {
     return;
-  }
+  };
+
   const theDate = new Date(year, month - 1, 1);
   year = theDate.getFullYear();
   month = theDate.getMonth() + 1;
@@ -611,7 +658,8 @@ theTool.buildDays = function(year, month) {
   // } else if (year > self.cacheApi.maxDate.year || (year === self.cacheApi.maxDate.year && month > self.cacheApi.maxDate.month)) {
   //   year = self.cacheApi.maxDate.year;
   //   month = self.cacheApi.maxDate.month;
-  }
+  };
+
   const jsMonth = month - 1;
   const monthDays = self.getMonthDays(year);
   const sameMonthDate = new Date(year, jsMonth, 1);
@@ -623,7 +671,8 @@ theTool.buildDays = function(year, month) {
   let monthFirstDay = sameMonthDate.getDay() - self.cacheApi.settings.weekStart;
   if (monthFirstDay < 0) {
     monthFirstDay += 7;
-  }
+  };
+
   // 获取周末位置
   const saturday = 6 - self.cacheApi.settings.weekStart;
   const sunday = (7 - self.cacheApi.settings.weekStart) % 7;
@@ -640,12 +689,15 @@ theTool.buildDays = function(year, month) {
 
     if (typeof self.cacheApi.settings.rangeMaxDay === 'number' && self.cacheApi.settings.rangeMaxDay) {
       rangeMaxTime = self.cacheDate.startTime + self.cacheApi.settings.rangeMaxDay * 86400000;
-    }
+    };
+
     if (typeof self.cacheDate.endTime === 'number') {
       rangeValue.end = parseInt(self.formatDate('Ymd', self.cacheDate.endTime), 10);
     } else {
       rangeValue.end = rangeValue.start;
-    }  }
+    };
+  };
+
   let html = '<ul>';
 
   // 星期排序
@@ -657,9 +709,11 @@ theTool.buildDays = function(year, month) {
       html += ' sat';
     } else if(i === sunday) {
       html += ' sun';
-    }
+    };
+
     html += '">' + self.cacheApi.language.weekList[(i + self.cacheApi.settings.weekStart) % 7] + '</li>';
-  }
+  };
+
   for (let i = 0; i < monthDayMax; i++) {
     const classValue = [];
     let todayYear = year;
@@ -677,7 +731,8 @@ theTool.buildDays = function(year, month) {
       } else {
         todayMonth--;
         todayNum = monthDays[jsMonth - 1] + todayNum;
-      }
+      };
+
     } else if (todayNum > monthDays[jsMonth]) {
       classValue.push('other');
 
@@ -688,7 +743,9 @@ theTool.buildDays = function(year, month) {
       } else {
         todayMonth++;
         todayNum -= monthDays[jsMonth];
-      }    }
+      };
+    };
+
     const todayDate = new Date(todayYear, todayMonth - 1, todayNum);
     const todayTime = todayDate.getTime();
     const todayText = [todayYear, todayMonth, todayNum].join('-');
@@ -702,22 +759,28 @@ theTool.buildDays = function(year, month) {
 
         if (todayInt === rangeValue.start) {
           classValue.push('start');
-        }        if (todayInt === rangeValue.end) {
+        };
+        if (todayInt === rangeValue.end) {
           classValue.push('end');
-        }      }
+        };
+      };
+
     } else if (todayText === selectedText) {
       classValue.push('selected');
-    }
+    };
+
     // 高亮今天
     if (todayText === nowText) {
       classValue.push('now');
-    }
+    };
+
     // 高亮周末
     if (i % 7 === saturday) {
       classValue.push('sat');
     } else if (i % 7 === sunday) {
       classValue.push('sun');
-    }
+    };
+
     if (rangeMaxTime && todayTime > rangeMaxTime) {
       classValue.push('del');
 
@@ -733,7 +796,9 @@ theTool.buildDays = function(year, month) {
     } else if (Array.isArray(self.cacheApi.settings.disableDay) && self.cacheApi.settings.disableDay.length) {
       if (self.cacheApi.settings.disableDay.indexOf(String(todayNum)) >= 0 || self.cacheApi.settings.disableDay.indexOf([todayMonth, todayNum].join('-')) >= 0 || self.cacheApi.settings.disableDay.indexOf([todayYear, todayMonth, todayNum].join('-')) >= 0) {
         classValue.push('del');
-      }    }
+      };
+    };
+
     // 判断是否有节假日
     if (self.cacheApi.holiday) {
       const keys = [
@@ -746,23 +811,31 @@ theTool.buildDays = function(year, month) {
           classValue.push('holiday');
           todayName = self.cacheApi.holiday[x];
           break;
-        }      }    }
+        };
+      };
+    };
+
     html += '<li';
 
     if (classValue.length) {
       html += ' class="' + classValue.join(' ') + '"';
-    }
+    };
+
     if (classValue.indexOf('del') === -1) {
       html += ' data-date="' + todayText + '"';
-    }
+    };
+
     if (todayName.length) {
       html += ' data-title="' + todayName + '"';
-    }
+    };
+
     if (i % 7 === 0) {
       html += ' data-week-num="' + self.getWeekNum(todayDate) + '"';
-    }
+    };
+
     html += '>' + todayNum + '</li>';
-  }
+  };
+
   html += '</ul>';
 
   return html;
@@ -779,7 +852,8 @@ theTool.buildTimes = function() {
   for (let i = 0; i < 24; i += self.cacheApi.settings.hourStep) {
     const optionValue = self.fillLeadZero(i, 2);
     html += '<option value="' + optionValue + '">' + optionValue + '</option>';
-  }
+  };
+
   html += '</select>';
   html += splitHtml;
   html += '<select name="mint" class="mint">';
@@ -787,7 +861,8 @@ theTool.buildTimes = function() {
   for (let i = 0; i < 60; i += self.cacheApi.settings.minuteStep) {
     const optionValue = self.fillLeadZero(i, 2);
     html += '<option value="' + optionValue + '">' + optionValue + '</option>';
-  }
+  };
+
   html += '</select>';
   html += splitHtml;
   html += '<select name="secs" class="secs">';
@@ -795,13 +870,15 @@ theTool.buildTimes = function() {
   for (let i = 0; i < 60; i += self.cacheApi.settings.secondStep) {
     const optionValue = self.fillLeadZero(i, 2);
     html += '<option value="' + optionValue + '">' + optionValue + '</option>';
-  }
+  };
+
   html += '</select>';
   html += '</section>';
 
   if (self.cacheApi.settings.mode === 'range') {
     html += html;
-  }
+  };
+
   self.dom.timeSet.innerHTML = html;
   self.dom.main.insertAdjacentElement('beforeend', self.dom.timeSet);
 
@@ -819,7 +896,8 @@ theTool.setTimesValues = function() {
     values.push(self.cacheDate.startTime, self.cacheDate.startTime);
   } else {
     values.push(self.cacheApi.defDate.time, self.cacheApi.defDate.time);
-  }
+  };
+
   const times = {
     hour: [],
     mint: [],
@@ -831,11 +909,14 @@ theTool.setTimesValues = function() {
     times.hour.push(self.fillLeadZero(d.getHours(), 2));
     times.mint.push(self.fillLeadZero(d.getMinutes(), 2));
     times.secs.push(self.fillLeadZero(d.getSeconds(), 2));
-  }
+  };
+
   for (let x of self.dom.timeSet.querySelectorAll('select')) {
     if (times[x.name] && times[x.name].length) {
       x.value = times[x.name].shift();
-    }  }};
+    };
+  };
+};
 
 // 构建月份列表
 theTool.buildMonths = function(year) {
@@ -843,7 +924,8 @@ theTool.buildMonths = function(year) {
 
   if (!self.isInteger(year)) {
     return;
-  }
+  };
+
   const nowDate = new Date();
   const nowText = [nowDate.getFullYear(), nowDate.getMonth() + 1].join('-');
   const selectedText = self.formatDate('Y-n', self.cacheDate.time);
@@ -861,12 +943,15 @@ theTool.buildMonths = function(year) {
       const rangeDate = new Date(self.cacheDate.startTime);
       rangeDate.setMonth(rangeDate.getMonth() + self.cacheApi.settings.rangeMaxMonth);
       rangeMaxInt = parseInt(self.formatDate('Ym', rangeDate.getTime()), 10);
-    }
+    };
+
     if (typeof self.cacheDate.endTime === 'number') {
       rangeValue.end = parseInt(self.formatDate('Ym', self.cacheDate.endTime), 10);
     } else {
       rangeValue.end = rangeValue.start;
-    }  }
+    };
+  };
+
   let html = '<ul>';
 
   for (let i = 1; i <= 12; i++) {
@@ -880,31 +965,40 @@ theTool.buildMonths = function(year) {
 
         if (todayInt === rangeValue.start) {
           classValue.push('start');
-        }        if (todayInt === rangeValue.end) {
+        };
+        if (todayInt === rangeValue.end) {
           classValue.push('end');
-        }      }
+        };
+      };
+
     } else if (todayText === selectedText) {
       classValue.push('selected');
-    }
+    };
+
     if (todayText === nowText) {
       classValue.push('now');
-    }
+    };
+
     if (rangeMaxInt && todayInt > rangeMaxInt) {
       classValue.push('del');
 
     } else if (todayInt < minInt || todayInt > maxInt) {
       classValue.push('del');
-    }
+    };
+
     html += '<li';
 
     if (classValue.length) {
       html += ' class="' + classValue.join(' ') + '"';
-    }
+    };
+
     if (classValue.indexOf('del') === -1) {
       html += ' data-date="' + todayText + '"';
-    }
+    };
+
     html += '>' + self.cacheApi.language.monthList[i - 1] + '</li>';
-  }
+  };
+
   html += '</ul>';
 
   return html;
@@ -919,20 +1013,23 @@ theTool.buildYears = function(year) {
 
   if (!self.isInteger(year)) {
     return;
-  }
+  };
+
   const nowDate = new Date();
   const nowYear = nowDate.getFullYear();
   const selectedText = parseInt(self.formatDate('Y', self.cacheDate.time), 10);
 
   if (year < self.cacheApi.minDate.year) {
     start = self.cacheApi.minDate.year;
-  }
+  };
+
   start = Math.floor(start / 10) * 10;
   diff = year - start;
 
   if (diff >= self.cacheApi.settings.yearNum) {
     start += Math.floor(diff / self.cacheApi.settings.yearNum) * self.cacheApi.settings.yearNum;
-  }
+  };
+
   end = start + self.cacheApi.settings.yearNum - 1;
 
   // if (end > self.cacheApi.maxDate.year) {
@@ -948,12 +1045,15 @@ theTool.buildYears = function(year) {
 
     if (typeof self.cacheApi.settings.rangeMaxYear === 'number' && self.cacheApi.settings.rangeMaxYear) {
       rangeMaxYear = rangeValue.start + self.cacheApi.settings.rangeMaxYear;
-    }
+    };
+
     if (typeof self.cacheDate.endTime === 'number') {
       rangeValue.end = parseInt(self.formatDate('Y', self.cacheDate.endTime), 10);
     } else {
       rangeValue.end = rangeValue.start;
-    }  }
+    };
+  };
+
   let html = '<ul>';
 
   for (let i = start; i <= end; i++) {
@@ -965,31 +1065,40 @@ theTool.buildYears = function(year) {
 
         if (i === rangeValue.start) {
           classValue.push('start');
-        }        if (i === rangeValue.end) {
+        };
+        if (i === rangeValue.end) {
           classValue.push('end');
-        }      }
+        };
+      };
+
     } else if (i === selectedText) {
       classValue.push('selected');
-    }
+    };
+
     if (i === nowYear) {
       classValue.push('now');
-    }
+    };
+
     if (rangeMaxYear && i > rangeMaxYear) {
       classValue.push('del');
 
     } else if (i < self.cacheApi.minDate.year || i > self.cacheApi.maxDate.year) {
       classValue.push('del');
-    }
+    };
+
     html += '<li';
 
     if (classValue.length) {
       html += ' class="' + classValue.join(' ') + '"';
-    }
+    };
+
     if (classValue.indexOf('del') === -1) {
       html += ' data-date="' + i + '"';
-    }
+    };
+
     html += '>' + i + '</li>';
-  }
+  };
+
   html += '</ul>';
 
   return html;
@@ -1006,7 +1115,9 @@ theTool.gotoDate = function(value) {
 
     if (values.month) {
       value += '-' + values.month;
-    }  }
+    };
+  };
+
   const theDate = self.parseDate(value, true);
   const theTime = theDate.getTime();
 
@@ -1014,7 +1125,8 @@ theTool.gotoDate = function(value) {
     theDate.setTime(self.cacheApi.minDate.time);
   } else if (theTime > self.cacheApi.maxDate.time) {
     theDate.setTime(self.cacheApi.maxDate.time);
-  }
+  };
+
   let theYear = theDate.getFullYear();
   let theMonth = theDate.getMonth() + 1;
 
@@ -1028,20 +1140,26 @@ theTool.gotoDate = function(value) {
         startYear = val;
       } else {
         break;
-      }    }
+      };
+    };
+
     theYear = startYear;
 
     if (startYear !== values.year) {
       selects.year.value = startYear;
-    }
+    };
+
   } else if (theYear !== values.year) {
     selects.year.value = theYear;
-  }
+  };
+
   if (selects.month) {
     if (theYear !== values.year || theMonth !== values.month) {
       self.rebuildMonthSelect();
       selects.month.value = theMonth;
-    }  }
+    };
+  };
+
   const atState = {
     start: true,
     end: true,
@@ -1050,15 +1168,20 @@ theTool.gotoDate = function(value) {
   for (let x in selects) {
     if (selects[x].selectedIndex !== 0) {
       atState.start = false;
-    }    if (selects[x].selectedIndex !== selects[x].length - 1) {
+    };
+    if (selects[x].selectedIndex !== selects[x].length - 1) {
       atState.end = false;
-    }  }
+    };
+  };
+
   for (let x in atState) {
     if (atState[x]) {
       self.dom.panel.classList.add('at_' + x);
     } else if (self.dom.panel.classList.contains('at_' + x)) {
       self.dom.panel.classList.remove('at_' + x);
-    }  }
+    };
+  };
+
   let html = '';
   let fillHtml = '';
 
@@ -1068,15 +1191,19 @@ theTool.gotoDate = function(value) {
       html = self.buildDays(theYear, theMonth);
 
       if (self.cacheApi.settings.mode === 'range') {
+        let fillYear = theYear;
         let fillMonth = theMonth + 1;
 
         if (fillMonth > 12) {
+          fillYear += 1;
           fillMonth = 1;
-        }
+        };
+
         fillHtml = '<span class="year">' + theYear + '</span><em></em>';
         fillHtml += '<span class="month">' + self.cacheApi.language.monthList[fillMonth - 1] + '</span><em></em>';
         html += self.buildDays(theYear, theMonth + 1);
-      }      break;
+      };
+      break;
 
     case 'month':
       html = self.buildMonths(theYear);
@@ -1084,7 +1211,8 @@ theTool.gotoDate = function(value) {
       if (self.cacheApi.settings.mode === 'range') {
         fillHtml = '<span class="year">' + (theYear + 1) + '</span><em></em>';
         html += self.buildMonths(theYear + 1);
-      }      break;
+      };
+      break;
 
     case 'year':
       html = self.buildYears(theYear);
@@ -1092,8 +1220,10 @@ theTool.gotoDate = function(value) {
       if (self.cacheApi.settings.mode === 'range') {
         fillHtml = '<span class="year">' + (theYear + self.cacheApi.settings.yearNum) + ' - ' + (theYear + self.cacheApi.settings.yearNum * 2 - 1) + '</span>';
         html += self.buildYears(theYear + self.cacheApi.settings.yearNum);
-      }      break;
-  }
+      };
+      break;
+  };
+
   self.dom.dateSet.innerHTML = html;
 
   if (self.cacheApi.settings.mode === 'range') {
@@ -1101,7 +1231,9 @@ theTool.gotoDate = function(value) {
 
     if (el.length > 1) {
       el[1].innerHTML = fillHtml;
-    }  }};
+    };
+  };
+};
 
 // 向前翻页
 theTool.gotoPrev = function() {
@@ -1124,15 +1256,19 @@ theTool.gotoPrev = function() {
           self.rebuildMonthSelect();
           selects.month.selectedIndex = selects.month.length - 1;
           self.gotoDate();
-        }      }      break;
+        };
+      };
+      break;
 
     case 'month':
     case 'year':
       if (selects.year.selectedIndex > 0) {
         selects.year.selectedIndex -= 1;
         self.gotoDate();
-      }      break;
-  }};
+      };
+      break;
+  };
+};
 
 // 向后翻页
 theTool.gotoNext = function() {
@@ -1156,15 +1292,19 @@ theTool.gotoNext = function() {
           self.rebuildMonthSelect();
           selects.month.selectedIndex = 0;
           self.gotoDate();
-        }      }      break;
+        };
+      };
+      break;
 
     case 'month':
     case 'year':
       if (selects.year.selectedIndex < selects.year.length - 1) {
         selects.year.selectedIndex += 1;
         self.gotoDate();
-      }      break;
-  }};
+      };
+      break;
+  };
+};
 
 // 显示面板
 theTool.showPanel = function() {
@@ -1172,7 +1312,8 @@ theTool.showPanel = function() {
 
   if (self.delayHide) {
     clearTimeout(self.delayHide);
-  }
+  };
+
   const pos = self.cacheApi.settings.position;
 
   const winWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
@@ -1213,11 +1354,14 @@ theTool.showPanel = function() {
         panelTop = ((elClientTop + elHeight + panelHeight) > winHeight) ? elTop + elHeight - panelHeight : elTop;
         panelLeft = (pos === 'left') ? elLeft - panelWidth : elLeft + elWidth;
         break;
-    }  }
+    };
+  };
+
   if (typeof panelTop === 'number' && typeof panelLeft === 'number') {
     self.dom.panel.style.top = panelTop + 'px';
     self.dom.panel.style.left = panelLeft + 'px';
-  }
+  };
+
   self.dom.panel.classList.add('show');
 };
 
@@ -1242,7 +1386,8 @@ theTool.confirmRange = function() {
     values.push(self.cacheDate.startTime, self.cacheDate.startTime);
   } else {
     values.push(self.cacheApi.defDate.time, self.cacheApi.defDate.time);
-  }
+  };
+
   if (['datetime', 'time'].indexOf(self.cacheApi.settings.type) >= 0) {
     const times = {
       hour: [],
@@ -1253,25 +1398,33 @@ theTool.confirmRange = function() {
     for (let x of self.dom.timeSet.querySelectorAll('select')) {
       if (times[x.name]) {
         times[x.name].push(parseInt(x.value));
-      }    }
+      };
+    };
+
     // 日期对比时间顺序
     if (self.cacheApi.settings.type === 'datetime') {
       const diffTime = [];
 
       for (let i = 0, l = values.length; i < l; i++) {
         diffTime.push(parseInt([1, times.hour[i], times.mint[i], times.secs[i]].join(''), 10));
-      }
+      };
+
       if (diffTime[0] > diffTime[1]) {
         for (let x in times) {
           if (times[x].length > 1) {
             times[x][1] = times[x][0];
-          }        }      }    }
+          };
+        };
+      };
+    };
+
     values = values.map((val, index) => {
       const d = new Date(val);
       d.setHours(times.hour[index], times.mint[index], times.secs[index], 0);
       return d.getTime();
     });
-  }
+  };
+
   self.cacheApi.setDate(values.join(self.cacheApi.settings.rangeSymbol));
 };
 
@@ -1283,7 +1436,8 @@ theTool.confirmTime = function() {
 
   if (self.cacheApi.settings.type === 'datetime' && typeof self.cacheDate.time === 'number') {
     theTime = self.cacheDate.time;
-  }
+  };
+
   theDate.setTime(theTime);
 
   // 时分秒
@@ -1297,7 +1451,9 @@ theTool.confirmTime = function() {
   for (let x of self.dom.timeSet.querySelectorAll('select')) {
     if (x.name in map) {
       times[map[x.name]] = parseInt(x.value);
-    }  }
+    };
+  };
+
   theDate.setHours(...times);
 
   self.cacheApi.setDate(theDate.getTime());
@@ -1309,365 +1465,19 @@ theTool.detach = function(el) {
 
   if (!self.isElement(el)) {
     return;
-  }
+  };
+
   const alias = 'id_' + el.dataset.cxCalendarId;
   delete el.dataset.cxCalendarId;
 
   if (typeof self.bindFuns[alias] === 'function') {
     el.removeEventListener('click', self.bindFuns[alias]);
     delete self.bindFuns[alias];
-  }};
+  };
+};
 
 document.addEventListener('DOMContentLoaded', () => {
   theTool.init();
 });
 
-// 选择器实例
-const picker = function() {
-  const self = this;
-  let options = {};
-  let isAttach = false;
-
-  // 分配参数
-  for (let x of arguments) {
-    if (theTool.isElement(x)) {
-      self.input = x;
-    } else if (theTool.isObject(x)) {
-      options = x;
-    } else if (typeof x === 'boolean') {
-      isAttach = x;
-    }  }
-  if (!self.input || !self.input.nodeName || ['input', 'textarea'].indexOf(self.input.nodeName.toLowerCase()) === -1) {
-    console.warn('[cxCalendar] Not input element.');
-    return;
-  }
-  // 合并输入框参数
-  const keys = [
-    'baseClass',
-    'disableWeek',
-    'disableDay',
-    'endDate',
-    'format',
-    'hourStep',
-    'language',
-    'lockRow',
-    'minuteStep',
-    'position',
-    'mode',
-    'rangeSymbol',
-    'rangeMaxDay',
-    'rangeMaxMonth',
-    'rangeMaxYear',
-    'secondStep',
-    'startDate',
-    'type',
-    'weekStart',
-    'yearNum',
-  ];
-  const inputSettings = {};
-
-  for (let x of keys) {
-    if (typeof self.input.dataset[x] === 'string' && self.input.dataset[x].length) {
-      switch (x) {
-        case 'hourStep':
-        case 'minuteStep':
-        case 'secondStep':
-        case 'rangeMaxDay':
-        case 'rangeMaxMonth':
-        case 'rangeMaxYear':
-        case 'weekStart':
-        case 'yearNum':
-          inputSettings[x] = parseInt(self.input.dataset[x], 10);
-          break;
-
-        case 'lockRow':
-          inputSettings[x] = Boolean(parseInt(self.input.dataset[x], 10));
-          break;
-
-        case 'disableWeek':
-        case 'disableDay':
-          inputSettings[x] = self.input.dataset[x].split(',');
-          break;
-
-        default:
-          inputSettings[x] = self.input.dataset[x];
-          break;
-      }    }  }
-  if (Array.isArray(inputSettings.disableWeek)) {
-    inputSettings.disableWeek = inputSettings.disableWeek.map((val) => {
-      return parseInt(val, 10);
-    });
-  }
-  self.settings = theTool.extend({}, window.cxCalendar.defaults, options, inputSettings);
-  self.setOptions();
-
-  let alias = 'id_' + self.input.dataset.cxCalendarId;
-
-  if (typeof theTool.bindFuns[alias] === 'function') {
-    theTool.detach(self.input);
-  }
-  self.eventChange = new CustomEvent('change', {
-    bubbles: true
-  });
-
-  if (isAttach) {
-    self.input.dataset.cxCalendarId = theTool.cxId;
-    alias = 'id_' + theTool.cxId;
-    theTool.cxId++;
-    theTool.bindFuns[alias] = self.show.bind(self);
-
-    self.input.addEventListener('click', theTool.bindFuns[alias]);
-
-  } else {
-    self.show();
-  }};
-
-picker.prototype.setOptions = function(options) {
-  const self = this;
-  let maxDate;
-  let minDate;
-  let defDate;
-
-  if (theTool.isObject(options)) {
-    theTool.extend(self.settings, options);
-  }
-  // 结束日期（默认为当前日期）
-  if (theTool.reg.isYear.test(self.settings.endDate)) {
-    maxDate = new Date(self.settings.endDate, 11, 31);
-  } else {
-    maxDate = theTool.parseDate(self.settings.endDate, true);
-  }
-  maxDate.setHours(23, 59, 59);
-
-  self.maxDate = {
-    year: maxDate.getFullYear(),
-    month: maxDate.getMonth() + 1,
-    day: maxDate.getDate(),
-    time: maxDate.getTime()
-  };
-
-  // 起始日期（默认为当前日期的前一年）
-  if (theTool.reg.isYear.test(self.settings.startDate)) {
-    minDate = new Date(self.settings.startDate, 0, 1);
-  } else {
-    minDate = theTool.parseDate(self.settings.startDate);
-  }
-  if (!theTool.isDate(minDate)) {
-    minDate = new Date();
-    minDate.setFullYear(minDate.getFullYear() - 1);
-  }
-  // 若超过结束日期，则设为结束日期的前一年
-  if (minDate.getTime() > self.maxDate.time) {
-    minDate = new Date(self.maxDate.year - 1, self.maxDate.month - 1, self.maxDate.day);
-  }
-  minDate.setHours(0, 0, 0, 0);
-
-  self.minDate = {
-    year: minDate.getFullYear(),
-    month: minDate.getMonth() + 1,
-    day: minDate.getDate(),
-    time: minDate.getTime()
-  };
-
-  const rangeValue = {};
-
-  // 默认日期
-  if (self.settings.mode === 'range') {
-    const dateSp = String(self.settings.date).split(self.settings.rangeSymbol);
-
-    if (dateSp.length === 2) {
-      defDate = theTool.parseDate(dateSp[0], true);
-
-      const rangeEndDate = theTool.parseDate(dateSp[1], true);
-      rangeValue.start = defDate.getTime();
-      rangeValue.end = rangeEndDate.getTime();
-    }  }
-  if (!defDate) {
-    defDate = theTool.parseDate(self.settings.date, true);
-  }
-  if (defDate.getTime() < self.minDate.time) {
-    defDate = theTool.parseDate(self.minDate.time, true);
-  } else if (defDate.getTime() > self.maxDate.time) {
-    defDate = theTool.parseDate(self.maxDate.time, true);
-  }
-  self.defDate = {
-    year: defDate.getFullYear(),
-    month: defDate.getMonth() + 1,
-    day: defDate.getDate(),
-    hour: defDate.getHours(),
-    mint: defDate.getMinutes(),
-    secs: defDate.getSeconds(),
-    time: defDate.getTime(),
-    start: rangeValue.start,
-    end: rangeValue.end,
-  };
-
-  // 星期的起始位置
-  self.settings.weekStart %= 7;
-
-  // 语言配置
-  self.language = theTool.getLanguage(self.settings.language);
-
-  // 统计节假日
-  if (Array.isArray(self.language.holiday) && self.language.holiday.length) {
-    self.holiday = {};
-
-    for (let x of self.language.holiday) {
-      self.holiday[x.day] = x.name;
-    }
-  } else {
-    self.holiday = null;
-  }};
-
-picker.prototype.show = function() {
-  const self = this;
-
-  if (self.input.value || !self.settings.date) {
-    self.settings.date = self.input.value;
-  }  self.setOptions();
-
-  theTool.cacheApi = self;
-  theTool.buildPanel();
-  theTool.showPanel();
-};
-
-picker.prototype.hide = function() {
-  theTool.hidePanel();
-};
-
-picker.prototype.getDate = function(style) {
-  const self = this;
-  const oldValue = self.input.value;
-  const dateList = [];
-
-  if (typeof style !== 'string' || !style.length) {
-    style = self.settings.format;
-  }
-  if (self.settings.mode === 'range') {
-    const dateSp = String(oldValue).split(self.settings.rangeSymbol);
-
-    if (dateSp.length === 2) {
-      dateList.push(...dateSp);
-    }
-  } else {
-    dateList.push(oldValue);
-  }
-  let newValue = [];
-
-  for (let x of dateList) {
-    const theDate = theTool.parseDate(x);
-
-    if (!theTool.isDate(theDate)) {
-      newValue = [];
-      break;
-    }
-    newValue.push(theTool.formatDate(style, theDate.getTime(), self.language));
-  }
-  newValue = self.settings.mode === 'range' ? newValue.join(self.settings.rangeSymbol) : newValue.join('');
-
-  return newValue;
-};
-
-picker.prototype.setDate = function(value) {
-  const self = this;
-  const oldValue = self.input.value;
-  const dateList = [];
-
-  if (self.settings.mode === 'range') {
-    const dateSp = String(value).split(self.settings.rangeSymbol);
-
-    if (dateSp.length === 2) {
-      dateList.push(...dateSp);
-    }
-  } else {
-    dateList.push(value);
-  }
-  let newValue = [];
-
-  for (let x of dateList) {
-    const theDate = theTool.parseDate(x);
-
-    if (!theTool.isDate(theDate)) {
-      newValue = [];
-      break;
-    }
-    let theTime = theDate.getTime();
-
-    if (theTime < self.minDate.time) {
-      theTime = self.minDate.time;
-    } else if (theTime > self.maxDate.time) {
-      theTime = self.maxDate.time;
-    }
-    newValue.push(theTool.formatDate(self.settings.format, theTime, self.language));
-  }
-  newValue = self.settings.mode === 'range' ? newValue.join(self.settings.rangeSymbol) : newValue.join('');
-
-  if (oldValue !== newValue) {
-    self.input.value = newValue;
-    self.input.dispatchEvent(self.eventChange);
-  }};
-
-picker.prototype.clearDate = function() {
-  const self = this;
-  const oldValue = self.input.value;
-
-  if (oldValue && oldValue.length) {
-    self.input.value = '';
-    self.input.dispatchEvent(self.eventChange);
-  }};
-
-const cxCalendar = function(el, options, isAttach) {
-  const result = new picker(...arguments);
-
-  if (isAttach) {
-    return result;
-  }};
-
-cxCalendar.attach = function(el, options) {
-  return this(el, options, true);
-};
-
-cxCalendar.detach = function(el) {
-  theTool.detach(el);
-};
-
-// 默认配置
-cxCalendar.defaults = {
-  startDate: undefined,   // 开始日期
-  endDate: undefined,     // 结束日期
-  date: undefined,        // 默认日期
-  type: 'date',           // 日期类型
-  format: 'Y-m-d',        // 日期值格式
-  weekStart: 0,           // 星期开始于周几
-  lockRow: false,         // 固定日期的行数
-  yearNum: 20,            // 年份每页条数
-  hourStep: 1,            // 小时间隔
-  minuteStep: 1,          // 分钟间隔
-  secondStep: 1,          // 秒间隔
-  disableWeek: [],        // 不可选择的日期（星期值）
-  disableDay: [],         // 不可选择的日期
-  mode: 'single',         // 选择模式
-  rangeSymbol: ' - ',     // 日期范围拼接符号
-  rangeMaxDay: 0,         // 日期范围间隔
-  rangeMaxMonth: 0,       // 月份范围间隔
-  rangeMaxYear: 0,        // 年份范围间隔
-  button: {},             // 操作按钮
-  position: undefined,    // 面板位置
-  baseClass: undefined,   // 基础样式
-  language: undefined     // 语言配置
-};
-
-// 默认语言
-cxCalendar.languages = {
-  'default': {
-    am: '上午',
-    pm: '下午',
-    monthList: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-    weekList: ['日', '一', '二', '三', '四', '五', '六'],
-    holiday: []
-  }
-};
-
-return cxCalendar;
-
-}));
+export default theTool;

@@ -48,32 +48,34 @@ const picker = function() {
   const inputSettings = {};
 
   for (let x of keys) {
-    if (typeof self.input.dataset[x] === 'string' && self.input.dataset[x].length) {
-      switch (x) {
-        case 'hourStep':
-        case 'minuteStep':
-        case 'secondStep':
-        case 'rangeMaxDay':
-        case 'rangeMaxMonth':
-        case 'rangeMaxYear':
-        case 'weekStart':
-        case 'yearNum':
-          inputSettings[x] = parseInt(self.input.dataset[x], 10);
-          break;
+    if (typeof self.input.dataset[x] !== 'string' || !self.input.dataset[x].length) {
+      continue;
+    };
 
-        case 'lockRow':
-          inputSettings[x] = Boolean(parseInt(self.input.dataset[x], 10));
-          break;
+    switch (x) {
+      case 'hourStep':
+      case 'minuteStep':
+      case 'secondStep':
+      case 'rangeMaxDay':
+      case 'rangeMaxMonth':
+      case 'rangeMaxYear':
+      case 'weekStart':
+      case 'yearNum':
+        inputSettings[x] = parseInt(self.input.dataset[x], 10);
+        break;
 
-        case 'disableWeek':
-        case 'disableDay':
-          inputSettings[x] = self.input.dataset[x].split(',');
-          break;
+      case 'lockRow':
+        inputSettings[x] = Boolean(parseInt(self.input.dataset[x], 10));
+        break;
 
-        default:
-          inputSettings[x] = self.input.dataset[x];
-          break;
-      };
+      case 'disableWeek':
+      case 'disableDay':
+        inputSettings[x] = self.input.dataset[x].split(',');
+        break;
+
+      default:
+        inputSettings[x] = self.input.dataset[x];
+        break;
     };
   };
 
@@ -83,7 +85,7 @@ const picker = function() {
     });
   };
 
-  self.settings = theTool.extend({}, window.cxCalendar.defaults, options, inputSettings);
+  self.settings = theTool.extend({}, options, inputSettings);
   self.setOptions();
 
   let alias = 'id_' + self.input.dataset.cxCalendarId;
@@ -202,18 +204,15 @@ picker.prototype.setOptions = function(options) {
   self.settings.weekStart %= 7;
 
   // 语言配置
-  self.language = theTool.getLanguage(self.settings.language);
+  self.settings.language = theTool.getLanguage(self.settings.language);
 
   // 统计节假日
-  if (Array.isArray(self.language.holiday) && self.language.holiday.length) {
+  if (Array.isArray(self.settings.language.holiday) && self.settings.language.holiday.length) {
     self.holiday = {};
 
-    for (let x of self.language.holiday) {
+    for (let x of self.settings.language.holiday) {
       self.holiday[x.day] = x.name;
     };
-
-  } else {
-    self.holiday = null;
   };
 };
 
@@ -264,7 +263,7 @@ picker.prototype.getDate = function(style) {
       break;
     };
 
-    newValue.push(theTool.formatDate(style, theDate.getTime(), self.language));
+    newValue.push(theTool.formatDate(style, theDate.getTime(), self.settings.language));
   };
 
   newValue = self.settings.mode === 'range' ? newValue.join(self.settings.rangeSymbol) : newValue.join('');
@@ -306,7 +305,7 @@ picker.prototype.setDate = function(value) {
       theTime = self.maxDate.time;
     };
 
-    newValue.push(theTool.formatDate(self.settings.format, theTime, self.language));
+    newValue.push(theTool.formatDate(self.settings.format, theTime, self.settings.language));
   };
 
   newValue = self.settings.mode === 'range' ? newValue.join(self.settings.rangeSymbol) : newValue.join('');

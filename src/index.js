@@ -3,7 +3,13 @@ import theTool from './tool.js';
 import picker from './picker.js';
 
 const cxCalendar = function(el, options, isAttach) {
-  const result = new picker(...arguments);
+  if (theTool.isObject(options)) {
+    options = theTool.extend({}, cxCalendar.defaults, options);
+  } else {
+    options = theTool.extend({}, cxCalendar.defaults);
+  };
+
+  const result = new picker(el, options, isAttach);
 
   if (isAttach) {
     return result;
@@ -35,24 +41,13 @@ cxCalendar.defaults = {
   disableDay: [],         // 不可选择的日期
   mode: 'single',         // 选择模式
   rangeSymbol: ' - ',     // 日期范围拼接符号
-  rangeMaxDay: 0,         // 日期范围间隔
-  rangeMaxMonth: 0,       // 月份范围间隔
-  rangeMaxYear: 0,        // 年份范围间隔
+  rangeMaxDay: 0,         // 日期范围最长间隔
+  rangeMaxMonth: 0,       // 月份范围最长间隔
+  rangeMaxYear: 0,        // 年份范围最长间隔
   button: {},             // 操作按钮
   position: undefined,    // 面板位置
   baseClass: undefined,   // 基础样式
   language: undefined     // 语言配置
-};
-
-// 默认语言
-cxCalendar.languages = {
-  'default': {
-    am: '上午',
-    pm: '下午',
-    monthList: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-    weekList: ['日', '一', '二', '三', '四', '五', '六'],
-    holiday: []
-  }
 };
 
 export default cxCalendar;

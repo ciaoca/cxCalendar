@@ -6,6 +6,10 @@
  * 浏览器语言参考
  * https://developer.mozilla.org/zh-CN/docs/Web/API/Navigator/language
  */
+if (!cxCalendar) {
+  cxCalendar = {};
+};
+
 cxCalendar.languages = {
   /**
    * 如果只使用一种语言，可以只保留 default

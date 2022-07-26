@@ -9,6 +9,14 @@ const theTool = {
   cacheDate: {},
   cacheApi: null,
 
+  // 默认语言
+  language: {
+    am: '上午',
+    pm: '下午',
+    monthList: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+    weekList: ['日', '一', '二', '三', '四', '五', '六'],
+  },
+
   isElement: (o) => {
     if (o && (typeof HTMLElement === 'function' || typeof HTMLElement === 'object') && o instanceof HTMLElement) {
       return true;
@@ -196,10 +204,14 @@ theTool.parseDate = function(value, mustDef) {
 };
 
 // 格式化日期值
-theTool.formatDate = function(style, time, lang) {
+theTool.formatDate = function(style, time, language) {
   const self = this;
   const theDate = self.parseDate(time);
-  const language = self.extend({}, window.cxCalendar.languages.default, lang);
+  const lang = self.extend({}, self.language);
+
+  if (self.isObject(language)) {
+    self.extend(lang, language);
+  };
 
   if (typeof style !== 'string' || !self.isDate(theDate)) {
     return time;
@@ -223,7 +235,7 @@ theTool.formatDate = function(style, time, lang) {
   attr.h = self.fillLeadZero(attr.g, 2);
   attr.i = self.fillLeadZero(theDate.getMinutes(), 2);
   attr.s = self.fillLeadZero(theDate.getSeconds(), 2);
-  attr.a = attr.G > 12 ? language.pm : language.am;
+  attr.a = attr.G > 12 ? lang.pm : lang.am;
 
   const keys = ['timestamp', 'Y', 'y', 'm', 'n', 'd', 'j', 'W', 'H', 'h', 'G', 'g', 'i', 's', 'a'];
   const reg = new RegExp('(' + keys.join('|') + ')', 'g');
@@ -254,9 +266,10 @@ theTool.formatDate = function(style, time, lang) {
 // 获取语言配置
 theTool.getLanguage = function(name) {
   const self = this;
+  const lang = {};
 
   if (self.isObject(name)) {
-    return name;
+    return self.extend(lang, self.language, name);
   };
 
   if (typeof name !== 'string' || !name.length) {
@@ -267,15 +280,20 @@ theTool.getLanguage = function(name) {
     };
   };
 
-  if (typeof name === 'string') {
+  if (typeof name === 'string' && name.length && window.cxCalendar && self.isObject(window.cxCalendar.languages)) {
     name = name.toLowerCase();
+    if (self.isObject(window.cxCalendar.languages[name])) {
+      self.extend(lang, window.cxCalendar.languages[name]);
+    } else if (self.isObject(window.cxCalendar.languages.default)) {
+      self.extend(lang, window.cxCalendar.languages.default);
+    };
   };
 
-  if (typeof name === 'string' && name.length && typeof window.cxCalendar.languages[name] === 'object') {
-    return window.cxCalendar.languages[name];
-  } else {
-    return window.cxCalendar.languages['default'];
+  if (!Object.keys(lang).length) {
+    self.extend(lang, self.language);
   };
+
+  return lang;
 };
 
 theTool.init = function() {
@@ -452,7 +470,7 @@ theTool.getSelects = function(list, values) {
 // 创建面板
 theTool.buildPanel = function() {
   const self = this;
-
+console.log(self.cacheApi);
   if (self.cacheApi.settings.date) {
     self.cacheDate = {
       time: self.cacheApi.defDate.time,
@@ -633,7 +651,7 @@ theTool.rebuildMonthSelect = function() {
       html += ' selected';
     };
 
-    html += '>' + self.cacheApi.language.monthList[i - 1] + '</option>';
+    html += '>' + self.cacheApi.settings.language.monthList[i - 1] + '</option>';
   };
 
   selects.month.innerHTML = html;
@@ -711,7 +729,7 @@ theTool.buildDays = function(year, month) {
       html += ' sun';
     };
 
-    html += '">' + self.cacheApi.language.weekList[(i + self.cacheApi.settings.weekStart) % 7] + '</li>';
+    html += '">' + self.cacheApi.settings.language.weekList[(i + self.cacheApi.settings.weekStart) % 7] + '</li>';
   };
 
   for (let i = 0; i < monthDayMax; i++) {
@@ -996,7 +1014,7 @@ theTool.buildMonths = function(year) {
       html += ' data-date="' + todayText + '"';
     };
 
-    html += '>' + self.cacheApi.language.monthList[i - 1] + '</li>';
+    html += '>' + self.cacheApi.settings.language.monthList[i - 1] + '</li>';
   };
 
   html += '</ul>';
@@ -1200,7 +1218,7 @@ theTool.gotoDate = function(value) {
         };
 
         fillHtml = '<span class="year">' + theYear + '</span><em></em>';
-        fillHtml += '<span class="month">' + self.cacheApi.language.monthList[fillMonth - 1] + '</span><em></em>';
+        fillHtml += '<span class="month">' + self.cacheApi.settings.language.monthList[fillMonth - 1] + '</span><em></em>';
         html += self.buildDays(theYear, theMonth + 1);
       };
       break;

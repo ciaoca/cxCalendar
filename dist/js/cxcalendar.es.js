@@ -1,6 +1,6 @@
 /**
  * cxCalendar
- * @version 3.0.4
+ * @version 3.0.4-bata3
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -16,6 +16,14 @@ const theTool = {
   bindFuns: {},
   cacheDate: {},
   cacheApi: null,
+
+  // 默认语言
+  language: {
+    am: '上午',
+    pm: '下午',
+    monthList: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+    weekList: ['日', '一', '二', '三', '四', '五', '六'],
+  },
 
   isElement: (o) => {
     if (o && (typeof HTMLElement === 'function' || typeof HTMLElement === 'object') && o instanceof HTMLElement) {
@@ -183,11 +191,14 @@ theTool.parseDate = function(value, mustDef) {
 };
 
 // 格式化日期值
-theTool.formatDate = function(style, time, lang) {
+theTool.formatDate = function(style, time, language) {
   const self = this;
   const theDate = self.parseDate(time);
-  const language = self.extend({}, window.cxCalendar.languages.default, lang);
+  const lang = self.extend({}, self.language);
 
+  if (self.isObject(language)) {
+    self.extend(lang, language);
+  }
   if (typeof style !== 'string' || !self.isDate(theDate)) {
     return time;
   }
@@ -209,7 +220,7 @@ theTool.formatDate = function(style, time, lang) {
   attr.h = self.fillLeadZero(attr.g, 2);
   attr.i = self.fillLeadZero(theDate.getMinutes(), 2);
   attr.s = self.fillLeadZero(theDate.getSeconds(), 2);
-  attr.a = attr.G > 12 ? language.pm : language.am;
+  attr.a = attr.G > 12 ? lang.pm : lang.am;
 
   const keys = ['timestamp', 'Y', 'y', 'm', 'n', 'd', 'j', 'W', 'H', 'h', 'G', 'g', 'i', 's', 'a'];
   const reg = new RegExp('(' + keys.join('|') + ')', 'g');
@@ -239,9 +250,10 @@ theTool.formatDate = function(style, time, lang) {
 // 获取语言配置
 theTool.getLanguage = function(name) {
   const self = this;
+  const lang = {};
 
   if (self.isObject(name)) {
-    return name;
+    return self.extend(lang, self.language, name);
   }
   if (typeof name !== 'string' || !name.length) {
     if (typeof navigator.language === 'string') {
@@ -249,14 +261,18 @@ theTool.getLanguage = function(name) {
     } else if (typeof navigator.browserLanguage === 'string') {
       name = navigator.browserLanguage;
     }  }
-  if (typeof name === 'string') {
+  if (typeof name === 'string' && name.length && window.cxCalendar && self.isObject(window.cxCalendar.languages)) {
     name = name.toLowerCase();
+    if (self.isObject(window.cxCalendar.languages[name])) {
+      self.extend(lang, window.cxCalendar.languages[name]);
+    } else if (self.isObject(window.cxCalendar.languages.default)) {
+      self.extend(lang, window.cxCalendar.languages.default);
+    }  }
+  if (!Object.keys(lang).length) {
+    self.extend(lang, self.language);
   }
-  if (typeof name === 'string' && name.length && typeof window.cxCalendar.languages[name] === 'object') {
-    return window.cxCalendar.languages[name];
-  } else {
-    return window.cxCalendar.languages['default'];
-  }};
+  return lang;
+};
 
 theTool.init = function() {
   const self = this;
@@ -418,7 +434,7 @@ theTool.getSelects = function(list, values) {
 // 创建面板
 theTool.buildPanel = function() {
   const self = this;
-
+console.log(self.cacheApi);
   if (self.cacheApi.settings.date) {
     self.cacheDate = {
       time: self.cacheApi.defDate.time,
@@ -582,7 +598,7 @@ theTool.rebuildMonthSelect = function() {
     if (values.month === i) {
       html += ' selected';
     }
-    html += '>' + self.cacheApi.language.monthList[i - 1] + '</option>';
+    html += '>' + self.cacheApi.settings.language.monthList[i - 1] + '</option>';
   }
   selects.month.innerHTML = html;
 };
@@ -652,7 +668,7 @@ theTool.buildDays = function(year, month) {
     } else if(i === sunday) {
       html += ' sun';
     }
-    html += '">' + self.cacheApi.language.weekList[(i + self.cacheApi.settings.weekStart) % 7] + '</li>';
+    html += '">' + self.cacheApi.settings.language.weekList[(i + self.cacheApi.settings.weekStart) % 7] + '</li>';
   }
   for (let i = 0; i < monthDayMax; i++) {
     const classValue = [];
@@ -897,7 +913,7 @@ theTool.buildMonths = function(year) {
     if (classValue.indexOf('del') === -1) {
       html += ' data-date="' + todayText + '"';
     }
-    html += '>' + self.cacheApi.language.monthList[i - 1] + '</li>';
+    html += '>' + self.cacheApi.settings.language.monthList[i - 1] + '</li>';
   }
   html += '</ul>';
 
@@ -1068,7 +1084,7 @@ theTool.gotoDate = function(value) {
           fillMonth = 1;
         }
         fillHtml = '<span class="year">' + theYear + '</span><em></em>';
-        fillHtml += '<span class="month">' + self.cacheApi.language.monthList[fillMonth - 1] + '</span><em></em>';
+        fillHtml += '<span class="month">' + self.cacheApi.settings.language.monthList[fillMonth - 1] + '</span><em></em>';
         html += self.buildDays(theYear, theMonth + 1);
       }      break;
 
@@ -1361,38 +1377,40 @@ const picker = function() {
   const inputSettings = {};
 
   for (let x of keys) {
-    if (typeof self.input.dataset[x] === 'string' && self.input.dataset[x].length) {
-      switch (x) {
-        case 'hourStep':
-        case 'minuteStep':
-        case 'secondStep':
-        case 'rangeMaxDay':
-        case 'rangeMaxMonth':
-        case 'rangeMaxYear':
-        case 'weekStart':
-        case 'yearNum':
-          inputSettings[x] = parseInt(self.input.dataset[x], 10);
-          break;
+    if (typeof self.input.dataset[x] !== 'string' || !self.input.dataset[x].length) {
+      continue;
+    }
+    switch (x) {
+      case 'hourStep':
+      case 'minuteStep':
+      case 'secondStep':
+      case 'rangeMaxDay':
+      case 'rangeMaxMonth':
+      case 'rangeMaxYear':
+      case 'weekStart':
+      case 'yearNum':
+        inputSettings[x] = parseInt(self.input.dataset[x], 10);
+        break;
 
-        case 'lockRow':
-          inputSettings[x] = Boolean(parseInt(self.input.dataset[x], 10));
-          break;
+      case 'lockRow':
+        inputSettings[x] = Boolean(parseInt(self.input.dataset[x], 10));
+        break;
 
-        case 'disableWeek':
-        case 'disableDay':
-          inputSettings[x] = self.input.dataset[x].split(',');
-          break;
+      case 'disableWeek':
+      case 'disableDay':
+        inputSettings[x] = self.input.dataset[x].split(',');
+        break;
 
-        default:
-          inputSettings[x] = self.input.dataset[x];
-          break;
-      }    }  }
+      default:
+        inputSettings[x] = self.input.dataset[x];
+        break;
+    }  }
   if (Array.isArray(inputSettings.disableWeek)) {
     inputSettings.disableWeek = inputSettings.disableWeek.map((val) => {
       return parseInt(val, 10);
     });
   }
-  self.settings = theTool.extend({}, window.cxCalendar.defaults, options, inputSettings);
+  self.settings = theTool.extend({}, options, inputSettings);
   self.setOptions();
 
   let alias = 'id_' + self.input.dataset.cxCalendarId;
@@ -1500,18 +1518,15 @@ picker.prototype.setOptions = function(options) {
   self.settings.weekStart %= 7;
 
   // 语言配置
-  self.language = theTool.getLanguage(self.settings.language);
+  self.settings.language = theTool.getLanguage(self.settings.language);
 
   // 统计节假日
-  if (Array.isArray(self.language.holiday) && self.language.holiday.length) {
+  if (Array.isArray(self.settings.language.holiday) && self.settings.language.holiday.length) {
     self.holiday = {};
 
-    for (let x of self.language.holiday) {
+    for (let x of self.settings.language.holiday) {
       self.holiday[x.day] = x.name;
-    }
-  } else {
-    self.holiday = null;
-  }};
+    }  }};
 
 picker.prototype.show = function() {
   const self = this;
@@ -1555,7 +1570,7 @@ picker.prototype.getDate = function(style) {
       newValue = [];
       break;
     }
-    newValue.push(theTool.formatDate(style, theDate.getTime(), self.language));
+    newValue.push(theTool.formatDate(style, theDate.getTime(), self.settings.language));
   }
   newValue = self.settings.mode === 'range' ? newValue.join(self.settings.rangeSymbol) : newValue.join('');
 
@@ -1592,7 +1607,7 @@ picker.prototype.setDate = function(value) {
     } else if (theTime > self.maxDate.time) {
       theTime = self.maxDate.time;
     }
-    newValue.push(theTool.formatDate(self.settings.format, theTime, self.language));
+    newValue.push(theTool.formatDate(self.settings.format, theTime, self.settings.language));
   }
   newValue = self.settings.mode === 'range' ? newValue.join(self.settings.rangeSymbol) : newValue.join('');
 
@@ -1611,7 +1626,12 @@ picker.prototype.clearDate = function() {
   }};
 
 const cxCalendar = function(el, options, isAttach) {
-  const result = new picker(...arguments);
+  if (theTool.isObject(options)) {
+    options = theTool.extend({}, cxCalendar.defaults, options);
+  } else {
+    options = theTool.extend({}, cxCalendar.defaults);
+  }
+  const result = new picker(el, options, isAttach);
 
   if (isAttach) {
     return result;
@@ -1642,24 +1662,13 @@ cxCalendar.defaults = {
   disableDay: [],         // 不可选择的日期
   mode: 'single',         // 选择模式
   rangeSymbol: ' - ',     // 日期范围拼接符号
-  rangeMaxDay: 0,         // 日期范围间隔
-  rangeMaxMonth: 0,       // 月份范围间隔
-  rangeMaxYear: 0,        // 年份范围间隔
+  rangeMaxDay: 0,         // 日期范围最长间隔
+  rangeMaxMonth: 0,       // 月份范围最长间隔
+  rangeMaxYear: 0,        // 年份范围最长间隔
   button: {},             // 操作按钮
   position: undefined,    // 面板位置
   baseClass: undefined,   // 基础样式
   language: undefined     // 语言配置
-};
-
-// 默认语言
-cxCalendar.languages = {
-  'default': {
-    am: '上午',
-    pm: '下午',
-    monthList: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-    weekList: ['日', '一', '二', '三', '四', '五', '六'],
-    holiday: []
-  }
 };
 
 export { cxCalendar as default };

@@ -10,7 +10,7 @@ cxCalendar 是基于 JavaScript 的日期选择器插件，支持日期、时间
 - 支持单日期、日期范围
 - 支持 CSS 自定义样式
 - 支持多语言扩展
-- 全局仅有一个选择器，不对 DOM 造成污染
+- 全局仅有一个选择器，减少 DOM 污染
 
 Demo: https://ciaoca.github.io/cxCalendar/
 
@@ -135,9 +135,9 @@ disableWeek|array|[]|**不可选择的日期（星期值）**<br />`0` 星期日
 disableDay|array|[]|**不可选择的日期**<br />`'1'` 每月 1 号<br />`'1-5'` 每年 1 月 5 日<br />`'2020-1-1'` 指定具体日期<br />※ 不要有前导零
 mode|string|'single'|**选择模式**<br />`'single'` 单选模式<br />`'range'` 范围模式
 rangeSymbol|string|' - '|**日期范围拼接符号**
-rangeMaxDay|integer|0|**日期范围最长天数**
-rangeMaxMonth|integer|0|**月份范围最长月份**
-rangeMaxYear|integer|0|**年份范围最长年份**
+rangeMaxDay|integer|0|**日期范围最长间隔**
+rangeMaxMonth|integer|0|**月份范围最长间隔**
+rangeMaxYear|integer|0|**年份范围最长间隔**
 button|object|{}|**操作按钮**<br />`today` 选择现在<br />`clear` 清除已选值<br />默认自适应，若强制不需要可设置为 `false`，如 `today: false`
 position|string|undefined|**显示位置**<br />`'top'` 上<br />`'bottom'` 下<br />`'left'` 左<br />`'right'` 右<br />`'fixed'` 自定义，配合 `baseClass` 使用<br />默认自适应，可参考：[[Demo Position](https://ciaoca.github.io/cxCalendar/position.html)]
 baseClass|string|undefined|**追加样式名称**<br />仅在面板容器增加 class，不会覆盖默认的 class
@@ -188,9 +188,9 @@ data-disable-week|不可选择的日期（星期值），例：`data-disable-wee
 data-disable-day|不可选择的日期，例：`data-disable-day="1,5-2,2021-2-11"`
 data-mode|选择模式
 data-range-symbol|日期范围拼接符号
-data-range-max-day|日期范围间隔
-data-range-max-month|月份范围间隔
-data-range-max-year|年份范围间隔
+data-range-max-day|日期范围最长间隔
+data-range-max-month|月份范围最长间隔
+data-range-max-year|年份范围最长间隔
 data-position|显示位置
 data-base-class|追加样式名称
 data-language|语言名称（仅支持 `languages` 已配置的键名）

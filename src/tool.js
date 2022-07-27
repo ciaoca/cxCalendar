@@ -470,7 +470,7 @@ theTool.getSelects = function(list, values) {
 // 创建面板
 theTool.buildPanel = function() {
   const self = this;
-console.log(self.cacheApi);
+
   if (self.cacheApi.settings.date) {
     self.cacheDate = {
       time: self.cacheApi.defDate.time,

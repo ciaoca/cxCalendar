@@ -1,6 +1,6 @@
 {
   "name": "cxcalendar3",
-  "version": "3.0.4-beta1",
+  "version": "3.0.4",
   "description": "JavaScript date picker, support range, time, year, month.",
   "author": "ciaoca <ciaoca@gmail.com> (https://github.com/ciaoca/cxCalendar)",
   "license": "MIT",

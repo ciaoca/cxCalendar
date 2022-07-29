@@ -1,6 +1,6 @@
 /**
  * cxCalendar
- * @version 3.0.4-bata3
+ * @version 3.0.4
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxCalendar
@@ -440,7 +440,7 @@ theTool.getSelects = function(list, values) {
 // 创建面板
 theTool.buildPanel = function() {
   const self = this;
-console.log(self.cacheApi);
+
   if (self.cacheApi.settings.date) {
     self.cacheDate = {
       time: self.cacheApi.defDate.time,

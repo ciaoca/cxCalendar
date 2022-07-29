@@ -25,7 +25,40 @@
       <a class="active" href="module.html">模块</a>
     </nav>
 
-    <h2>范围模式</h2>
+    <fieldset>
+      <legend>API</legend>
+      <section>
+        <label for="date_api">选择日期：</label>
+        <input id="date_api" type="text" class="input" readonly size="50">
+      </section>
+      <section id="api_acts" class="acts">
+        <div class="group">
+          <a href="javascript://" rel="type" rev="date">type: date</a>
+          <a href="javascript://" rel="type" rev="datetime">type: datetime</a>
+          <a href="javascript://" rel="type" rev="year">type: year</a>
+          <a href="javascript://" rel="type" rev="month">type: month</a>
+          <a href="javascript://" rel="type" rev="time">type: time</a>
+        </div>
+        <div class="group">
+          <a href="javascript://" rel="show">显示</a>
+          <a href="javascript://" rel="set">设置日期值</a>
+          <a href="javascript://" rel="get">获取日期值</a>
+          <a href="javascript://" rel="clear">清除日期值</a>
+        </div>
+        <div class="group">
+          <a href="javascript://" rel="lang" rev="zh-cn">设置语言：中文</a>
+          <a href="javascript://" rel="lang" rev="en">设置语言：英文</a>
+          <a href="javascript://" rel="lang" rev="ja">设置语言：日文</a>
+        </div>
+        <div class="group">
+          <a href="javascript://" rel="mode" rev="">单选模式</a>
+          <a href="javascript://" rel="mode" rev="range">范围模式</a>
+          <a href="javascript://" rel="attach">Attach</a>
+          <a href="javascript://" rel="detach">Detach</a>
+        </div>
+      </section>
+      <p>※ 打开控制台查看</p>
+    </fieldset>
 
     <fieldset>
       <legend>操作</legend>
@@ -36,7 +69,7 @@
     </fieldset>
 
     <fieldset id="demo">
-      <legend>常用</legend>
+      <legend>动态调用</legend>
     </fieldset>
 
     <div class="about">
@@ -57,5 +90,6 @@
 </div>
 
 <script type="module" src="./js/es.js"></script>
+<script src="../dist/js/cxcalendar.languages.js"></script>
 </body>
 </html>

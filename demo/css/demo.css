@@ -4,7 +4,7 @@ h2{font-size:1.5rem;}
 h3{font-size:1.25rem;}
 a{color:#006af9;text-decoration:none;}
 
-.wrap{box-sizing:border-box;max-width:800px;margin:0 auto;}
+.wrap{box-sizing:border-box;max-width:960px;margin:0 auto;}
 .main .wrap{padding:20px 40px;background-color:#fff;}
 
 header{background-color:#2d2d2d;color:#fff;}

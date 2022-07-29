@@ -6,7 +6,7 @@
  * 浏览器语言参考
  * https://developer.mozilla.org/zh-CN/docs/Web/API/Navigator/language
  */
-if (!cxCalendar) {
+if (!window.cxCalendar) {
   cxCalendar = {};
 };
 

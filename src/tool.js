@@ -444,6 +444,7 @@ theTool.bindEvent = function() {
     const nodeName = el.nodeName.toLowerCase();
 
     if (nodeName === 'select' && ['year', 'month'].indexOf(el.name) >= 0) {
+      self.rebuildMonthSelect();
       self.gotoDate();
     };
   });
